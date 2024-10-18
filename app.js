@@ -137,7 +137,7 @@ export default function myFunc() {
 	});
 
 	// add btn event
-	menuBtn.addEventListener("click", () => {
+	/*menuBtn.addEventListener("click", () => {
 		//sideMenu.classList.toggle("side-menu");
 
 		// change btn behave
@@ -148,7 +148,18 @@ export default function myFunc() {
 			menuBtn.innerHTML = "&lt;";
 			sideMenu.style.display = "block";
 		}
+	});*/
+	menuBtn.addEventListener("click", () => {
+		// change btn behavior
+		if (sideMenu.classList.contains("open")) {
+			menuBtn.innerHTML = "&gt;";
+			sideMenu.classList.remove("open");
+		} else {
+			menuBtn.innerHTML = "&lt;";
+			sideMenu.classList.add("open");
+		}
 	});
+	
 
 	return map;
 }

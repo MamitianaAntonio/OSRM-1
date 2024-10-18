@@ -47,9 +47,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// node_modules/.pnpm/maplibre-gl@4.7.1/node_modules/maplibre-gl/dist/maplibre-gl.js
+// node_modules/maplibre-gl/dist/maplibre-gl.js
 var require_maplibre_gl = __commonJS({
-  "node_modules/.pnpm/maplibre-gl@4.7.1/node_modules/maplibre-gl/dist/maplibre-gl.js"(exports, module) {
+  "node_modules/maplibre-gl/dist/maplibre-gl.js"(exports, module) {
     (function(global2, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global2 = typeof globalThis !== "undefined" ? globalThis : global2 || self, global2.maplibregl = factory());
     })(exports, function() {
@@ -22190,7 +22190,7 @@ async function getLocation(hh) {
       displayDirections(locationName, dist, x, y);
     });
   }
-  informationDiv.style.display = "block";
+  sideMenu.style.display = "block";
 }
 function myFunc() {
   const map = new import_maplibre_gl.default.Map({
@@ -22236,12 +22236,12 @@ function myFunc() {
     showRoute(directions);
   });
   menuBtn.addEventListener("click", () => {
-    if (sideMenu.style.display === "block") {
+    if (sideMenu.classList.contains("open")) {
       menuBtn.innerHTML = "&gt;";
-      sideMenu.style.display = "none";
+      sideMenu.classList.remove("open");
     } else {
       menuBtn.innerHTML = "&lt;";
-      sideMenu.style.display = "block";
+      sideMenu.classList.add("open");
     }
   });
   return map;
