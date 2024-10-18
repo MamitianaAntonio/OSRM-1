@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Display driving directions</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <!--All css import-->
+  <link rel="stylesheet" href="./dist/index.css">
+</head>
+
+<body>
+  <!--Slide show !-->
+
+  <button id="menu-btn">&lt;</button>
+  <div id="side-menu" class="side-menu">
+    <h2>GUIDE</h2>
+    <hr />
+    <!--summary-->
+    <div id="summary"></div>
+    <!--distance & duration-->
+    <div id="distance-duration" class="distance-duration">
+      <div id="distance"></div>
+      <div id="duration"></div>
+    </div>
+    <!--add instructions in menu-container-->
+    <div id="informations"></div>
+  </div>
+
+
+  <!--Zoom control-->
+  <!--div id="zoom-control">
+    <div class="zoom unselectable control">
+      <button class="zoom-in" type="button" title="Zoom in">+</button>
+      <button class="zoom-out" type="button" title="Zoom out">−</button>
+    </div>
+  </div-->
+
+  <script type="module">
+    //map initializing
+    import myFunc from "./dist/build.js";
+    const ll = document.createElement("div");
+    ll.setAttribute("id", "map");
+    document.body.appendChild(ll);
+    const jj = myFunc();
+  </script>
+
+</body>
+
+</html>

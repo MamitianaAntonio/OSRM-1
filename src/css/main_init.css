@@ -1,0 +1,213 @@
+@import "../../node_modules/maplibre-gl/dist/maplibre-gl.css";
+@import "maplibre-gl-directions.css";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
+/*container*/
+body {
+  margin: 0;
+  padding: 0;
+}
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left : 0;
+  right : 0;
+  width: 100%;
+  height: 100vh;
+}
+/*Zoom control*/
+#zoom-control {
+  display: block;
+  position: absolute;
+  z-index: 99;
+  left: 20rem;
+  top: 0.7rem;
+}
+.zoom {
+  top: .5em;
+  left: .5em
+}
+/* Map control */
+.zoom-in,
+.zoom-out {
+  background-color: rgba(255, 255, 255)!important;
+  color: #0071bc !important;
+  font-size: 1.4rem;
+  border: none;
+}
+.zoom-in{
+  border-bottom: #000 solid 1px;
+}
+.unselectable,
+.viewport {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent
+}
+.control {
+  position: absolute;
+  background-color: rgba(255, 255, 255);
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  padding: 2px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+/*scale-line*/
+.maplibregl-ctrl-scale {
+  border: 2px solid hsl(204, 50%, 50%);
+  border-top: none;
+  padding: 0.1em;
+  text-align: center; 
+  z-index: 99; 
+}
+.maplibregl-ctrl-scale-inner {
+  color: #0071bc; 
+  font-weight: bold; 
+  font-size: 12px;
+  margin: 0;
+}
+.maplibregl-ctrl-scale-line {
+  border-top: 2px solid #0071bc;
+  height: 2px;
+  margin-top: 5px;
+  width: 100%;
+}
+
+/*button span*/
+.collapse-btn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(37, 72, 127, 0.74902);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 18px;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: 50;
+}
+
+/*Slide show*/
+/* Bouton */
+#menu-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bolder;
+  background-color: #008cba;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 2;
+}
+/* Le menu */
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -100%; 
+  width: 300px;
+  height: 100%;
+  background-color: #f1f1f1;
+  color: #000;
+  transition: right 0.6s ease;
+  padding: 20px;
+  box-shadow: -2px 0 10px -5px rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
+.side-menu h2 {
+  margin-top: 0;
+  color: #000;
+}
+.side-menu hr{
+  color: #000;
+}
+/* Menu visible */
+.side-menu.show {
+  right: 0;
+}
+
+/*instructions on menu-container*/
+#summary {
+  color: #000;
+  font-size: 16px;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+}
+.distance-duration {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+#distance, #duration {
+  font-size: 16px;
+}
+/* Style pour le conteneur d'informations */
+#information {
+  background-color: #f9f9f9; /* Couleur de fond claire */
+  border: 1px solid #ccc; /* Bordure grise */
+  border-radius: 8px; /* Coins arrondis */
+  max-width: 600px; /* Largeur maximale */
+  margin: 20px auto; /* Centrer sur la page avec une marge */
+  padding: 20px; /* Espacement interne */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Ombre douce */
+  overflow-y: auto; /* Activer le défilement si nécessaire */
+  max-height: 400px; /* Hauteur maximale */
+}
+/* Style pour la liste des itinéraires */
+#route-list {
+  list-style-type: none; /* Supprimer les puces */
+  padding: 0; /* Supprimer le rembourrage par défaut */
+  color: #000;
+}
+/* Style pour chaque élément de la liste */
+#route-list li {
+  background-color: #ffffff; /* Couleur de fond blanche pour chaque item */
+  border: 1px solid #ddd; /* Bordure grise claire */
+  border-radius: 4px; /* Coins arrondis */
+  margin: 10px 0; /* Marge entre les éléments */
+  padding: 10px; /* Espacement interne */
+  display: flex; /* Utiliser flexbox pour l'alignement */
+  justify-content: space-between; /* Espacer le contenu à gauche et à droite */
+  align-items: center; /* Aligner le contenu verticalement au centre */
+  transition: background-color 0.3s; /* Transition douce pour le survol */
+}
+/* Style pour le survol des éléments de la liste */
+#route-list li:hover {
+  background-color: #f0f0f0; /* Changer la couleur de fond au survol */
+}
+/* Style pour les icônes */
+.icon {
+  width: 24px; /* Largeur de l'icône */
+  height: 24px; /* Hauteur de l'icône */
+  margin-right: 10px; /* Espacement à droite de l'icône */
+}
+
+.list-direction{
+  list-style: none;
+  font-size: 14px;
+  display: block;
+  width: 100%;
+  height: 30px;
+  background-color: aqua;
+  border: #000;
+  margin-top: 5px;
+}
+.list-direction .decor:first-child{
+  float: left;
+}
+.list-direction .decor:last-child{
+  float: right;
+}
