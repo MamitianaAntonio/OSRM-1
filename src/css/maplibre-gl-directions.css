@@ -17,9 +17,10 @@
   max-width:calc(100% - 40px);
   margin-left:40px;
   border-radius:0 0 3px 0;
+
   }
   .maplibre-directions-origin .maplibregl-ctrl-geocoder {
-    border-radius:0 3px 0 0;
+    border-radius:0 5px 0 0;
     }
 
 .maplibregl-ctrl-geocoder input[type='text'] {
@@ -59,7 +60,7 @@
   cursor:pointer;
   }
 .maplibregl-ctrl-geocoder .geocoder-pin-right * {
-  background-color:#fff;
+  background-color:#b81919;
   z-index:2;
   position:absolute;
   right:10px;

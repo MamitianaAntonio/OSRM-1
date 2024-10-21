@@ -107,7 +107,7 @@ export default function myFunc() {
 		interactive: true,
 		controls: {
 			inputs: true,
-			instructions: true,
+			instructions: false,
 			profileSwitcher: false,
 		},
 		profile: "driving",

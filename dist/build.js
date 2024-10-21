@@ -37149,8 +37149,8 @@ var BasemapControl = class {
         sourceType
       } of basemaps_default) {
         const basemapContainer = document.createElement("img");
-        basemapContainer.style.width = "30px";
-        basemapContainer.style.height = "30px";
+        basemapContainer.style.width = "50px";
+        basemapContainer.style.height = "50px";
         if (sourceType === "vector") {
           basemapContainer.classList.add("basemap");
           basemapContainer.dataset.id = id;
@@ -37311,7 +37311,7 @@ function myFunc() {
     interactive: true,
     controls: {
       inputs: true,
-      instructions: true,
+      instructions: false,
       profileSwitcher: false
     },
     profile: "driving"
