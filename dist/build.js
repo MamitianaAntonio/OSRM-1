@@ -22175,18 +22175,16 @@ function displayDirections(locationName, dist, x, y) {
   });
   informationDiv.appendChild(li);
 }
-async function getLocation(hh) {
+async function getLocation(steps) {
   informationDiv.innerHTML = "";
-  for (const i of hh) {
-    const cord = i.maneuver.location;
-    const dist = i.distance;
-    const side = i.driving_side;
+  for (const step of steps) {
+    const cord = step.maneuver.location;
+    const dist = step.distance;
     const x = cord[0];
     const y = cord[1];
-    const chaine = "&lat=".concat(y).concat("&lon=").concat(x).concat("&zoom=18");
-    const url = nominate.concat(chaine);
+    const url = "".concat(nominate, "&lat=").concat(y, "&lon=").concat(x, "&zoom=18");
     await fetch(url).then((response) => response.json()).then((data) => {
-      const locationName = data.display_name.split(",")[0] + data.display_name.split(",")[1];
+      const locationName = "".concat(data.display_name.split(",")[0], " ").concat(data.display_name.split(",")[1]);
       displayDirections(locationName, dist, x, y);
     });
   }
@@ -22203,10 +22201,7 @@ function myFunc() {
   map.addControl(new import_maplibre_gl.default.AttributionControl(), "bottom-right");
   map.addControl(new import_maplibre_gl.default.ScaleControl());
   map.addControl(new import_maplibre_gl.default.FullscreenControl(), "top-right");
-  map.addControl(
-    new import_maplibre_gl.default.NavigationControl({ visualizePitch: true }),
-    "top-right"
-  );
+  map.addControl(new import_maplibre_gl.default.NavigationControl({ visualizePitch: true }), "top-right");
   map.fitBounds(initBounds);
   const directions = new import_maplibre_gl_directions.default({
     map,
@@ -22214,27 +22209,29 @@ function myFunc() {
     interactive: true,
     controls: {
       inputs: true,
-      instructions: false,
+      instructions: true,
       profileSwitcher: false
     },
     profile: "driving"
   });
   directions.on("route", (e) => {
-    console.log(e.route);
     const route = e.route[0];
-    const summary = route.legs[0].summary;
-    const distance = (route.legs[0].distance / 1e3).toFixed(2);
-    const duration = (route.legs[0].duration / 60).toFixed(2);
-    summaryContainer.innerHTML = "<p>".concat(summary, "</p>");
-    distanceContainer.innerHTML = "<p><strong>Distance:</strong> ".concat(distance, " km</p>");
-    durationContainer.innerHTML = "<p><strong>Dur\xE9e:</strong> ".concat(duration, " min</p>");
-    const hh = route.legs[0].steps;
-    getLocation(hh);
+    if (route) {
+      if (!sideMenu.classList.contains("open")) {
+        sideMenu.classList.add("open");
+        menuBtn.innerHTML = "&lt;";
+      }
+      const summary = route.legs[0].summary;
+      const distance = (route.legs[0].distance / 1e3).toFixed(2);
+      const duration = (route.legs[0].duration / 60).toFixed(2);
+      summaryContainer.innerHTML = "<p>".concat(summary, "</p>");
+      distanceContainer.innerHTML = "<p><strong>Distance:</strong> ".concat(distance, " km</p>");
+      durationContainer.innerHTML = "<p><strong>Dur\xE9e:</strong> ".concat(duration, " min</p>");
+      const steps = route.legs[0].steps;
+      getLocation(steps);
+    }
   });
   map.addControl(directions, "top-left");
-  map.on("load", () => {
-    showRoute(directions);
-  });
   menuBtn.addEventListener("click", () => {
     if (sideMenu.classList.contains("open")) {
       menuBtn.innerHTML = "&gt;";
