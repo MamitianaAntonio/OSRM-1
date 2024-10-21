@@ -10,7 +10,7 @@ const initBounds = [
 ];
 const styleMap = "https://vector-tiles.tag-ip.xyz/styles/tag-ip/style.json";
 
-function displayDirections(locationName, dist, side) {
+function displayDirections(locationName, dist, x, y) {
 	const informationDiv = document.getElementById("informations");
 
 	const li = document.createElement("li");
@@ -53,9 +53,8 @@ async function getLocation(hh) {
 				//const locationName = data.display_name.split(",")
 				//locationName = locationName.filter((lx, idx) => idx < 2)
 				// console.log("tgygvy : ", locationName, dist, side);
-
-				displayDirections(locationName, dist, side);
 			});
+			displayDirections(locationName, dist, side);
 	}
 }
 

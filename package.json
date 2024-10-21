@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node serveur.js",
+    "start": "live-server",
     "local": "node esbuild.mjs"
   },
   "keywords": [],
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "esbuild": "^0.24.0",
+    "live-server": "^1.2.2",
     "serve": "^14.2.4"
   }
 }

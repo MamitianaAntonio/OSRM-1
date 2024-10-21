@@ -124,46 +124,43 @@ body {
 }
 /* Style pour le conteneur d'informations */
 #informations {
-  background-color: #f9f9f9; /* Couleur de fond claire */
-  border: 1px solid #ccc; /* Bordure grise */
-  border-radius: 8px; /* Coins arrondis */
-  max-width: 600px; /* Largeur maximale */
-  margin: 20px auto; /* Centrer sur la page avec une marge */
-  padding: 20px; /* Espacement interne */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Ombre douce */
-  overflow-y: auto; /* Activer le défilement si nécessaire */
-  max-height: 400px; /* Hauteur maximale */
-  display: none;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc; 
+  border-radius: 8px; 
+  max-width: 600px; 
+  margin: 20px auto;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; 
+  max-height: 400px;
+  display: block;
 }
 /* Style pour la liste des itinéraires */
 #route-list {
-  list-style-type: none; /* Supprimer les puces */
-  padding: 0; /* Supprimer le rembourrage par défaut */
+  list-style-type: none;
+  padding: 0; 
   color: #000;
 }
 /* Style pour chaque élément de la liste */
 #route-list li {
-  background-color: #ffffff; /* Couleur de fond blanche pour chaque item */
-  border: 1px solid #ddd; /* Bordure grise claire */
-  border-radius: 4px; /* Coins arrondis */
-  margin: 10px 0; /* Marge entre les éléments */
-  padding: 10px; /* Espacement interne */
-  display: flex; /* Utiliser flexbox pour l'alignement */
-  justify-content: space-between; /* Espacer le contenu à gauche et à droite */
-  align-items: center; /* Aligner le contenu verticalement au centre */
-  transition: background-color 0.3s; /* Transition douce pour le survol */
+  background-color: #ffffff; 
+  border: 1px solid #ddd; 
+  border-radius: 4px;
+  margin: 10px 0; 
+  padding: 10px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  transition: background-color 0.3s; 
 }
-/* Style pour le survol des éléments de la liste */
 #route-list li:hover {
-  background-color: #f0f0f0; /* Changer la couleur de fond au survol */
+  background-color: #f0f0f0; 
 }
-/* Style pour les icônes */
 .icon {
-  width: 24px; /* Largeur de l'icône */
-  height: 24px; /* Hauteur de l'icône */
-  margin-right: 10px; /* Espacement à droite de l'icône */
+  width: 24px; 
+  height: 24px;
+  margin-right: 10px; 
 }
-
 .list-direction{
   list-style: none;
   font-size: 14px;
