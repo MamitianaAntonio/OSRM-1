@@ -1,5 +1,9 @@
 @import "../../node_modules/maplibre-gl/dist/maplibre-gl.css";
 @import "maplibre-gl-directions.css";
+@import "maplibre-gl-basemaps/lib/basemaps";
+@import "../../node_modules/@watergis/maplibre-gl-legend/dist/maplibre-gl-legend.css";
+
+
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
 /*container*/
