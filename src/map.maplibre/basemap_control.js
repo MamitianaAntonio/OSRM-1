@@ -79,8 +79,8 @@ class BasemapControl {
 				sourceType,
 			} of Basemaps) {
 				const basemapContainer = document.createElement("img")
-				basemapContainer.style.width="30px";
-				basemapContainer.style.height="30px";
+				//basemapContainer.style.width="30px";
+				//basemapContainer.style.height="30px";
 
 				if (sourceType === "vector") {
 					basemapContainer.classList.add("basemap")

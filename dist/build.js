@@ -48,9 +48,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
-// node_modules/.pnpm/maplibre-gl@4.7.1/node_modules/maplibre-gl/dist/maplibre-gl.js
+// node_modules/maplibre-gl/dist/maplibre-gl.js
 var require_maplibre_gl = __commonJS({
-  "node_modules/.pnpm/maplibre-gl@4.7.1/node_modules/maplibre-gl/dist/maplibre-gl.js"(exports, module) {
+  "node_modules/maplibre-gl/dist/maplibre-gl.js"(exports, module) {
     (function(global2, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global2 = typeof globalThis !== "undefined" ? globalThis : global2 || self, global2.maplibregl = factory());
     })(exports, function() {
@@ -22278,7 +22278,7 @@ var MapState = class {
   }
 };
 
-// node_modules/.pnpm/@watergis+maplibre-gl-legend@2.0.5/node_modules/@watergis/maplibre-gl-legend/dist/maplibre-gl-legend.es.js
+// node_modules/@watergis/maplibre-gl-legend/dist/maplibre-gl-legend.es.js
 var wi = Object.defineProperty;
 var xi = (r, e, t) => e in r ? wi(r, e, { enumerable: true, configurable: true, writable: true, value: t }) : r[e] = t;
 var ae = (r, e, t) => (xi(r, typeof e != "symbol" ? e + "" : e, t), t);
@@ -37149,8 +37149,6 @@ var BasemapControl = class {
         sourceType
       } of basemaps_default) {
         const basemapContainer = document.createElement("img");
-        basemapContainer.style.width = "30px";
-        basemapContainer.style.height = "30px";
         if (sourceType === "vector") {
           basemapContainer.classList.add("basemap");
           basemapContainer.dataset.id = id;
@@ -37311,12 +37309,13 @@ function myFunc() {
     interactive: true,
     controls: {
       inputs: true,
-      instructions: true,
+      instructions: false,
       profileSwitcher: false
     },
     profile: "driving"
   });
   directions.on("route", (e) => {
+    console.log(e.route);
     const route = e.route[0];
     if (route) {
       if (!sideMenu.classList.contains("open")) {

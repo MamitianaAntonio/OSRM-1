@@ -46,6 +46,7 @@ function displayDirections(locationName, dist, x, y) {
 	const li = document.createElement("li");
 	const spanDistance = document.createElement("span");
 	const span = document.createElement("span");
+	//add class
 	li.setAttribute("class", "list-direction");
 	span.setAttribute("class", "decor");
 	spanDistance.setAttribute("class", "decor");
@@ -107,7 +108,7 @@ export default function myFunc() {
 		interactive: true,
 		controls: {
 			inputs: true,
-			instructions: true,
+			instructions: false,
 			profileSwitcher: false,
 		},
 		profile: "driving",
@@ -115,6 +116,9 @@ export default function myFunc() {
 
 	// Event listener for route generation
 	directions.on("route", (e) => {
+
+		console.log(e.route)
+
 		const route = e.route[0];
 		if (route) {
 			// Open the side menu when points A and B are connected
