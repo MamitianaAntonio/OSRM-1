@@ -48,9 +48,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
-// node_modules/maplibre-gl/dist/maplibre-gl.js
+// node_modules/.pnpm/maplibre-gl@4.7.1/node_modules/maplibre-gl/dist/maplibre-gl.js
 var require_maplibre_gl = __commonJS({
-  "node_modules/maplibre-gl/dist/maplibre-gl.js"(exports, module) {
+  "node_modules/.pnpm/maplibre-gl@4.7.1/node_modules/maplibre-gl/dist/maplibre-gl.js"(exports, module) {
     (function(global2, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global2 = typeof globalThis !== "undefined" ? globalThis : global2 || self, global2.maplibregl = factory());
     })(exports, function() {
@@ -17562,4586 +17562,4673 @@ var require_maplibre_gl_directions = __commonJS({
           return o;
         }
         return r;
-      }())({ 1: [function(require2, module3, exports3) {
-        "use strict";
-        var polyline = {};
-        function py2_round(value) {
-          return Math.floor(Math.abs(value) + 0.5) * (value >= 0 ? 1 : -1);
-        }
-        function encode(current, previous, factor) {
-          current = py2_round(current * factor);
-          previous = py2_round(previous * factor);
-          var coordinate = current - previous;
-          coordinate <<= 1;
-          if (current - previous < 0) {
-            coordinate = ~coordinate;
+      }())({
+        1: [function(require2, module3, exports3) {
+          "use strict";
+          var polyline = {};
+          function py2_round(value) {
+            return Math.floor(Math.abs(value) + 0.5) * (value >= 0 ? 1 : -1);
           }
-          var output = "";
-          while (coordinate >= 32) {
-            output += String.fromCharCode((32 | coordinate & 31) + 63);
-            coordinate >>= 5;
+          function encode(current, previous, factor) {
+            current = py2_round(current * factor);
+            previous = py2_round(previous * factor);
+            var coordinate = current - previous;
+            coordinate <<= 1;
+            if (current - previous < 0) {
+              coordinate = ~coordinate;
+            }
+            var output = "";
+            while (coordinate >= 32) {
+              output += String.fromCharCode((32 | coordinate & 31) + 63);
+              coordinate >>= 5;
+            }
+            output += String.fromCharCode(coordinate + 63);
+            return output;
           }
-          output += String.fromCharCode(coordinate + 63);
-          return output;
-        }
-        polyline.decode = function(str, precision) {
-          var index = 0, lat = 0, lng = 0, coordinates = [], shift = 0, result = 0, byte = null, latitude_change, longitude_change, factor = Math.pow(10, Number.isInteger(precision) ? precision : 5);
-          while (index < str.length) {
-            byte = null;
-            shift = 0;
-            result = 0;
-            do {
-              byte = str.charCodeAt(index++) - 63;
-              result |= (byte & 31) << shift;
-              shift += 5;
-            } while (byte >= 32);
-            latitude_change = result & 1 ? ~(result >> 1) : result >> 1;
-            shift = result = 0;
-            do {
-              byte = str.charCodeAt(index++) - 63;
-              result |= (byte & 31) << shift;
-              shift += 5;
-            } while (byte >= 32);
-            longitude_change = result & 1 ? ~(result >> 1) : result >> 1;
-            lat += latitude_change;
-            lng += longitude_change;
-            coordinates.push([lat / factor, lng / factor]);
-          }
-          return coordinates;
-        };
-        polyline.encode = function(coordinates, precision) {
-          if (!coordinates.length) {
-            return "";
-          }
-          var factor = Math.pow(10, Number.isInteger(precision) ? precision : 5), output = encode(coordinates[0][0], 0, factor) + encode(coordinates[0][1], 0, factor);
-          for (var i = 1; i < coordinates.length; i++) {
-            var a = coordinates[i], b = coordinates[i - 1];
-            output += encode(a[0], b[0], factor);
-            output += encode(a[1], b[1], factor);
-          }
-          return output;
-        };
-        function flipped(coords) {
-          var flipped2 = [];
-          for (var i = 0; i < coords.length; i++) {
-            var coord = coords[i].slice();
-            flipped2.push([coord[1], coord[0]]);
-          }
-          return flipped2;
-        }
-        polyline.fromGeoJSON = function(geojson, precision) {
-          if (geojson && geojson.type === "Feature") {
-            geojson = geojson.geometry;
-          }
-          if (!geojson || geojson.type !== "LineString") {
-            throw new Error("Input must be a GeoJSON LineString");
-          }
-          return polyline.encode(flipped(geojson.coordinates), precision);
-        };
-        polyline.toGeoJSON = function(str, precision) {
-          var coords = polyline.decode(str, precision);
-          return {
-            type: "LineString",
-            coordinates: flipped(coords)
+          polyline.decode = function(str, precision) {
+            var index = 0, lat = 0, lng = 0, coordinates = [], shift = 0, result = 0, byte = null, latitude_change, longitude_change, factor = Math.pow(10, Number.isInteger(precision) ? precision : 5);
+            while (index < str.length) {
+              byte = null;
+              shift = 0;
+              result = 0;
+              do {
+                byte = str.charCodeAt(index++) - 63;
+                result |= (byte & 31) << shift;
+                shift += 5;
+              } while (byte >= 32);
+              latitude_change = result & 1 ? ~(result >> 1) : result >> 1;
+              shift = result = 0;
+              do {
+                byte = str.charCodeAt(index++) - 63;
+                result |= (byte & 31) << shift;
+                shift += 5;
+              } while (byte >= 32);
+              longitude_change = result & 1 ? ~(result >> 1) : result >> 1;
+              lat += latitude_change;
+              lng += longitude_change;
+              coordinates.push([lat / factor, lng / factor]);
+            }
+            return coordinates;
           };
-        };
-        if (typeof module3 === "object" && module3.exports) {
-          module3.exports = polyline;
-        }
-      }, {}], 2: [function(require2, module3, exports3) {
-        "use strict";
-        var isObj = require2("is-obj");
-        var hasOwnProperty = Object.prototype.hasOwnProperty;
-        var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-        function toObject(val) {
-          if (val === null || val === void 0) {
-            throw new TypeError("Sources cannot be null or undefined");
+          polyline.encode = function(coordinates, precision) {
+            if (!coordinates.length) {
+              return "";
+            }
+            var factor = Math.pow(10, Number.isInteger(precision) ? precision : 5), output = encode(coordinates[0][0], 0, factor) + encode(coordinates[0][1], 0, factor);
+            for (var i = 1; i < coordinates.length; i++) {
+              var a = coordinates[i], b = coordinates[i - 1];
+              output += encode(a[0], b[0], factor);
+              output += encode(a[1], b[1], factor);
+            }
+            return output;
+          };
+          function flipped(coords) {
+            var flipped2 = [];
+            for (var i = 0; i < coords.length; i++) {
+              var coord = coords[i].slice();
+              flipped2.push([coord[1], coord[0]]);
+            }
+            return flipped2;
           }
-          return Object(val);
-        }
-        function assignKey(to2, from, key) {
-          var val = from[key];
-          if (val === void 0 || val === null) {
-            return;
+          polyline.fromGeoJSON = function(geojson, precision) {
+            if (geojson && geojson.type === "Feature") {
+              geojson = geojson.geometry;
+            }
+            if (!geojson || geojson.type !== "LineString") {
+              throw new Error("Input must be a GeoJSON LineString");
+            }
+            return polyline.encode(flipped(geojson.coordinates), precision);
+          };
+          polyline.toGeoJSON = function(str, precision) {
+            var coords = polyline.decode(str, precision);
+            return {
+              type: "LineString",
+              coordinates: flipped(coords)
+            };
+          };
+          if (typeof module3 === "object" && module3.exports) {
+            module3.exports = polyline;
           }
-          if (hasOwnProperty.call(to2, key)) {
-            if (to2[key] === void 0 || to2[key] === null) {
-              throw new TypeError("Cannot convert undefined or null to object (" + key + ")");
+        }, {}],
+        2: [function(require2, module3, exports3) {
+          "use strict";
+          var isObj = require2("is-obj");
+          var hasOwnProperty = Object.prototype.hasOwnProperty;
+          var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+          function toObject(val) {
+            if (val === null || val === void 0) {
+              throw new TypeError("Sources cannot be null or undefined");
+            }
+            return Object(val);
+          }
+          function assignKey(to2, from, key) {
+            var val = from[key];
+            if (val === void 0 || val === null) {
+              return;
+            }
+            if (hasOwnProperty.call(to2, key)) {
+              if (to2[key] === void 0 || to2[key] === null) {
+                throw new TypeError("Cannot convert undefined or null to object (" + key + ")");
+              }
+            }
+            if (!hasOwnProperty.call(to2, key) || !isObj(val)) {
+              to2[key] = val;
+            } else {
+              to2[key] = assign(Object(to2[key]), from[key]);
             }
           }
-          if (!hasOwnProperty.call(to2, key) || !isObj(val)) {
-            to2[key] = val;
-          } else {
-            to2[key] = assign(Object(to2[key]), from[key]);
-          }
-        }
-        function assign(to2, from) {
-          if (to2 === from) {
+          function assign(to2, from) {
+            if (to2 === from) {
+              return to2;
+            }
+            from = Object(from);
+            for (var key in from) {
+              if (hasOwnProperty.call(from, key)) {
+                assignKey(to2, from, key);
+              }
+            }
+            if (Object.getOwnPropertySymbols) {
+              var symbols = Object.getOwnPropertySymbols(from);
+              for (var i = 0; i < symbols.length; i++) {
+                if (propIsEnumerable.call(from, symbols[i])) {
+                  assignKey(to2, from, symbols[i]);
+                }
+              }
+            }
             return to2;
           }
-          from = Object(from);
-          for (var key in from) {
-            if (hasOwnProperty.call(from, key)) {
-              assignKey(to2, from, key);
+          module3.exports = function deepAssign(target) {
+            target = toObject(target);
+            for (var s = 1; s < arguments.length; s++) {
+              assign(target, arguments[s]);
             }
+            return target;
+          };
+        }, { "is-obj": 5 }],
+        3: [function(require2, module3, exports3) {
+          function EventEmitter() {
+            this._events = this._events || {};
+            this._maxListeners = this._maxListeners || void 0;
           }
-          if (Object.getOwnPropertySymbols) {
-            var symbols = Object.getOwnPropertySymbols(from);
-            for (var i = 0; i < symbols.length; i++) {
-              if (propIsEnumerable.call(from, symbols[i])) {
-                assignKey(to2, from, symbols[i]);
-              }
-            }
-          }
-          return to2;
-        }
-        module3.exports = function deepAssign(target) {
-          target = toObject(target);
-          for (var s = 1; s < arguments.length; s++) {
-            assign(target, arguments[s]);
-          }
-          return target;
-        };
-      }, { "is-obj": 5 }], 3: [function(require2, module3, exports3) {
-        function EventEmitter() {
-          this._events = this._events || {};
-          this._maxListeners = this._maxListeners || void 0;
-        }
-        module3.exports = EventEmitter;
-        EventEmitter.EventEmitter = EventEmitter;
-        EventEmitter.prototype._events = void 0;
-        EventEmitter.prototype._maxListeners = void 0;
-        EventEmitter.defaultMaxListeners = 10;
-        EventEmitter.prototype.setMaxListeners = function(n) {
-          if (!isNumber(n) || n < 0 || isNaN(n))
-            throw TypeError("n must be a positive number");
-          this._maxListeners = n;
-          return this;
-        };
-        EventEmitter.prototype.emit = function(type) {
-          var er2, handler, len, args, i, listeners;
-          if (!this._events)
-            this._events = {};
-          if (type === "error") {
-            if (!this._events.error || isObject(this._events.error) && !this._events.error.length) {
-              er2 = arguments[1];
-              if (er2 instanceof Error) {
-                throw er2;
-              } else {
-                var err = new Error('Uncaught, unspecified "error" event. (' + er2 + ")");
-                err.context = er2;
-                throw err;
-              }
-            }
-          }
-          handler = this._events[type];
-          if (isUndefined(handler))
-            return false;
-          if (isFunction(handler)) {
-            switch (arguments.length) {
-              // fast cases
-              case 1:
-                handler.call(this);
-                break;
-              case 2:
-                handler.call(this, arguments[1]);
-                break;
-              case 3:
-                handler.call(this, arguments[1], arguments[2]);
-                break;
-              // slower
-              default:
-                args = Array.prototype.slice.call(arguments, 1);
-                handler.apply(this, args);
-            }
-          } else if (isObject(handler)) {
-            args = Array.prototype.slice.call(arguments, 1);
-            listeners = handler.slice();
-            len = listeners.length;
-            for (i = 0; i < len; i++)
-              listeners[i].apply(this, args);
-          }
-          return true;
-        };
-        EventEmitter.prototype.addListener = function(type, listener) {
-          var m;
-          if (!isFunction(listener))
-            throw TypeError("listener must be a function");
-          if (!this._events)
-            this._events = {};
-          if (this._events.newListener)
-            this.emit(
-              "newListener",
-              type,
-              isFunction(listener.listener) ? listener.listener : listener
-            );
-          if (!this._events[type])
-            this._events[type] = listener;
-          else if (isObject(this._events[type]))
-            this._events[type].push(listener);
-          else
-            this._events[type] = [this._events[type], listener];
-          if (isObject(this._events[type]) && !this._events[type].warned) {
-            if (!isUndefined(this._maxListeners)) {
-              m = this._maxListeners;
-            } else {
-              m = EventEmitter.defaultMaxListeners;
-            }
-            if (m && m > 0 && this._events[type].length > m) {
-              this._events[type].warned = true;
-              console.error(
-                "(node) warning: possible EventEmitter memory leak detected. %d listeners added. Use emitter.setMaxListeners() to increase limit.",
-                this._events[type].length
-              );
-              if (typeof console.trace === "function") {
-                console.trace();
-              }
-            }
-          }
-          return this;
-        };
-        EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-        EventEmitter.prototype.once = function(type, listener) {
-          if (!isFunction(listener))
-            throw TypeError("listener must be a function");
-          var fired = false;
-          function g() {
-            this.removeListener(type, g);
-            if (!fired) {
-              fired = true;
-              listener.apply(this, arguments);
-            }
-          }
-          g.listener = listener;
-          this.on(type, g);
-          return this;
-        };
-        EventEmitter.prototype.removeListener = function(type, listener) {
-          var list, position, length, i;
-          if (!isFunction(listener))
-            throw TypeError("listener must be a function");
-          if (!this._events || !this._events[type])
+          module3.exports = EventEmitter;
+          EventEmitter.EventEmitter = EventEmitter;
+          EventEmitter.prototype._events = void 0;
+          EventEmitter.prototype._maxListeners = void 0;
+          EventEmitter.defaultMaxListeners = 10;
+          EventEmitter.prototype.setMaxListeners = function(n) {
+            if (!isNumber(n) || n < 0 || isNaN(n))
+              throw TypeError("n must be a positive number");
+            this._maxListeners = n;
             return this;
-          list = this._events[type];
-          length = list.length;
-          position = -1;
-          if (list === listener || isFunction(list.listener) && list.listener === listener) {
-            delete this._events[type];
-            if (this._events.removeListener)
-              this.emit("removeListener", type, listener);
-          } else if (isObject(list)) {
-            for (i = length; i-- > 0; ) {
-              if (list[i] === listener || list[i].listener && list[i].listener === listener) {
-                position = i;
-                break;
-              }
-            }
-            if (position < 0)
-              return this;
-            if (list.length === 1) {
-              list.length = 0;
-              delete this._events[type];
-            } else {
-              list.splice(position, 1);
-            }
-            if (this._events.removeListener)
-              this.emit("removeListener", type, listener);
-          }
-          return this;
-        };
-        EventEmitter.prototype.removeAllListeners = function(type) {
-          var key, listeners;
-          if (!this._events)
-            return this;
-          if (!this._events.removeListener) {
-            if (arguments.length === 0)
+          };
+          EventEmitter.prototype.emit = function(type) {
+            var er2, handler, len, args, i, listeners;
+            if (!this._events)
               this._events = {};
-            else if (this._events[type])
-              delete this._events[type];
-            return this;
-          }
-          if (arguments.length === 0) {
-            for (key in this._events) {
-              if (key === "removeListener") continue;
-              this.removeAllListeners(key);
-            }
-            this.removeAllListeners("removeListener");
-            this._events = {};
-            return this;
-          }
-          listeners = this._events[type];
-          if (isFunction(listeners)) {
-            this.removeListener(type, listeners);
-          } else if (listeners) {
-            while (listeners.length)
-              this.removeListener(type, listeners[listeners.length - 1]);
-          }
-          delete this._events[type];
-          return this;
-        };
-        EventEmitter.prototype.listeners = function(type) {
-          var ret;
-          if (!this._events || !this._events[type])
-            ret = [];
-          else if (isFunction(this._events[type]))
-            ret = [this._events[type]];
-          else
-            ret = this._events[type].slice();
-          return ret;
-        };
-        EventEmitter.prototype.listenerCount = function(type) {
-          if (this._events) {
-            var evlistener = this._events[type];
-            if (isFunction(evlistener))
-              return 1;
-            else if (evlistener)
-              return evlistener.length;
-          }
-          return 0;
-        };
-        EventEmitter.listenerCount = function(emitter, type) {
-          return emitter.listenerCount(type);
-        };
-        function isFunction(arg) {
-          return typeof arg === "function";
-        }
-        function isNumber(arg) {
-          return typeof arg === "number";
-        }
-        function isObject(arg) {
-          return typeof arg === "object" && arg !== null;
-        }
-        function isUndefined(arg) {
-          return arg === void 0;
-        }
-      }, {}], 4: [function(require2, module3, exports3) {
-        (function() {
-          var root = this;
-          var fuzzy = {};
-          if (typeof exports3 !== "undefined") {
-            module3.exports = fuzzy;
-          } else {
-            root.fuzzy = fuzzy;
-          }
-          fuzzy.simpleFilter = function(pattern, array) {
-            return array.filter(function(str) {
-              return fuzzy.test(pattern, str);
-            });
-          };
-          fuzzy.test = function(pattern, str) {
-            return fuzzy.match(pattern, str) !== null;
-          };
-          fuzzy.match = function(pattern, str, opts) {
-            opts = opts || {};
-            var patternIdx = 0, result = [], len = str.length, totalScore = 0, currScore = 0, pre = opts.pre || "", post = opts.post || "", compareString = opts.caseSensitive && str || str.toLowerCase(), ch;
-            pattern = opts.caseSensitive && pattern || pattern.toLowerCase();
-            for (var idx = 0; idx < len; idx++) {
-              ch = str[idx];
-              if (compareString[idx] === pattern[patternIdx]) {
-                ch = pre + ch + post;
-                patternIdx += 1;
-                currScore += 1 + currScore;
-              } else {
-                currScore = 0;
-              }
-              totalScore += currScore;
-              result[result.length] = ch;
-            }
-            if (patternIdx === pattern.length) {
-              totalScore = compareString === pattern ? Infinity : totalScore;
-              return { rendered: result.join(""), score: totalScore };
-            }
-            return null;
-          };
-          fuzzy.filter = function(pattern, arr, opts) {
-            if (!arr || arr.length === 0) {
-              return [];
-            }
-            if (typeof pattern !== "string") {
-              return arr;
-            }
-            opts = opts || {};
-            return arr.reduce(function(prev, element, idx, arr2) {
-              var str = element;
-              if (opts.extract) {
-                str = opts.extract(element);
-              }
-              var rendered = fuzzy.match(pattern, str, opts);
-              if (rendered != null) {
-                prev[prev.length] = {
-                  string: rendered.rendered,
-                  score: rendered.score,
-                  index: idx,
-                  original: element
-                };
-              }
-              return prev;
-            }, []).sort(function(a, b) {
-              var compare = b.score - a.score;
-              if (compare) return compare;
-              return a.index - b.index;
-            });
-          };
-        })();
-      }, {}], 5: [function(require2, module3, exports3) {
-        "use strict";
-        module3.exports = function(x) {
-          var type = typeof x;
-          return x !== null && (type === "object" || type === "function");
-        };
-      }, {}], 6: [function(require2, module3, exports3) {
-        var reInterpolate = /<%=([\s\S]+?)%>/g;
-        module3.exports = reInterpolate;
-      }, {}], 7: [function(require2, module3, exports3) {
-        (function(global2) {
-          (function() {
-            var FUNC_ERROR_TEXT = "Expected a function";
-            var NAN = 0 / 0;
-            var symbolTag = "[object Symbol]";
-            var reTrim = /^\s+|\s+$/g;
-            var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
-            var reIsBinary = /^0b[01]+$/i;
-            var reIsOctal = /^0o[0-7]+$/i;
-            var freeParseInt = parseInt;
-            var freeGlobal = typeof global2 == "object" && global2 && global2.Object === Object && global2;
-            var freeSelf = typeof self == "object" && self && self.Object === Object && self;
-            var root = freeGlobal || freeSelf || Function("return this")();
-            var objectProto = Object.prototype;
-            var objectToString = objectProto.toString;
-            var nativeMax = Math.max, nativeMin = Math.min;
-            var now = function() {
-              return root.Date.now();
-            };
-            function debounce(func, wait, options) {
-              var lastArgs, lastThis, maxWait, result, timerId, lastCallTime, lastInvokeTime = 0, leading = false, maxing = false, trailing = true;
-              if (typeof func != "function") {
-                throw new TypeError(FUNC_ERROR_TEXT);
-              }
-              wait = toNumber(wait) || 0;
-              if (isObject(options)) {
-                leading = !!options.leading;
-                maxing = "maxWait" in options;
-                maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
-                trailing = "trailing" in options ? !!options.trailing : trailing;
-              }
-              function invokeFunc(time) {
-                var args = lastArgs, thisArg = lastThis;
-                lastArgs = lastThis = void 0;
-                lastInvokeTime = time;
-                result = func.apply(thisArg, args);
-                return result;
-              }
-              function leadingEdge(time) {
-                lastInvokeTime = time;
-                timerId = setTimeout(timerExpired, wait);
-                return leading ? invokeFunc(time) : result;
-              }
-              function remainingWait(time) {
-                var timeSinceLastCall = time - lastCallTime, timeSinceLastInvoke = time - lastInvokeTime, result2 = wait - timeSinceLastCall;
-                return maxing ? nativeMin(result2, maxWait - timeSinceLastInvoke) : result2;
-              }
-              function shouldInvoke(time) {
-                var timeSinceLastCall = time - lastCallTime, timeSinceLastInvoke = time - lastInvokeTime;
-                return lastCallTime === void 0 || timeSinceLastCall >= wait || timeSinceLastCall < 0 || maxing && timeSinceLastInvoke >= maxWait;
-              }
-              function timerExpired() {
-                var time = now();
-                if (shouldInvoke(time)) {
-                  return trailingEdge(time);
-                }
-                timerId = setTimeout(timerExpired, remainingWait(time));
-              }
-              function trailingEdge(time) {
-                timerId = void 0;
-                if (trailing && lastArgs) {
-                  return invokeFunc(time);
-                }
-                lastArgs = lastThis = void 0;
-                return result;
-              }
-              function cancel() {
-                if (timerId !== void 0) {
-                  clearTimeout(timerId);
-                }
-                lastInvokeTime = 0;
-                lastArgs = lastCallTime = lastThis = timerId = void 0;
-              }
-              function flush() {
-                return timerId === void 0 ? result : trailingEdge(now());
-              }
-              function debounced() {
-                var time = now(), isInvoking = shouldInvoke(time);
-                lastArgs = arguments;
-                lastThis = this;
-                lastCallTime = time;
-                if (isInvoking) {
-                  if (timerId === void 0) {
-                    return leadingEdge(lastCallTime);
-                  }
-                  if (maxing) {
-                    timerId = setTimeout(timerExpired, wait);
-                    return invokeFunc(lastCallTime);
-                  }
-                }
-                if (timerId === void 0) {
-                  timerId = setTimeout(timerExpired, wait);
-                }
-                return result;
-              }
-              debounced.cancel = cancel;
-              debounced.flush = flush;
-              return debounced;
-            }
-            function isObject(value) {
-              var type = typeof value;
-              return !!value && (type == "object" || type == "function");
-            }
-            function isObjectLike(value) {
-              return !!value && typeof value == "object";
-            }
-            function isSymbol(value) {
-              return typeof value == "symbol" || isObjectLike(value) && objectToString.call(value) == symbolTag;
-            }
-            function toNumber(value) {
-              if (typeof value == "number") {
-                return value;
-              }
-              if (isSymbol(value)) {
-                return NAN;
-              }
-              if (isObject(value)) {
-                var other = typeof value.valueOf == "function" ? value.valueOf() : value;
-                value = isObject(other) ? other + "" : other;
-              }
-              if (typeof value != "string") {
-                return value === 0 ? value : +value;
-              }
-              value = value.replace(reTrim, "");
-              var isBinary = reIsBinary.test(value);
-              return isBinary || reIsOctal.test(value) ? freeParseInt(value.slice(2), isBinary ? 2 : 8) : reIsBadHex.test(value) ? NAN : +value;
-            }
-            module3.exports = debounce;
-          }).call(this);
-        }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
-      }, {}], 8: [function(require2, module3, exports3) {
-        (function(global2) {
-          (function() {
-            var LARGE_ARRAY_SIZE = 200;
-            var HASH_UNDEFINED = "__lodash_hash_undefined__";
-            var COMPARE_PARTIAL_FLAG = 1, COMPARE_UNORDERED_FLAG = 2;
-            var MAX_SAFE_INTEGER = 9007199254740991;
-            var argsTag = "[object Arguments]", arrayTag = "[object Array]", asyncTag = "[object AsyncFunction]", boolTag = "[object Boolean]", dateTag = "[object Date]", errorTag = "[object Error]", funcTag = "[object Function]", genTag = "[object GeneratorFunction]", mapTag = "[object Map]", numberTag = "[object Number]", nullTag = "[object Null]", objectTag = "[object Object]", promiseTag = "[object Promise]", proxyTag = "[object Proxy]", regexpTag = "[object RegExp]", setTag = "[object Set]", stringTag = "[object String]", symbolTag = "[object Symbol]", undefinedTag = "[object Undefined]", weakMapTag = "[object WeakMap]";
-            var arrayBufferTag = "[object ArrayBuffer]", dataViewTag = "[object DataView]", float32Tag = "[object Float32Array]", float64Tag = "[object Float64Array]", int8Tag = "[object Int8Array]", int16Tag = "[object Int16Array]", int32Tag = "[object Int32Array]", uint8Tag = "[object Uint8Array]", uint8ClampedTag = "[object Uint8ClampedArray]", uint16Tag = "[object Uint16Array]", uint32Tag = "[object Uint32Array]";
-            var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
-            var reIsHostCtor = /^\[object .+?Constructor\]$/;
-            var reIsUint = /^(?:0|[1-9]\d*)$/;
-            var typedArrayTags = {};
-            typedArrayTags[float32Tag] = typedArrayTags[float64Tag] = typedArrayTags[int8Tag] = typedArrayTags[int16Tag] = typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] = typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] = typedArrayTags[uint32Tag] = true;
-            typedArrayTags[argsTag] = typedArrayTags[arrayTag] = typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] = typedArrayTags[dataViewTag] = typedArrayTags[dateTag] = typedArrayTags[errorTag] = typedArrayTags[funcTag] = typedArrayTags[mapTag] = typedArrayTags[numberTag] = typedArrayTags[objectTag] = typedArrayTags[regexpTag] = typedArrayTags[setTag] = typedArrayTags[stringTag] = typedArrayTags[weakMapTag] = false;
-            var freeGlobal = typeof global2 == "object" && global2 && global2.Object === Object && global2;
-            var freeSelf = typeof self == "object" && self && self.Object === Object && self;
-            var root = freeGlobal || freeSelf || Function("return this")();
-            var freeExports = typeof exports3 == "object" && exports3 && !exports3.nodeType && exports3;
-            var freeModule = freeExports && typeof module3 == "object" && module3 && !module3.nodeType && module3;
-            var moduleExports = freeModule && freeModule.exports === freeExports;
-            var freeProcess = moduleExports && freeGlobal.process;
-            var nodeUtil = function() {
-              try {
-                return freeProcess && freeProcess.binding && freeProcess.binding("util");
-              } catch (e) {
-              }
-            }();
-            var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
-            function arrayFilter(array, predicate) {
-              var index = -1, length = array == null ? 0 : array.length, resIndex = 0, result = [];
-              while (++index < length) {
-                var value = array[index];
-                if (predicate(value, index, array)) {
-                  result[resIndex++] = value;
+            if (type === "error") {
+              if (!this._events.error || isObject(this._events.error) && !this._events.error.length) {
+                er2 = arguments[1];
+                if (er2 instanceof Error) {
+                  throw er2;
+                } else {
+                  var err = new Error('Uncaught, unspecified "error" event. (' + er2 + ")");
+                  err.context = er2;
+                  throw err;
                 }
               }
-              return result;
             }
-            function arrayPush(array, values) {
-              var index = -1, length = values.length, offset = array.length;
-              while (++index < length) {
-                array[offset + index] = values[index];
-              }
-              return array;
-            }
-            function arraySome(array, predicate) {
-              var index = -1, length = array == null ? 0 : array.length;
-              while (++index < length) {
-                if (predicate(array[index], index, array)) {
-                  return true;
-                }
-              }
+            handler = this._events[type];
+            if (isUndefined(handler))
               return false;
-            }
-            function baseTimes(n, iteratee) {
-              var index = -1, result = Array(n);
-              while (++index < n) {
-                result[index] = iteratee(index);
+            if (isFunction(handler)) {
+              switch (arguments.length) {
+                // fast cases
+                case 1:
+                  handler.call(this);
+                  break;
+                case 2:
+                  handler.call(this, arguments[1]);
+                  break;
+                case 3:
+                  handler.call(this, arguments[1], arguments[2]);
+                  break;
+                // slower
+                default:
+                  args = Array.prototype.slice.call(arguments, 1);
+                  handler.apply(this, args);
               }
-              return result;
+            } else if (isObject(handler)) {
+              args = Array.prototype.slice.call(arguments, 1);
+              listeners = handler.slice();
+              len = listeners.length;
+              for (i = 0; i < len; i++)
+                listeners[i].apply(this, args);
             }
-            function baseUnary(func) {
-              return function(value) {
-                return func(value);
-              };
-            }
-            function cacheHas(cache, key) {
-              return cache.has(key);
-            }
-            function getValue(object, key) {
-              return object == null ? void 0 : object[key];
-            }
-            function mapToArray(map2) {
-              var index = -1, result = Array(map2.size);
-              map2.forEach(function(value, key) {
-                result[++index] = [key, value];
-              });
-              return result;
-            }
-            function overArg(func, transform) {
-              return function(arg) {
-                return func(transform(arg));
-              };
-            }
-            function setToArray(set) {
-              var index = -1, result = Array(set.size);
-              set.forEach(function(value) {
-                result[++index] = value;
-              });
-              return result;
-            }
-            var arrayProto = Array.prototype, funcProto = Function.prototype, objectProto = Object.prototype;
-            var coreJsData = root["__core-js_shared__"];
-            var funcToString = funcProto.toString;
-            var hasOwnProperty = objectProto.hasOwnProperty;
-            var maskSrcKey = function() {
-              var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || "");
-              return uid ? "Symbol(src)_1." + uid : "";
-            }();
-            var nativeObjectToString = objectProto.toString;
-            var reIsNative = RegExp(
-              "^" + funcToString.call(hasOwnProperty).replace(reRegExpChar, "\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, "$1.*?") + "$"
-            );
-            var Buffer2 = moduleExports ? root.Buffer : void 0, Symbol2 = root.Symbol, Uint8Array2 = root.Uint8Array, propertyIsEnumerable = objectProto.propertyIsEnumerable, splice = arrayProto.splice, symToStringTag = Symbol2 ? Symbol2.toStringTag : void 0;
-            var nativeGetSymbols = Object.getOwnPropertySymbols, nativeIsBuffer = Buffer2 ? Buffer2.isBuffer : void 0, nativeKeys = overArg(Object.keys, Object);
-            var DataView = getNative(root, "DataView"), Map2 = getNative(root, "Map"), Promise2 = getNative(root, "Promise"), Set2 = getNative(root, "Set"), WeakMap2 = getNative(root, "WeakMap"), nativeCreate = getNative(Object, "create");
-            var dataViewCtorString = toSource(DataView), mapCtorString = toSource(Map2), promiseCtorString = toSource(Promise2), setCtorString = toSource(Set2), weakMapCtorString = toSource(WeakMap2);
-            var symbolProto = Symbol2 ? Symbol2.prototype : void 0, symbolValueOf = symbolProto ? symbolProto.valueOf : void 0;
-            function Hash(entries) {
-              var index = -1, length = entries == null ? 0 : entries.length;
-              this.clear();
-              while (++index < length) {
-                var entry = entries[index];
-                this.set(entry[0], entry[1]);
-              }
-            }
-            function hashClear() {
-              this.__data__ = nativeCreate ? nativeCreate(null) : {};
-              this.size = 0;
-            }
-            function hashDelete(key) {
-              var result = this.has(key) && delete this.__data__[key];
-              this.size -= result ? 1 : 0;
-              return result;
-            }
-            function hashGet(key) {
-              var data = this.__data__;
-              if (nativeCreate) {
-                var result = data[key];
-                return result === HASH_UNDEFINED ? void 0 : result;
-              }
-              return hasOwnProperty.call(data, key) ? data[key] : void 0;
-            }
-            function hashHas(key) {
-              var data = this.__data__;
-              return nativeCreate ? data[key] !== void 0 : hasOwnProperty.call(data, key);
-            }
-            function hashSet(key, value) {
-              var data = this.__data__;
-              this.size += this.has(key) ? 0 : 1;
-              data[key] = nativeCreate && value === void 0 ? HASH_UNDEFINED : value;
-              return this;
-            }
-            Hash.prototype.clear = hashClear;
-            Hash.prototype["delete"] = hashDelete;
-            Hash.prototype.get = hashGet;
-            Hash.prototype.has = hashHas;
-            Hash.prototype.set = hashSet;
-            function ListCache(entries) {
-              var index = -1, length = entries == null ? 0 : entries.length;
-              this.clear();
-              while (++index < length) {
-                var entry = entries[index];
-                this.set(entry[0], entry[1]);
-              }
-            }
-            function listCacheClear() {
-              this.__data__ = [];
-              this.size = 0;
-            }
-            function listCacheDelete(key) {
-              var data = this.__data__, index = assocIndexOf(data, key);
-              if (index < 0) {
-                return false;
-              }
-              var lastIndex = data.length - 1;
-              if (index == lastIndex) {
-                data.pop();
+            return true;
+          };
+          EventEmitter.prototype.addListener = function(type, listener) {
+            var m;
+            if (!isFunction(listener))
+              throw TypeError("listener must be a function");
+            if (!this._events)
+              this._events = {};
+            if (this._events.newListener)
+              this.emit(
+                "newListener",
+                type,
+                isFunction(listener.listener) ? listener.listener : listener
+              );
+            if (!this._events[type])
+              this._events[type] = listener;
+            else if (isObject(this._events[type]))
+              this._events[type].push(listener);
+            else
+              this._events[type] = [this._events[type], listener];
+            if (isObject(this._events[type]) && !this._events[type].warned) {
+              if (!isUndefined(this._maxListeners)) {
+                m = this._maxListeners;
               } else {
-                splice.call(data, index, 1);
+                m = EventEmitter.defaultMaxListeners;
               }
-              --this.size;
-              return true;
-            }
-            function listCacheGet(key) {
-              var data = this.__data__, index = assocIndexOf(data, key);
-              return index < 0 ? void 0 : data[index][1];
-            }
-            function listCacheHas(key) {
-              return assocIndexOf(this.__data__, key) > -1;
-            }
-            function listCacheSet(key, value) {
-              var data = this.__data__, index = assocIndexOf(data, key);
-              if (index < 0) {
-                ++this.size;
-                data.push([key, value]);
-              } else {
-                data[index][1] = value;
+              if (m && m > 0 && this._events[type].length > m) {
+                this._events[type].warned = true;
+                console.error(
+                  "(node) warning: possible EventEmitter memory leak detected. %d listeners added. Use emitter.setMaxListeners() to increase limit.",
+                  this._events[type].length
+                );
+                if (typeof console.trace === "function") {
+                  console.trace();
+                }
               }
+            }
+            return this;
+          };
+          EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+          EventEmitter.prototype.once = function(type, listener) {
+            if (!isFunction(listener))
+              throw TypeError("listener must be a function");
+            var fired = false;
+            function g() {
+              this.removeListener(type, g);
+              if (!fired) {
+                fired = true;
+                listener.apply(this, arguments);
+              }
+            }
+            g.listener = listener;
+            this.on(type, g);
+            return this;
+          };
+          EventEmitter.prototype.removeListener = function(type, listener) {
+            var list, position, length, i;
+            if (!isFunction(listener))
+              throw TypeError("listener must be a function");
+            if (!this._events || !this._events[type])
               return this;
-            }
-            ListCache.prototype.clear = listCacheClear;
-            ListCache.prototype["delete"] = listCacheDelete;
-            ListCache.prototype.get = listCacheGet;
-            ListCache.prototype.has = listCacheHas;
-            ListCache.prototype.set = listCacheSet;
-            function MapCache(entries) {
-              var index = -1, length = entries == null ? 0 : entries.length;
-              this.clear();
-              while (++index < length) {
-                var entry = entries[index];
-                this.set(entry[0], entry[1]);
-              }
-            }
-            function mapCacheClear() {
-              this.size = 0;
-              this.__data__ = {
-                "hash": new Hash(),
-                "map": new (Map2 || ListCache)(),
-                "string": new Hash()
-              };
-            }
-            function mapCacheDelete(key) {
-              var result = getMapData(this, key)["delete"](key);
-              this.size -= result ? 1 : 0;
-              return result;
-            }
-            function mapCacheGet(key) {
-              return getMapData(this, key).get(key);
-            }
-            function mapCacheHas(key) {
-              return getMapData(this, key).has(key);
-            }
-            function mapCacheSet(key, value) {
-              var data = getMapData(this, key), size = data.size;
-              data.set(key, value);
-              this.size += data.size == size ? 0 : 1;
-              return this;
-            }
-            MapCache.prototype.clear = mapCacheClear;
-            MapCache.prototype["delete"] = mapCacheDelete;
-            MapCache.prototype.get = mapCacheGet;
-            MapCache.prototype.has = mapCacheHas;
-            MapCache.prototype.set = mapCacheSet;
-            function SetCache(values) {
-              var index = -1, length = values == null ? 0 : values.length;
-              this.__data__ = new MapCache();
-              while (++index < length) {
-                this.add(values[index]);
-              }
-            }
-            function setCacheAdd(value) {
-              this.__data__.set(value, HASH_UNDEFINED);
-              return this;
-            }
-            function setCacheHas(value) {
-              return this.__data__.has(value);
-            }
-            SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
-            SetCache.prototype.has = setCacheHas;
-            function Stack(entries) {
-              var data = this.__data__ = new ListCache(entries);
-              this.size = data.size;
-            }
-            function stackClear() {
-              this.__data__ = new ListCache();
-              this.size = 0;
-            }
-            function stackDelete(key) {
-              var data = this.__data__, result = data["delete"](key);
-              this.size = data.size;
-              return result;
-            }
-            function stackGet(key) {
-              return this.__data__.get(key);
-            }
-            function stackHas(key) {
-              return this.__data__.has(key);
-            }
-            function stackSet(key, value) {
-              var data = this.__data__;
-              if (data instanceof ListCache) {
-                var pairs = data.__data__;
-                if (!Map2 || pairs.length < LARGE_ARRAY_SIZE - 1) {
-                  pairs.push([key, value]);
-                  this.size = ++data.size;
-                  return this;
-                }
-                data = this.__data__ = new MapCache(pairs);
-              }
-              data.set(key, value);
-              this.size = data.size;
-              return this;
-            }
-            Stack.prototype.clear = stackClear;
-            Stack.prototype["delete"] = stackDelete;
-            Stack.prototype.get = stackGet;
-            Stack.prototype.has = stackHas;
-            Stack.prototype.set = stackSet;
-            function arrayLikeKeys(value, inherited) {
-              var isArr = isArray(value), isArg = !isArr && isArguments(value), isBuff = !isArr && !isArg && isBuffer(value), isType = !isArr && !isArg && !isBuff && isTypedArray(value), skipIndexes = isArr || isArg || isBuff || isType, result = skipIndexes ? baseTimes(value.length, String) : [], length = result.length;
-              for (var key in value) {
-                if ((inherited || hasOwnProperty.call(value, key)) && !(skipIndexes && // Safari 9 has enumerable `arguments.length` in strict mode.
-                (key == "length" || // Node.js 0.10 has enumerable non-index properties on buffers.
-                isBuff && (key == "offset" || key == "parent") || // PhantomJS 2 has enumerable non-index properties on typed arrays.
-                isType && (key == "buffer" || key == "byteLength" || key == "byteOffset") || // Skip index properties.
-                isIndex(key, length)))) {
-                  result.push(key);
-                }
-              }
-              return result;
-            }
-            function assocIndexOf(array, key) {
-              var length = array.length;
-              while (length--) {
-                if (eq(array[length][0], key)) {
-                  return length;
-                }
-              }
-              return -1;
-            }
-            function baseGetAllKeys(object, keysFunc, symbolsFunc) {
-              var result = keysFunc(object);
-              return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
-            }
-            function baseGetTag(value) {
-              if (value == null) {
-                return value === void 0 ? undefinedTag : nullTag;
-              }
-              return symToStringTag && symToStringTag in Object(value) ? getRawTag(value) : objectToString(value);
-            }
-            function baseIsArguments(value) {
-              return isObjectLike(value) && baseGetTag(value) == argsTag;
-            }
-            function baseIsEqual(value, other, bitmask, customizer, stack) {
-              if (value === other) {
-                return true;
-              }
-              if (value == null || other == null || !isObjectLike(value) && !isObjectLike(other)) {
-                return value !== value && other !== other;
-              }
-              return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
-            }
-            function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
-              var objIsArr = isArray(object), othIsArr = isArray(other), objTag = objIsArr ? arrayTag : getTag(object), othTag = othIsArr ? arrayTag : getTag(other);
-              objTag = objTag == argsTag ? objectTag : objTag;
-              othTag = othTag == argsTag ? objectTag : othTag;
-              var objIsObj = objTag == objectTag, othIsObj = othTag == objectTag, isSameTag = objTag == othTag;
-              if (isSameTag && isBuffer(object)) {
-                if (!isBuffer(other)) {
-                  return false;
-                }
-                objIsArr = true;
-                objIsObj = false;
-              }
-              if (isSameTag && !objIsObj) {
-                stack || (stack = new Stack());
-                return objIsArr || isTypedArray(object) ? equalArrays(object, other, bitmask, customizer, equalFunc, stack) : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
-              }
-              if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
-                var objIsWrapped = objIsObj && hasOwnProperty.call(object, "__wrapped__"), othIsWrapped = othIsObj && hasOwnProperty.call(other, "__wrapped__");
-                if (objIsWrapped || othIsWrapped) {
-                  var objUnwrapped = objIsWrapped ? object.value() : object, othUnwrapped = othIsWrapped ? other.value() : other;
-                  stack || (stack = new Stack());
-                  return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
-                }
-              }
-              if (!isSameTag) {
-                return false;
-              }
-              stack || (stack = new Stack());
-              return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
-            }
-            function baseIsNative(value) {
-              if (!isObject(value) || isMasked(value)) {
-                return false;
-              }
-              var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
-              return pattern.test(toSource(value));
-            }
-            function baseIsTypedArray(value) {
-              return isObjectLike(value) && isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
-            }
-            function baseKeys(object) {
-              if (!isPrototype(object)) {
-                return nativeKeys(object);
-              }
-              var result = [];
-              for (var key in Object(object)) {
-                if (hasOwnProperty.call(object, key) && key != "constructor") {
-                  result.push(key);
-                }
-              }
-              return result;
-            }
-            function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
-              var isPartial = bitmask & COMPARE_PARTIAL_FLAG, arrLength = array.length, othLength = other.length;
-              if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
-                return false;
-              }
-              var stacked = stack.get(array);
-              if (stacked && stack.get(other)) {
-                return stacked == other;
-              }
-              var index = -1, result = true, seen = bitmask & COMPARE_UNORDERED_FLAG ? new SetCache() : void 0;
-              stack.set(array, other);
-              stack.set(other, array);
-              while (++index < arrLength) {
-                var arrValue = array[index], othValue = other[index];
-                if (customizer) {
-                  var compared = isPartial ? customizer(othValue, arrValue, index, other, array, stack) : customizer(arrValue, othValue, index, array, other, stack);
-                }
-                if (compared !== void 0) {
-                  if (compared) {
-                    continue;
-                  }
-                  result = false;
+            list = this._events[type];
+            length = list.length;
+            position = -1;
+            if (list === listener || isFunction(list.listener) && list.listener === listener) {
+              delete this._events[type];
+              if (this._events.removeListener)
+                this.emit("removeListener", type, listener);
+            } else if (isObject(list)) {
+              for (i = length; i-- > 0; ) {
+                if (list[i] === listener || list[i].listener && list[i].listener === listener) {
+                  position = i;
                   break;
                 }
-                if (seen) {
-                  if (!arraySome(other, function(othValue2, othIndex) {
-                    if (!cacheHas(seen, othIndex) && (arrValue === othValue2 || equalFunc(arrValue, othValue2, bitmask, customizer, stack))) {
-                      return seen.push(othIndex);
+              }
+              if (position < 0)
+                return this;
+              if (list.length === 1) {
+                list.length = 0;
+                delete this._events[type];
+              } else {
+                list.splice(position, 1);
+              }
+              if (this._events.removeListener)
+                this.emit("removeListener", type, listener);
+            }
+            return this;
+          };
+          EventEmitter.prototype.removeAllListeners = function(type) {
+            var key, listeners;
+            if (!this._events)
+              return this;
+            if (!this._events.removeListener) {
+              if (arguments.length === 0)
+                this._events = {};
+              else if (this._events[type])
+                delete this._events[type];
+              return this;
+            }
+            if (arguments.length === 0) {
+              for (key in this._events) {
+                if (key === "removeListener") continue;
+                this.removeAllListeners(key);
+              }
+              this.removeAllListeners("removeListener");
+              this._events = {};
+              return this;
+            }
+            listeners = this._events[type];
+            if (isFunction(listeners)) {
+              this.removeListener(type, listeners);
+            } else if (listeners) {
+              while (listeners.length)
+                this.removeListener(type, listeners[listeners.length - 1]);
+            }
+            delete this._events[type];
+            return this;
+          };
+          EventEmitter.prototype.listeners = function(type) {
+            var ret;
+            if (!this._events || !this._events[type])
+              ret = [];
+            else if (isFunction(this._events[type]))
+              ret = [this._events[type]];
+            else
+              ret = this._events[type].slice();
+            return ret;
+          };
+          EventEmitter.prototype.listenerCount = function(type) {
+            if (this._events) {
+              var evlistener = this._events[type];
+              if (isFunction(evlistener))
+                return 1;
+              else if (evlistener)
+                return evlistener.length;
+            }
+            return 0;
+          };
+          EventEmitter.listenerCount = function(emitter, type) {
+            return emitter.listenerCount(type);
+          };
+          function isFunction(arg) {
+            return typeof arg === "function";
+          }
+          function isNumber(arg) {
+            return typeof arg === "number";
+          }
+          function isObject(arg) {
+            return typeof arg === "object" && arg !== null;
+          }
+          function isUndefined(arg) {
+            return arg === void 0;
+          }
+        }, {}],
+        4: [function(require2, module3, exports3) {
+          (function() {
+            var root = this;
+            var fuzzy = {};
+            if (typeof exports3 !== "undefined") {
+              module3.exports = fuzzy;
+            } else {
+              root.fuzzy = fuzzy;
+            }
+            fuzzy.simpleFilter = function(pattern, array) {
+              return array.filter(function(str) {
+                return fuzzy.test(pattern, str);
+              });
+            };
+            fuzzy.test = function(pattern, str) {
+              return fuzzy.match(pattern, str) !== null;
+            };
+            fuzzy.match = function(pattern, str, opts) {
+              opts = opts || {};
+              var patternIdx = 0, result = [], len = str.length, totalScore = 0, currScore = 0, pre = opts.pre || "", post = opts.post || "", compareString = opts.caseSensitive && str || str.toLowerCase(), ch;
+              pattern = opts.caseSensitive && pattern || pattern.toLowerCase();
+              for (var idx = 0; idx < len; idx++) {
+                ch = str[idx];
+                if (compareString[idx] === pattern[patternIdx]) {
+                  ch = pre + ch + post;
+                  patternIdx += 1;
+                  currScore += 1 + currScore;
+                } else {
+                  currScore = 0;
+                }
+                totalScore += currScore;
+                result[result.length] = ch;
+              }
+              if (patternIdx === pattern.length) {
+                totalScore = compareString === pattern ? Infinity : totalScore;
+                return { rendered: result.join(""), score: totalScore };
+              }
+              return null;
+            };
+            fuzzy.filter = function(pattern, arr, opts) {
+              if (!arr || arr.length === 0) {
+                return [];
+              }
+              if (typeof pattern !== "string") {
+                return arr;
+              }
+              opts = opts || {};
+              return arr.reduce(function(prev, element, idx, arr2) {
+                var str = element;
+                if (opts.extract) {
+                  str = opts.extract(element);
+                }
+                var rendered = fuzzy.match(pattern, str, opts);
+                if (rendered != null) {
+                  prev[prev.length] = {
+                    string: rendered.rendered,
+                    score: rendered.score,
+                    index: idx,
+                    original: element
+                  };
+                }
+                return prev;
+              }, []).sort(function(a, b) {
+                var compare = b.score - a.score;
+                if (compare) return compare;
+                return a.index - b.index;
+              });
+            };
+          })();
+        }, {}],
+        5: [function(require2, module3, exports3) {
+          "use strict";
+          module3.exports = function(x) {
+            var type = typeof x;
+            return x !== null && (type === "object" || type === "function");
+          };
+        }, {}],
+        6: [function(require2, module3, exports3) {
+          var reInterpolate = /<%=([\s\S]+?)%>/g;
+          module3.exports = reInterpolate;
+        }, {}],
+        7: [function(require2, module3, exports3) {
+          (function(global2) {
+            (function() {
+              var FUNC_ERROR_TEXT = "Expected a function";
+              var NAN = 0 / 0;
+              var symbolTag = "[object Symbol]";
+              var reTrim = /^\s+|\s+$/g;
+              var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+              var reIsBinary = /^0b[01]+$/i;
+              var reIsOctal = /^0o[0-7]+$/i;
+              var freeParseInt = parseInt;
+              var freeGlobal = typeof global2 == "object" && global2 && global2.Object === Object && global2;
+              var freeSelf = typeof self == "object" && self && self.Object === Object && self;
+              var root = freeGlobal || freeSelf || Function("return this")();
+              var objectProto = Object.prototype;
+              var objectToString = objectProto.toString;
+              var nativeMax = Math.max, nativeMin = Math.min;
+              var now = function() {
+                return root.Date.now();
+              };
+              function debounce(func, wait, options) {
+                var lastArgs, lastThis, maxWait, result, timerId, lastCallTime, lastInvokeTime = 0, leading = false, maxing = false, trailing = true;
+                if (typeof func != "function") {
+                  throw new TypeError(FUNC_ERROR_TEXT);
+                }
+                wait = toNumber(wait) || 0;
+                if (isObject(options)) {
+                  leading = !!options.leading;
+                  maxing = "maxWait" in options;
+                  maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
+                  trailing = "trailing" in options ? !!options.trailing : trailing;
+                }
+                function invokeFunc(time) {
+                  var args = lastArgs, thisArg = lastThis;
+                  lastArgs = lastThis = void 0;
+                  lastInvokeTime = time;
+                  result = func.apply(thisArg, args);
+                  return result;
+                }
+                function leadingEdge(time) {
+                  lastInvokeTime = time;
+                  timerId = setTimeout(timerExpired, wait);
+                  return leading ? invokeFunc(time) : result;
+                }
+                function remainingWait(time) {
+                  var timeSinceLastCall = time - lastCallTime, timeSinceLastInvoke = time - lastInvokeTime, result2 = wait - timeSinceLastCall;
+                  return maxing ? nativeMin(result2, maxWait - timeSinceLastInvoke) : result2;
+                }
+                function shouldInvoke(time) {
+                  var timeSinceLastCall = time - lastCallTime, timeSinceLastInvoke = time - lastInvokeTime;
+                  return lastCallTime === void 0 || timeSinceLastCall >= wait || timeSinceLastCall < 0 || maxing && timeSinceLastInvoke >= maxWait;
+                }
+                function timerExpired() {
+                  var time = now();
+                  if (shouldInvoke(time)) {
+                    return trailingEdge(time);
+                  }
+                  timerId = setTimeout(timerExpired, remainingWait(time));
+                }
+                function trailingEdge(time) {
+                  timerId = void 0;
+                  if (trailing && lastArgs) {
+                    return invokeFunc(time);
+                  }
+                  lastArgs = lastThis = void 0;
+                  return result;
+                }
+                function cancel() {
+                  if (timerId !== void 0) {
+                    clearTimeout(timerId);
+                  }
+                  lastInvokeTime = 0;
+                  lastArgs = lastCallTime = lastThis = timerId = void 0;
+                }
+                function flush() {
+                  return timerId === void 0 ? result : trailingEdge(now());
+                }
+                function debounced() {
+                  var time = now(), isInvoking = shouldInvoke(time);
+                  lastArgs = arguments;
+                  lastThis = this;
+                  lastCallTime = time;
+                  if (isInvoking) {
+                    if (timerId === void 0) {
+                      return leadingEdge(lastCallTime);
                     }
-                  })) {
+                    if (maxing) {
+                      timerId = setTimeout(timerExpired, wait);
+                      return invokeFunc(lastCallTime);
+                    }
+                  }
+                  if (timerId === void 0) {
+                    timerId = setTimeout(timerExpired, wait);
+                  }
+                  return result;
+                }
+                debounced.cancel = cancel;
+                debounced.flush = flush;
+                return debounced;
+              }
+              function isObject(value) {
+                var type = typeof value;
+                return !!value && (type == "object" || type == "function");
+              }
+              function isObjectLike(value) {
+                return !!value && typeof value == "object";
+              }
+              function isSymbol(value) {
+                return typeof value == "symbol" || isObjectLike(value) && objectToString.call(value) == symbolTag;
+              }
+              function toNumber(value) {
+                if (typeof value == "number") {
+                  return value;
+                }
+                if (isSymbol(value)) {
+                  return NAN;
+                }
+                if (isObject(value)) {
+                  var other = typeof value.valueOf == "function" ? value.valueOf() : value;
+                  value = isObject(other) ? other + "" : other;
+                }
+                if (typeof value != "string") {
+                  return value === 0 ? value : +value;
+                }
+                value = value.replace(reTrim, "");
+                var isBinary = reIsBinary.test(value);
+                return isBinary || reIsOctal.test(value) ? freeParseInt(value.slice(2), isBinary ? 2 : 8) : reIsBadHex.test(value) ? NAN : +value;
+              }
+              module3.exports = debounce;
+            }).call(this);
+          }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
+        }, {}],
+        8: [function(require2, module3, exports3) {
+          (function(global2) {
+            (function() {
+              var LARGE_ARRAY_SIZE = 200;
+              var HASH_UNDEFINED = "__lodash_hash_undefined__";
+              var COMPARE_PARTIAL_FLAG = 1, COMPARE_UNORDERED_FLAG = 2;
+              var MAX_SAFE_INTEGER = 9007199254740991;
+              var argsTag = "[object Arguments]", arrayTag = "[object Array]", asyncTag = "[object AsyncFunction]", boolTag = "[object Boolean]", dateTag = "[object Date]", errorTag = "[object Error]", funcTag = "[object Function]", genTag = "[object GeneratorFunction]", mapTag = "[object Map]", numberTag = "[object Number]", nullTag = "[object Null]", objectTag = "[object Object]", promiseTag = "[object Promise]", proxyTag = "[object Proxy]", regexpTag = "[object RegExp]", setTag = "[object Set]", stringTag = "[object String]", symbolTag = "[object Symbol]", undefinedTag = "[object Undefined]", weakMapTag = "[object WeakMap]";
+              var arrayBufferTag = "[object ArrayBuffer]", dataViewTag = "[object DataView]", float32Tag = "[object Float32Array]", float64Tag = "[object Float64Array]", int8Tag = "[object Int8Array]", int16Tag = "[object Int16Array]", int32Tag = "[object Int32Array]", uint8Tag = "[object Uint8Array]", uint8ClampedTag = "[object Uint8ClampedArray]", uint16Tag = "[object Uint16Array]", uint32Tag = "[object Uint32Array]";
+              var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+              var reIsHostCtor = /^\[object .+?Constructor\]$/;
+              var reIsUint = /^(?:0|[1-9]\d*)$/;
+              var typedArrayTags = {};
+              typedArrayTags[float32Tag] = typedArrayTags[float64Tag] = typedArrayTags[int8Tag] = typedArrayTags[int16Tag] = typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] = typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] = typedArrayTags[uint32Tag] = true;
+              typedArrayTags[argsTag] = typedArrayTags[arrayTag] = typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] = typedArrayTags[dataViewTag] = typedArrayTags[dateTag] = typedArrayTags[errorTag] = typedArrayTags[funcTag] = typedArrayTags[mapTag] = typedArrayTags[numberTag] = typedArrayTags[objectTag] = typedArrayTags[regexpTag] = typedArrayTags[setTag] = typedArrayTags[stringTag] = typedArrayTags[weakMapTag] = false;
+              var freeGlobal = typeof global2 == "object" && global2 && global2.Object === Object && global2;
+              var freeSelf = typeof self == "object" && self && self.Object === Object && self;
+              var root = freeGlobal || freeSelf || Function("return this")();
+              var freeExports = typeof exports3 == "object" && exports3 && !exports3.nodeType && exports3;
+              var freeModule = freeExports && typeof module3 == "object" && module3 && !module3.nodeType && module3;
+              var moduleExports = freeModule && freeModule.exports === freeExports;
+              var freeProcess = moduleExports && freeGlobal.process;
+              var nodeUtil = function() {
+                try {
+                  return freeProcess && freeProcess.binding && freeProcess.binding("util");
+                } catch (e) {
+                }
+              }();
+              var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
+              function arrayFilter(array, predicate) {
+                var index = -1, length = array == null ? 0 : array.length, resIndex = 0, result = [];
+                while (++index < length) {
+                  var value = array[index];
+                  if (predicate(value, index, array)) {
+                    result[resIndex++] = value;
+                  }
+                }
+                return result;
+              }
+              function arrayPush(array, values) {
+                var index = -1, length = values.length, offset = array.length;
+                while (++index < length) {
+                  array[offset + index] = values[index];
+                }
+                return array;
+              }
+              function arraySome(array, predicate) {
+                var index = -1, length = array == null ? 0 : array.length;
+                while (++index < length) {
+                  if (predicate(array[index], index, array)) {
+                    return true;
+                  }
+                }
+                return false;
+              }
+              function baseTimes(n, iteratee) {
+                var index = -1, result = Array(n);
+                while (++index < n) {
+                  result[index] = iteratee(index);
+                }
+                return result;
+              }
+              function baseUnary(func) {
+                return function(value) {
+                  return func(value);
+                };
+              }
+              function cacheHas(cache, key) {
+                return cache.has(key);
+              }
+              function getValue(object, key) {
+                return object == null ? void 0 : object[key];
+              }
+              function mapToArray(map2) {
+                var index = -1, result = Array(map2.size);
+                map2.forEach(function(value, key) {
+                  result[++index] = [key, value];
+                });
+                return result;
+              }
+              function overArg(func, transform) {
+                return function(arg) {
+                  return func(transform(arg));
+                };
+              }
+              function setToArray(set) {
+                var index = -1, result = Array(set.size);
+                set.forEach(function(value) {
+                  result[++index] = value;
+                });
+                return result;
+              }
+              var arrayProto = Array.prototype, funcProto = Function.prototype, objectProto = Object.prototype;
+              var coreJsData = root["__core-js_shared__"];
+              var funcToString = funcProto.toString;
+              var hasOwnProperty = objectProto.hasOwnProperty;
+              var maskSrcKey = function() {
+                var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || "");
+                return uid ? "Symbol(src)_1." + uid : "";
+              }();
+              var nativeObjectToString = objectProto.toString;
+              var reIsNative = RegExp(
+                "^" + funcToString.call(hasOwnProperty).replace(reRegExpChar, "\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, "$1.*?") + "$"
+              );
+              var Buffer2 = moduleExports ? root.Buffer : void 0, Symbol2 = root.Symbol, Uint8Array2 = root.Uint8Array, propertyIsEnumerable = objectProto.propertyIsEnumerable, splice = arrayProto.splice, symToStringTag = Symbol2 ? Symbol2.toStringTag : void 0;
+              var nativeGetSymbols = Object.getOwnPropertySymbols, nativeIsBuffer = Buffer2 ? Buffer2.isBuffer : void 0, nativeKeys = overArg(Object.keys, Object);
+              var DataView = getNative(root, "DataView"), Map2 = getNative(root, "Map"), Promise2 = getNative(root, "Promise"), Set2 = getNative(root, "Set"), WeakMap2 = getNative(root, "WeakMap"), nativeCreate = getNative(Object, "create");
+              var dataViewCtorString = toSource(DataView), mapCtorString = toSource(Map2), promiseCtorString = toSource(Promise2), setCtorString = toSource(Set2), weakMapCtorString = toSource(WeakMap2);
+              var symbolProto = Symbol2 ? Symbol2.prototype : void 0, symbolValueOf = symbolProto ? symbolProto.valueOf : void 0;
+              function Hash(entries) {
+                var index = -1, length = entries == null ? 0 : entries.length;
+                this.clear();
+                while (++index < length) {
+                  var entry = entries[index];
+                  this.set(entry[0], entry[1]);
+                }
+              }
+              function hashClear() {
+                this.__data__ = nativeCreate ? nativeCreate(null) : {};
+                this.size = 0;
+              }
+              function hashDelete(key) {
+                var result = this.has(key) && delete this.__data__[key];
+                this.size -= result ? 1 : 0;
+                return result;
+              }
+              function hashGet(key) {
+                var data = this.__data__;
+                if (nativeCreate) {
+                  var result = data[key];
+                  return result === HASH_UNDEFINED ? void 0 : result;
+                }
+                return hasOwnProperty.call(data, key) ? data[key] : void 0;
+              }
+              function hashHas(key) {
+                var data = this.__data__;
+                return nativeCreate ? data[key] !== void 0 : hasOwnProperty.call(data, key);
+              }
+              function hashSet(key, value) {
+                var data = this.__data__;
+                this.size += this.has(key) ? 0 : 1;
+                data[key] = nativeCreate && value === void 0 ? HASH_UNDEFINED : value;
+                return this;
+              }
+              Hash.prototype.clear = hashClear;
+              Hash.prototype["delete"] = hashDelete;
+              Hash.prototype.get = hashGet;
+              Hash.prototype.has = hashHas;
+              Hash.prototype.set = hashSet;
+              function ListCache(entries) {
+                var index = -1, length = entries == null ? 0 : entries.length;
+                this.clear();
+                while (++index < length) {
+                  var entry = entries[index];
+                  this.set(entry[0], entry[1]);
+                }
+              }
+              function listCacheClear() {
+                this.__data__ = [];
+                this.size = 0;
+              }
+              function listCacheDelete(key) {
+                var data = this.__data__, index = assocIndexOf(data, key);
+                if (index < 0) {
+                  return false;
+                }
+                var lastIndex = data.length - 1;
+                if (index == lastIndex) {
+                  data.pop();
+                } else {
+                  splice.call(data, index, 1);
+                }
+                --this.size;
+                return true;
+              }
+              function listCacheGet(key) {
+                var data = this.__data__, index = assocIndexOf(data, key);
+                return index < 0 ? void 0 : data[index][1];
+              }
+              function listCacheHas(key) {
+                return assocIndexOf(this.__data__, key) > -1;
+              }
+              function listCacheSet(key, value) {
+                var data = this.__data__, index = assocIndexOf(data, key);
+                if (index < 0) {
+                  ++this.size;
+                  data.push([key, value]);
+                } else {
+                  data[index][1] = value;
+                }
+                return this;
+              }
+              ListCache.prototype.clear = listCacheClear;
+              ListCache.prototype["delete"] = listCacheDelete;
+              ListCache.prototype.get = listCacheGet;
+              ListCache.prototype.has = listCacheHas;
+              ListCache.prototype.set = listCacheSet;
+              function MapCache(entries) {
+                var index = -1, length = entries == null ? 0 : entries.length;
+                this.clear();
+                while (++index < length) {
+                  var entry = entries[index];
+                  this.set(entry[0], entry[1]);
+                }
+              }
+              function mapCacheClear() {
+                this.size = 0;
+                this.__data__ = {
+                  "hash": new Hash(),
+                  "map": new (Map2 || ListCache)(),
+                  "string": new Hash()
+                };
+              }
+              function mapCacheDelete(key) {
+                var result = getMapData(this, key)["delete"](key);
+                this.size -= result ? 1 : 0;
+                return result;
+              }
+              function mapCacheGet(key) {
+                return getMapData(this, key).get(key);
+              }
+              function mapCacheHas(key) {
+                return getMapData(this, key).has(key);
+              }
+              function mapCacheSet(key, value) {
+                var data = getMapData(this, key), size = data.size;
+                data.set(key, value);
+                this.size += data.size == size ? 0 : 1;
+                return this;
+              }
+              MapCache.prototype.clear = mapCacheClear;
+              MapCache.prototype["delete"] = mapCacheDelete;
+              MapCache.prototype.get = mapCacheGet;
+              MapCache.prototype.has = mapCacheHas;
+              MapCache.prototype.set = mapCacheSet;
+              function SetCache(values) {
+                var index = -1, length = values == null ? 0 : values.length;
+                this.__data__ = new MapCache();
+                while (++index < length) {
+                  this.add(values[index]);
+                }
+              }
+              function setCacheAdd(value) {
+                this.__data__.set(value, HASH_UNDEFINED);
+                return this;
+              }
+              function setCacheHas(value) {
+                return this.__data__.has(value);
+              }
+              SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
+              SetCache.prototype.has = setCacheHas;
+              function Stack(entries) {
+                var data = this.__data__ = new ListCache(entries);
+                this.size = data.size;
+              }
+              function stackClear() {
+                this.__data__ = new ListCache();
+                this.size = 0;
+              }
+              function stackDelete(key) {
+                var data = this.__data__, result = data["delete"](key);
+                this.size = data.size;
+                return result;
+              }
+              function stackGet(key) {
+                return this.__data__.get(key);
+              }
+              function stackHas(key) {
+                return this.__data__.has(key);
+              }
+              function stackSet(key, value) {
+                var data = this.__data__;
+                if (data instanceof ListCache) {
+                  var pairs = data.__data__;
+                  if (!Map2 || pairs.length < LARGE_ARRAY_SIZE - 1) {
+                    pairs.push([key, value]);
+                    this.size = ++data.size;
+                    return this;
+                  }
+                  data = this.__data__ = new MapCache(pairs);
+                }
+                data.set(key, value);
+                this.size = data.size;
+                return this;
+              }
+              Stack.prototype.clear = stackClear;
+              Stack.prototype["delete"] = stackDelete;
+              Stack.prototype.get = stackGet;
+              Stack.prototype.has = stackHas;
+              Stack.prototype.set = stackSet;
+              function arrayLikeKeys(value, inherited) {
+                var isArr = isArray(value), isArg = !isArr && isArguments(value), isBuff = !isArr && !isArg && isBuffer(value), isType = !isArr && !isArg && !isBuff && isTypedArray(value), skipIndexes = isArr || isArg || isBuff || isType, result = skipIndexes ? baseTimes(value.length, String) : [], length = result.length;
+                for (var key in value) {
+                  if ((inherited || hasOwnProperty.call(value, key)) && !(skipIndexes && // Safari 9 has enumerable `arguments.length` in strict mode.
+                  (key == "length" || // Node.js 0.10 has enumerable non-index properties on buffers.
+                  isBuff && (key == "offset" || key == "parent") || // PhantomJS 2 has enumerable non-index properties on typed arrays.
+                  isType && (key == "buffer" || key == "byteLength" || key == "byteOffset") || // Skip index properties.
+                  isIndex(key, length)))) {
+                    result.push(key);
+                  }
+                }
+                return result;
+              }
+              function assocIndexOf(array, key) {
+                var length = array.length;
+                while (length--) {
+                  if (eq(array[length][0], key)) {
+                    return length;
+                  }
+                }
+                return -1;
+              }
+              function baseGetAllKeys(object, keysFunc, symbolsFunc) {
+                var result = keysFunc(object);
+                return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
+              }
+              function baseGetTag(value) {
+                if (value == null) {
+                  return value === void 0 ? undefinedTag : nullTag;
+                }
+                return symToStringTag && symToStringTag in Object(value) ? getRawTag(value) : objectToString(value);
+              }
+              function baseIsArguments(value) {
+                return isObjectLike(value) && baseGetTag(value) == argsTag;
+              }
+              function baseIsEqual(value, other, bitmask, customizer, stack) {
+                if (value === other) {
+                  return true;
+                }
+                if (value == null || other == null || !isObjectLike(value) && !isObjectLike(other)) {
+                  return value !== value && other !== other;
+                }
+                return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
+              }
+              function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
+                var objIsArr = isArray(object), othIsArr = isArray(other), objTag = objIsArr ? arrayTag : getTag(object), othTag = othIsArr ? arrayTag : getTag(other);
+                objTag = objTag == argsTag ? objectTag : objTag;
+                othTag = othTag == argsTag ? objectTag : othTag;
+                var objIsObj = objTag == objectTag, othIsObj = othTag == objectTag, isSameTag = objTag == othTag;
+                if (isSameTag && isBuffer(object)) {
+                  if (!isBuffer(other)) {
+                    return false;
+                  }
+                  objIsArr = true;
+                  objIsObj = false;
+                }
+                if (isSameTag && !objIsObj) {
+                  stack || (stack = new Stack());
+                  return objIsArr || isTypedArray(object) ? equalArrays(object, other, bitmask, customizer, equalFunc, stack) : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
+                }
+                if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
+                  var objIsWrapped = objIsObj && hasOwnProperty.call(object, "__wrapped__"), othIsWrapped = othIsObj && hasOwnProperty.call(other, "__wrapped__");
+                  if (objIsWrapped || othIsWrapped) {
+                    var objUnwrapped = objIsWrapped ? object.value() : object, othUnwrapped = othIsWrapped ? other.value() : other;
+                    stack || (stack = new Stack());
+                    return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
+                  }
+                }
+                if (!isSameTag) {
+                  return false;
+                }
+                stack || (stack = new Stack());
+                return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
+              }
+              function baseIsNative(value) {
+                if (!isObject(value) || isMasked(value)) {
+                  return false;
+                }
+                var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
+                return pattern.test(toSource(value));
+              }
+              function baseIsTypedArray(value) {
+                return isObjectLike(value) && isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
+              }
+              function baseKeys(object) {
+                if (!isPrototype(object)) {
+                  return nativeKeys(object);
+                }
+                var result = [];
+                for (var key in Object(object)) {
+                  if (hasOwnProperty.call(object, key) && key != "constructor") {
+                    result.push(key);
+                  }
+                }
+                return result;
+              }
+              function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
+                var isPartial = bitmask & COMPARE_PARTIAL_FLAG, arrLength = array.length, othLength = other.length;
+                if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+                  return false;
+                }
+                var stacked = stack.get(array);
+                if (stacked && stack.get(other)) {
+                  return stacked == other;
+                }
+                var index = -1, result = true, seen = bitmask & COMPARE_UNORDERED_FLAG ? new SetCache() : void 0;
+                stack.set(array, other);
+                stack.set(other, array);
+                while (++index < arrLength) {
+                  var arrValue = array[index], othValue = other[index];
+                  if (customizer) {
+                    var compared = isPartial ? customizer(othValue, arrValue, index, other, array, stack) : customizer(arrValue, othValue, index, array, other, stack);
+                  }
+                  if (compared !== void 0) {
+                    if (compared) {
+                      continue;
+                    }
                     result = false;
                     break;
                   }
-                } else if (!(arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
-                  result = false;
-                  break;
+                  if (seen) {
+                    if (!arraySome(other, function(othValue2, othIndex) {
+                      if (!cacheHas(seen, othIndex) && (arrValue === othValue2 || equalFunc(arrValue, othValue2, bitmask, customizer, stack))) {
+                        return seen.push(othIndex);
+                      }
+                    })) {
+                      result = false;
+                      break;
+                    }
+                  } else if (!(arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
+                    result = false;
+                    break;
+                  }
                 }
+                stack["delete"](array);
+                stack["delete"](other);
+                return result;
               }
-              stack["delete"](array);
-              stack["delete"](other);
-              return result;
-            }
-            function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
-              switch (tag) {
-                case dataViewTag:
-                  if (object.byteLength != other.byteLength || object.byteOffset != other.byteOffset) {
-                    return false;
-                  }
-                  object = object.buffer;
-                  other = other.buffer;
-                case arrayBufferTag:
-                  if (object.byteLength != other.byteLength || !equalFunc(new Uint8Array2(object), new Uint8Array2(other))) {
-                    return false;
-                  }
-                  return true;
-                case boolTag:
-                case dateTag:
-                case numberTag:
-                  return eq(+object, +other);
-                case errorTag:
-                  return object.name == other.name && object.message == other.message;
-                case regexpTag:
-                case stringTag:
-                  return object == other + "";
-                case mapTag:
-                  var convert = mapToArray;
-                case setTag:
-                  var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
-                  convert || (convert = setToArray);
-                  if (object.size != other.size && !isPartial) {
-                    return false;
-                  }
-                  var stacked = stack.get(object);
-                  if (stacked) {
-                    return stacked == other;
-                  }
-                  bitmask |= COMPARE_UNORDERED_FLAG;
-                  stack.set(object, other);
-                  var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
-                  stack["delete"](object);
-                  return result;
-                case symbolTag:
-                  if (symbolValueOf) {
-                    return symbolValueOf.call(object) == symbolValueOf.call(other);
-                  }
-              }
-              return false;
-            }
-            function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
-              var isPartial = bitmask & COMPARE_PARTIAL_FLAG, objProps = getAllKeys(object), objLength = objProps.length, othProps = getAllKeys(other), othLength = othProps.length;
-              if (objLength != othLength && !isPartial) {
+              function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
+                switch (tag) {
+                  case dataViewTag:
+                    if (object.byteLength != other.byteLength || object.byteOffset != other.byteOffset) {
+                      return false;
+                    }
+                    object = object.buffer;
+                    other = other.buffer;
+                  case arrayBufferTag:
+                    if (object.byteLength != other.byteLength || !equalFunc(new Uint8Array2(object), new Uint8Array2(other))) {
+                      return false;
+                    }
+                    return true;
+                  case boolTag:
+                  case dateTag:
+                  case numberTag:
+                    return eq(+object, +other);
+                  case errorTag:
+                    return object.name == other.name && object.message == other.message;
+                  case regexpTag:
+                  case stringTag:
+                    return object == other + "";
+                  case mapTag:
+                    var convert = mapToArray;
+                  case setTag:
+                    var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
+                    convert || (convert = setToArray);
+                    if (object.size != other.size && !isPartial) {
+                      return false;
+                    }
+                    var stacked = stack.get(object);
+                    if (stacked) {
+                      return stacked == other;
+                    }
+                    bitmask |= COMPARE_UNORDERED_FLAG;
+                    stack.set(object, other);
+                    var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
+                    stack["delete"](object);
+                    return result;
+                  case symbolTag:
+                    if (symbolValueOf) {
+                      return symbolValueOf.call(object) == symbolValueOf.call(other);
+                    }
+                }
                 return false;
               }
-              var index = objLength;
-              while (index--) {
-                var key = objProps[index];
-                if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
+              function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
+                var isPartial = bitmask & COMPARE_PARTIAL_FLAG, objProps = getAllKeys(object), objLength = objProps.length, othProps = getAllKeys(other), othLength = othProps.length;
+                if (objLength != othLength && !isPartial) {
                   return false;
                 }
-              }
-              var stacked = stack.get(object);
-              if (stacked && stack.get(other)) {
-                return stacked == other;
-              }
-              var result = true;
-              stack.set(object, other);
-              stack.set(other, object);
-              var skipCtor = isPartial;
-              while (++index < objLength) {
-                key = objProps[index];
-                var objValue = object[key], othValue = other[key];
-                if (customizer) {
-                  var compared = isPartial ? customizer(othValue, objValue, key, other, object, stack) : customizer(objValue, othValue, key, object, other, stack);
+                var index = objLength;
+                while (index--) {
+                  var key = objProps[index];
+                  if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
+                    return false;
+                  }
                 }
-                if (!(compared === void 0 ? objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack) : compared)) {
-                  result = false;
-                  break;
+                var stacked = stack.get(object);
+                if (stacked && stack.get(other)) {
+                  return stacked == other;
                 }
-                skipCtor || (skipCtor = key == "constructor");
-              }
-              if (result && !skipCtor) {
-                var objCtor = object.constructor, othCtor = other.constructor;
-                if (objCtor != othCtor && ("constructor" in object && "constructor" in other) && !(typeof objCtor == "function" && objCtor instanceof objCtor && typeof othCtor == "function" && othCtor instanceof othCtor)) {
-                  result = false;
+                var result = true;
+                stack.set(object, other);
+                stack.set(other, object);
+                var skipCtor = isPartial;
+                while (++index < objLength) {
+                  key = objProps[index];
+                  var objValue = object[key], othValue = other[key];
+                  if (customizer) {
+                    var compared = isPartial ? customizer(othValue, objValue, key, other, object, stack) : customizer(objValue, othValue, key, object, other, stack);
+                  }
+                  if (!(compared === void 0 ? objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack) : compared)) {
+                    result = false;
+                    break;
+                  }
+                  skipCtor || (skipCtor = key == "constructor");
                 }
-              }
-              stack["delete"](object);
-              stack["delete"](other);
-              return result;
-            }
-            function getAllKeys(object) {
-              return baseGetAllKeys(object, keys, getSymbols);
-            }
-            function getMapData(map2, key) {
-              var data = map2.__data__;
-              return isKeyable(key) ? data[typeof key == "string" ? "string" : "hash"] : data.map;
-            }
-            function getNative(object, key) {
-              var value = getValue(object, key);
-              return baseIsNative(value) ? value : void 0;
-            }
-            function getRawTag(value) {
-              var isOwn = hasOwnProperty.call(value, symToStringTag), tag = value[symToStringTag];
-              try {
-                value[symToStringTag] = void 0;
-                var unmasked = true;
-              } catch (e) {
-              }
-              var result = nativeObjectToString.call(value);
-              if (unmasked) {
-                if (isOwn) {
-                  value[symToStringTag] = tag;
-                } else {
-                  delete value[symToStringTag];
+                if (result && !skipCtor) {
+                  var objCtor = object.constructor, othCtor = other.constructor;
+                  if (objCtor != othCtor && ("constructor" in object && "constructor" in other) && !(typeof objCtor == "function" && objCtor instanceof objCtor && typeof othCtor == "function" && othCtor instanceof othCtor)) {
+                    result = false;
+                  }
                 }
+                stack["delete"](object);
+                stack["delete"](other);
+                return result;
               }
-              return result;
-            }
-            var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
-              if (object == null) {
-                return [];
+              function getAllKeys(object) {
+                return baseGetAllKeys(object, keys, getSymbols);
               }
-              object = Object(object);
-              return arrayFilter(nativeGetSymbols(object), function(symbol) {
-                return propertyIsEnumerable.call(object, symbol);
-              });
-            };
-            var getTag = baseGetTag;
-            if (DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag || Map2 && getTag(new Map2()) != mapTag || Promise2 && getTag(Promise2.resolve()) != promiseTag || Set2 && getTag(new Set2()) != setTag || WeakMap2 && getTag(new WeakMap2()) != weakMapTag) {
-              getTag = function(value) {
-                var result = baseGetTag(value), Ctor = result == objectTag ? value.constructor : void 0, ctorString = Ctor ? toSource(Ctor) : "";
-                if (ctorString) {
-                  switch (ctorString) {
-                    case dataViewCtorString:
-                      return dataViewTag;
-                    case mapCtorString:
-                      return mapTag;
-                    case promiseCtorString:
-                      return promiseTag;
-                    case setCtorString:
-                      return setTag;
-                    case weakMapCtorString:
-                      return weakMapTag;
+              function getMapData(map2, key) {
+                var data = map2.__data__;
+                return isKeyable(key) ? data[typeof key == "string" ? "string" : "hash"] : data.map;
+              }
+              function getNative(object, key) {
+                var value = getValue(object, key);
+                return baseIsNative(value) ? value : void 0;
+              }
+              function getRawTag(value) {
+                var isOwn = hasOwnProperty.call(value, symToStringTag), tag = value[symToStringTag];
+                try {
+                  value[symToStringTag] = void 0;
+                  var unmasked = true;
+                } catch (e) {
+                }
+                var result = nativeObjectToString.call(value);
+                if (unmasked) {
+                  if (isOwn) {
+                    value[symToStringTag] = tag;
+                  } else {
+                    delete value[symToStringTag];
                   }
                 }
                 return result;
-              };
-            }
-            function isIndex(value, length) {
-              length = length == null ? MAX_SAFE_INTEGER : length;
-              return !!length && (typeof value == "number" || reIsUint.test(value)) && (value > -1 && value % 1 == 0 && value < length);
-            }
-            function isKeyable(value) {
-              var type = typeof value;
-              return type == "string" || type == "number" || type == "symbol" || type == "boolean" ? value !== "__proto__" : value === null;
-            }
-            function isMasked(func) {
-              return !!maskSrcKey && maskSrcKey in func;
-            }
-            function isPrototype(value) {
-              var Ctor = value && value.constructor, proto = typeof Ctor == "function" && Ctor.prototype || objectProto;
-              return value === proto;
-            }
-            function objectToString(value) {
-              return nativeObjectToString.call(value);
-            }
-            function toSource(func) {
-              if (func != null) {
-                try {
-                  return funcToString.call(func);
-                } catch (e) {
-                }
-                try {
-                  return func + "";
-                } catch (e) {
-                }
               }
-              return "";
-            }
-            function eq(value, other) {
-              return value === other || value !== value && other !== other;
-            }
-            var isArguments = baseIsArguments(/* @__PURE__ */ function() {
-              return arguments;
-            }()) ? baseIsArguments : function(value) {
-              return isObjectLike(value) && hasOwnProperty.call(value, "callee") && !propertyIsEnumerable.call(value, "callee");
-            };
-            var isArray = Array.isArray;
-            function isArrayLike(value) {
-              return value != null && isLength(value.length) && !isFunction(value);
-            }
-            var isBuffer = nativeIsBuffer || stubFalse;
-            function isEqual(value, other) {
-              return baseIsEqual(value, other);
-            }
-            function isFunction(value) {
-              if (!isObject(value)) {
-                return false;
-              }
-              var tag = baseGetTag(value);
-              return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
-            }
-            function isLength(value) {
-              return typeof value == "number" && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-            }
-            function isObject(value) {
-              var type = typeof value;
-              return value != null && (type == "object" || type == "function");
-            }
-            function isObjectLike(value) {
-              return value != null && typeof value == "object";
-            }
-            var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
-            function keys(object) {
-              return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
-            }
-            function stubArray() {
-              return [];
-            }
-            function stubFalse() {
-              return false;
-            }
-            module3.exports = isEqual;
-          }).call(this);
-        }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
-      }, {}], 9: [function(require2, module3, exports3) {
-        (function(global2) {
-          (function() {
-            var reInterpolate = require2("lodash._reinterpolate"), templateSettings = require2("lodash.templatesettings");
-            var HOT_COUNT = 800, HOT_SPAN = 16;
-            var INFINITY = 1 / 0, MAX_SAFE_INTEGER = 9007199254740991;
-            var argsTag = "[object Arguments]", arrayTag = "[object Array]", asyncTag = "[object AsyncFunction]", boolTag = "[object Boolean]", dateTag = "[object Date]", domExcTag = "[object DOMException]", errorTag = "[object Error]", funcTag = "[object Function]", genTag = "[object GeneratorFunction]", mapTag = "[object Map]", numberTag = "[object Number]", nullTag = "[object Null]", objectTag = "[object Object]", proxyTag = "[object Proxy]", regexpTag = "[object RegExp]", setTag = "[object Set]", stringTag = "[object String]", symbolTag = "[object Symbol]", undefinedTag = "[object Undefined]", weakMapTag = "[object WeakMap]";
-            var arrayBufferTag = "[object ArrayBuffer]", dataViewTag = "[object DataView]", float32Tag = "[object Float32Array]", float64Tag = "[object Float64Array]", int8Tag = "[object Int8Array]", int16Tag = "[object Int16Array]", int32Tag = "[object Int32Array]", uint8Tag = "[object Uint8Array]", uint8ClampedTag = "[object Uint8ClampedArray]", uint16Tag = "[object Uint16Array]", uint32Tag = "[object Uint32Array]";
-            var reEmptyStringLeading = /\b__p \+= '';/g, reEmptyStringMiddle = /\b(__p \+=) '' \+/g, reEmptyStringTrailing = /(__e\(.*?\)|\b__t\)) \+\n'';/g;
-            var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
-            var reEsTemplate = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
-            var reIsHostCtor = /^\[object .+?Constructor\]$/;
-            var reIsUint = /^(?:0|[1-9]\d*)$/;
-            var reNoMatch = /($^)/;
-            var reUnescapedString = /['\n\r\u2028\u2029\\]/g;
-            var typedArrayTags = {};
-            typedArrayTags[float32Tag] = typedArrayTags[float64Tag] = typedArrayTags[int8Tag] = typedArrayTags[int16Tag] = typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] = typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] = typedArrayTags[uint32Tag] = true;
-            typedArrayTags[argsTag] = typedArrayTags[arrayTag] = typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] = typedArrayTags[dataViewTag] = typedArrayTags[dateTag] = typedArrayTags[errorTag] = typedArrayTags[funcTag] = typedArrayTags[mapTag] = typedArrayTags[numberTag] = typedArrayTags[objectTag] = typedArrayTags[regexpTag] = typedArrayTags[setTag] = typedArrayTags[stringTag] = typedArrayTags[weakMapTag] = false;
-            var stringEscapes = {
-              "\\": "\\",
-              "'": "'",
-              "\n": "n",
-              "\r": "r",
-              "\u2028": "u2028",
-              "\u2029": "u2029"
-            };
-            var freeGlobal = typeof global2 == "object" && global2 && global2.Object === Object && global2;
-            var freeSelf = typeof self == "object" && self && self.Object === Object && self;
-            var root = freeGlobal || freeSelf || Function("return this")();
-            var freeExports = typeof exports3 == "object" && exports3 && !exports3.nodeType && exports3;
-            var freeModule = freeExports && typeof module3 == "object" && module3 && !module3.nodeType && module3;
-            var moduleExports = freeModule && freeModule.exports === freeExports;
-            var freeProcess = moduleExports && freeGlobal.process;
-            var nodeUtil = function() {
-              try {
-                var types = freeModule && freeModule.require && freeModule.require("util").types;
-                if (types) {
-                  return types;
-                }
-                return freeProcess && freeProcess.binding && freeProcess.binding("util");
-              } catch (e) {
-              }
-            }();
-            var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
-            function apply(func, thisArg, args) {
-              switch (args.length) {
-                case 0:
-                  return func.call(thisArg);
-                case 1:
-                  return func.call(thisArg, args[0]);
-                case 2:
-                  return func.call(thisArg, args[0], args[1]);
-                case 3:
-                  return func.call(thisArg, args[0], args[1], args[2]);
-              }
-              return func.apply(thisArg, args);
-            }
-            function arrayMap(array, iteratee) {
-              var index = -1, length = array == null ? 0 : array.length, result = Array(length);
-              while (++index < length) {
-                result[index] = iteratee(array[index], index, array);
-              }
-              return result;
-            }
-            function baseTimes(n, iteratee) {
-              var index = -1, result = Array(n);
-              while (++index < n) {
-                result[index] = iteratee(index);
-              }
-              return result;
-            }
-            function baseUnary(func) {
-              return function(value) {
-                return func(value);
-              };
-            }
-            function baseValues(object, props) {
-              return arrayMap(props, function(key) {
-                return object[key];
-              });
-            }
-            function escapeStringChar(chr) {
-              return "\\" + stringEscapes[chr];
-            }
-            function getValue(object, key) {
-              return object == null ? void 0 : object[key];
-            }
-            function overArg(func, transform) {
-              return function(arg) {
-                return func(transform(arg));
-              };
-            }
-            var funcProto = Function.prototype, objectProto = Object.prototype;
-            var coreJsData = root["__core-js_shared__"];
-            var funcToString = funcProto.toString;
-            var hasOwnProperty = objectProto.hasOwnProperty;
-            var maskSrcKey = function() {
-              var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || "");
-              return uid ? "Symbol(src)_1." + uid : "";
-            }();
-            var nativeObjectToString = objectProto.toString;
-            var objectCtorString = funcToString.call(Object);
-            var reIsNative = RegExp(
-              "^" + funcToString.call(hasOwnProperty).replace(reRegExpChar, "\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, "$1.*?") + "$"
-            );
-            var Buffer2 = moduleExports ? root.Buffer : void 0, Symbol2 = root.Symbol, getPrototype = overArg(Object.getPrototypeOf, Object), propertyIsEnumerable = objectProto.propertyIsEnumerable, symToStringTag = Symbol2 ? Symbol2.toStringTag : void 0;
-            var defineProperty = function() {
-              try {
-                var func = getNative(Object, "defineProperty");
-                func({}, "", {});
-                return func;
-              } catch (e) {
-              }
-            }();
-            var nativeIsBuffer = Buffer2 ? Buffer2.isBuffer : void 0, nativeKeys = overArg(Object.keys, Object), nativeMax = Math.max, nativeNow = Date.now;
-            var symbolProto = Symbol2 ? Symbol2.prototype : void 0, symbolToString = symbolProto ? symbolProto.toString : void 0;
-            function arrayLikeKeys(value, inherited) {
-              var isArr = isArray(value), isArg = !isArr && isArguments(value), isBuff = !isArr && !isArg && isBuffer(value), isType = !isArr && !isArg && !isBuff && isTypedArray(value), skipIndexes = isArr || isArg || isBuff || isType, result = skipIndexes ? baseTimes(value.length, String) : [], length = result.length;
-              for (var key in value) {
-                if ((inherited || hasOwnProperty.call(value, key)) && !(skipIndexes && // Safari 9 has enumerable `arguments.length` in strict mode.
-                (key == "length" || // Node.js 0.10 has enumerable non-index properties on buffers.
-                isBuff && (key == "offset" || key == "parent") || // PhantomJS 2 has enumerable non-index properties on typed arrays.
-                isType && (key == "buffer" || key == "byteLength" || key == "byteOffset") || // Skip index properties.
-                isIndex(key, length)))) {
-                  result.push(key);
-                }
-              }
-              return result;
-            }
-            function assignValue(object, key, value) {
-              var objValue = object[key];
-              if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) || value === void 0 && !(key in object)) {
-                baseAssignValue(object, key, value);
-              }
-            }
-            function baseAssignValue(object, key, value) {
-              if (key == "__proto__" && defineProperty) {
-                defineProperty(object, key, {
-                  "configurable": true,
-                  "enumerable": true,
-                  "value": value,
-                  "writable": true
-                });
-              } else {
-                object[key] = value;
-              }
-            }
-            function baseGetTag(value) {
-              if (value == null) {
-                return value === void 0 ? undefinedTag : nullTag;
-              }
-              return symToStringTag && symToStringTag in Object(value) ? getRawTag(value) : objectToString(value);
-            }
-            function baseIsArguments(value) {
-              return isObjectLike(value) && baseGetTag(value) == argsTag;
-            }
-            function baseIsNative(value) {
-              if (!isObject(value) || isMasked(value)) {
-                return false;
-              }
-              var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
-              return pattern.test(toSource(value));
-            }
-            function baseIsTypedArray(value) {
-              return isObjectLike(value) && isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
-            }
-            function baseKeys(object) {
-              if (!isPrototype(object)) {
-                return nativeKeys(object);
-              }
-              var result = [];
-              for (var key in Object(object)) {
-                if (hasOwnProperty.call(object, key) && key != "constructor") {
-                  result.push(key);
-                }
-              }
-              return result;
-            }
-            function baseKeysIn(object) {
-              if (!isObject(object)) {
-                return nativeKeysIn(object);
-              }
-              var isProto = isPrototype(object), result = [];
-              for (var key in object) {
-                if (!(key == "constructor" && (isProto || !hasOwnProperty.call(object, key)))) {
-                  result.push(key);
-                }
-              }
-              return result;
-            }
-            function baseRest(func, start) {
-              return setToString(overRest(func, start, identity), func + "");
-            }
-            var baseSetToString = !defineProperty ? identity : function(func, string) {
-              return defineProperty(func, "toString", {
-                "configurable": true,
-                "enumerable": false,
-                "value": constant(string),
-                "writable": true
-              });
-            };
-            function baseToString(value) {
-              if (typeof value == "string") {
-                return value;
-              }
-              if (isArray(value)) {
-                return arrayMap(value, baseToString) + "";
-              }
-              if (isSymbol(value)) {
-                return symbolToString ? symbolToString.call(value) : "";
-              }
-              var result = value + "";
-              return result == "0" && 1 / value == -INFINITY ? "-0" : result;
-            }
-            function copyObject(source, props, object, customizer) {
-              var isNew = !object;
-              object || (object = {});
-              var index = -1, length = props.length;
-              while (++index < length) {
-                var key = props[index];
-                var newValue = customizer ? customizer(object[key], source[key], key, object, source) : void 0;
-                if (newValue === void 0) {
-                  newValue = source[key];
-                }
-                if (isNew) {
-                  baseAssignValue(object, key, newValue);
-                } else {
-                  assignValue(object, key, newValue);
-                }
-              }
-              return object;
-            }
-            function createAssigner(assigner) {
-              return baseRest(function(object, sources) {
-                var index = -1, length = sources.length, customizer = length > 1 ? sources[length - 1] : void 0, guard = length > 2 ? sources[2] : void 0;
-                customizer = assigner.length > 3 && typeof customizer == "function" ? (length--, customizer) : void 0;
-                if (guard && isIterateeCall(sources[0], sources[1], guard)) {
-                  customizer = length < 3 ? void 0 : customizer;
-                  length = 1;
+              var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
+                if (object == null) {
+                  return [];
                 }
                 object = Object(object);
+                return arrayFilter(nativeGetSymbols(object), function(symbol) {
+                  return propertyIsEnumerable.call(object, symbol);
+                });
+              };
+              var getTag = baseGetTag;
+              if (DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag || Map2 && getTag(new Map2()) != mapTag || Promise2 && getTag(Promise2.resolve()) != promiseTag || Set2 && getTag(new Set2()) != setTag || WeakMap2 && getTag(new WeakMap2()) != weakMapTag) {
+                getTag = function(value) {
+                  var result = baseGetTag(value), Ctor = result == objectTag ? value.constructor : void 0, ctorString = Ctor ? toSource(Ctor) : "";
+                  if (ctorString) {
+                    switch (ctorString) {
+                      case dataViewCtorString:
+                        return dataViewTag;
+                      case mapCtorString:
+                        return mapTag;
+                      case promiseCtorString:
+                        return promiseTag;
+                      case setCtorString:
+                        return setTag;
+                      case weakMapCtorString:
+                        return weakMapTag;
+                    }
+                  }
+                  return result;
+                };
+              }
+              function isIndex(value, length) {
+                length = length == null ? MAX_SAFE_INTEGER : length;
+                return !!length && (typeof value == "number" || reIsUint.test(value)) && (value > -1 && value % 1 == 0 && value < length);
+              }
+              function isKeyable(value) {
+                var type = typeof value;
+                return type == "string" || type == "number" || type == "symbol" || type == "boolean" ? value !== "__proto__" : value === null;
+              }
+              function isMasked(func) {
+                return !!maskSrcKey && maskSrcKey in func;
+              }
+              function isPrototype(value) {
+                var Ctor = value && value.constructor, proto = typeof Ctor == "function" && Ctor.prototype || objectProto;
+                return value === proto;
+              }
+              function objectToString(value) {
+                return nativeObjectToString.call(value);
+              }
+              function toSource(func) {
+                if (func != null) {
+                  try {
+                    return funcToString.call(func);
+                  } catch (e) {
+                  }
+                  try {
+                    return func + "";
+                  } catch (e) {
+                  }
+                }
+                return "";
+              }
+              function eq(value, other) {
+                return value === other || value !== value && other !== other;
+              }
+              var isArguments = baseIsArguments(/* @__PURE__ */ function() {
+                return arguments;
+              }()) ? baseIsArguments : function(value) {
+                return isObjectLike(value) && hasOwnProperty.call(value, "callee") && !propertyIsEnumerable.call(value, "callee");
+              };
+              var isArray = Array.isArray;
+              function isArrayLike(value) {
+                return value != null && isLength(value.length) && !isFunction(value);
+              }
+              var isBuffer = nativeIsBuffer || stubFalse;
+              function isEqual(value, other) {
+                return baseIsEqual(value, other);
+              }
+              function isFunction(value) {
+                if (!isObject(value)) {
+                  return false;
+                }
+                var tag = baseGetTag(value);
+                return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+              }
+              function isLength(value) {
+                return typeof value == "number" && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+              }
+              function isObject(value) {
+                var type = typeof value;
+                return value != null && (type == "object" || type == "function");
+              }
+              function isObjectLike(value) {
+                return value != null && typeof value == "object";
+              }
+              var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
+              function keys(object) {
+                return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+              }
+              function stubArray() {
+                return [];
+              }
+              function stubFalse() {
+                return false;
+              }
+              module3.exports = isEqual;
+            }).call(this);
+          }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
+        }, {}],
+        9: [function(require2, module3, exports3) {
+          (function(global2) {
+            (function() {
+              var reInterpolate = require2("lodash._reinterpolate"), templateSettings = require2("lodash.templatesettings");
+              var HOT_COUNT = 800, HOT_SPAN = 16;
+              var INFINITY = 1 / 0, MAX_SAFE_INTEGER = 9007199254740991;
+              var argsTag = "[object Arguments]", arrayTag = "[object Array]", asyncTag = "[object AsyncFunction]", boolTag = "[object Boolean]", dateTag = "[object Date]", domExcTag = "[object DOMException]", errorTag = "[object Error]", funcTag = "[object Function]", genTag = "[object GeneratorFunction]", mapTag = "[object Map]", numberTag = "[object Number]", nullTag = "[object Null]", objectTag = "[object Object]", proxyTag = "[object Proxy]", regexpTag = "[object RegExp]", setTag = "[object Set]", stringTag = "[object String]", symbolTag = "[object Symbol]", undefinedTag = "[object Undefined]", weakMapTag = "[object WeakMap]";
+              var arrayBufferTag = "[object ArrayBuffer]", dataViewTag = "[object DataView]", float32Tag = "[object Float32Array]", float64Tag = "[object Float64Array]", int8Tag = "[object Int8Array]", int16Tag = "[object Int16Array]", int32Tag = "[object Int32Array]", uint8Tag = "[object Uint8Array]", uint8ClampedTag = "[object Uint8ClampedArray]", uint16Tag = "[object Uint16Array]", uint32Tag = "[object Uint32Array]";
+              var reEmptyStringLeading = /\b__p \+= '';/g, reEmptyStringMiddle = /\b(__p \+=) '' \+/g, reEmptyStringTrailing = /(__e\(.*?\)|\b__t\)) \+\n'';/g;
+              var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+              var reEsTemplate = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
+              var reIsHostCtor = /^\[object .+?Constructor\]$/;
+              var reIsUint = /^(?:0|[1-9]\d*)$/;
+              var reNoMatch = /($^)/;
+              var reUnescapedString = /['\n\r\u2028\u2029\\]/g;
+              var typedArrayTags = {};
+              typedArrayTags[float32Tag] = typedArrayTags[float64Tag] = typedArrayTags[int8Tag] = typedArrayTags[int16Tag] = typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] = typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] = typedArrayTags[uint32Tag] = true;
+              typedArrayTags[argsTag] = typedArrayTags[arrayTag] = typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] = typedArrayTags[dataViewTag] = typedArrayTags[dateTag] = typedArrayTags[errorTag] = typedArrayTags[funcTag] = typedArrayTags[mapTag] = typedArrayTags[numberTag] = typedArrayTags[objectTag] = typedArrayTags[regexpTag] = typedArrayTags[setTag] = typedArrayTags[stringTag] = typedArrayTags[weakMapTag] = false;
+              var stringEscapes = {
+                "\\": "\\",
+                "'": "'",
+                "\n": "n",
+                "\r": "r",
+                "\u2028": "u2028",
+                "\u2029": "u2029"
+              };
+              var freeGlobal = typeof global2 == "object" && global2 && global2.Object === Object && global2;
+              var freeSelf = typeof self == "object" && self && self.Object === Object && self;
+              var root = freeGlobal || freeSelf || Function("return this")();
+              var freeExports = typeof exports3 == "object" && exports3 && !exports3.nodeType && exports3;
+              var freeModule = freeExports && typeof module3 == "object" && module3 && !module3.nodeType && module3;
+              var moduleExports = freeModule && freeModule.exports === freeExports;
+              var freeProcess = moduleExports && freeGlobal.process;
+              var nodeUtil = function() {
+                try {
+                  var types = freeModule && freeModule.require && freeModule.require("util").types;
+                  if (types) {
+                    return types;
+                  }
+                  return freeProcess && freeProcess.binding && freeProcess.binding("util");
+                } catch (e) {
+                }
+              }();
+              var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
+              function apply(func, thisArg, args) {
+                switch (args.length) {
+                  case 0:
+                    return func.call(thisArg);
+                  case 1:
+                    return func.call(thisArg, args[0]);
+                  case 2:
+                    return func.call(thisArg, args[0], args[1]);
+                  case 3:
+                    return func.call(thisArg, args[0], args[1], args[2]);
+                }
+                return func.apply(thisArg, args);
+              }
+              function arrayMap(array, iteratee) {
+                var index = -1, length = array == null ? 0 : array.length, result = Array(length);
                 while (++index < length) {
-                  var source = sources[index];
-                  if (source) {
-                    assigner(object, source, index, customizer);
+                  result[index] = iteratee(array[index], index, array);
+                }
+                return result;
+              }
+              function baseTimes(n, iteratee) {
+                var index = -1, result = Array(n);
+                while (++index < n) {
+                  result[index] = iteratee(index);
+                }
+                return result;
+              }
+              function baseUnary(func) {
+                return function(value) {
+                  return func(value);
+                };
+              }
+              function baseValues(object, props) {
+                return arrayMap(props, function(key) {
+                  return object[key];
+                });
+              }
+              function escapeStringChar(chr) {
+                return "\\" + stringEscapes[chr];
+              }
+              function getValue(object, key) {
+                return object == null ? void 0 : object[key];
+              }
+              function overArg(func, transform) {
+                return function(arg) {
+                  return func(transform(arg));
+                };
+              }
+              var funcProto = Function.prototype, objectProto = Object.prototype;
+              var coreJsData = root["__core-js_shared__"];
+              var funcToString = funcProto.toString;
+              var hasOwnProperty = objectProto.hasOwnProperty;
+              var maskSrcKey = function() {
+                var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || "");
+                return uid ? "Symbol(src)_1." + uid : "";
+              }();
+              var nativeObjectToString = objectProto.toString;
+              var objectCtorString = funcToString.call(Object);
+              var reIsNative = RegExp(
+                "^" + funcToString.call(hasOwnProperty).replace(reRegExpChar, "\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, "$1.*?") + "$"
+              );
+              var Buffer2 = moduleExports ? root.Buffer : void 0, Symbol2 = root.Symbol, getPrototype = overArg(Object.getPrototypeOf, Object), propertyIsEnumerable = objectProto.propertyIsEnumerable, symToStringTag = Symbol2 ? Symbol2.toStringTag : void 0;
+              var defineProperty = function() {
+                try {
+                  var func = getNative(Object, "defineProperty");
+                  func({}, "", {});
+                  return func;
+                } catch (e) {
+                }
+              }();
+              var nativeIsBuffer = Buffer2 ? Buffer2.isBuffer : void 0, nativeKeys = overArg(Object.keys, Object), nativeMax = Math.max, nativeNow = Date.now;
+              var symbolProto = Symbol2 ? Symbol2.prototype : void 0, symbolToString = symbolProto ? symbolProto.toString : void 0;
+              function arrayLikeKeys(value, inherited) {
+                var isArr = isArray(value), isArg = !isArr && isArguments(value), isBuff = !isArr && !isArg && isBuffer(value), isType = !isArr && !isArg && !isBuff && isTypedArray(value), skipIndexes = isArr || isArg || isBuff || isType, result = skipIndexes ? baseTimes(value.length, String) : [], length = result.length;
+                for (var key in value) {
+                  if ((inherited || hasOwnProperty.call(value, key)) && !(skipIndexes && // Safari 9 has enumerable `arguments.length` in strict mode.
+                  (key == "length" || // Node.js 0.10 has enumerable non-index properties on buffers.
+                  isBuff && (key == "offset" || key == "parent") || // PhantomJS 2 has enumerable non-index properties on typed arrays.
+                  isType && (key == "buffer" || key == "byteLength" || key == "byteOffset") || // Skip index properties.
+                  isIndex(key, length)))) {
+                    result.push(key);
+                  }
+                }
+                return result;
+              }
+              function assignValue(object, key, value) {
+                var objValue = object[key];
+                if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) || value === void 0 && !(key in object)) {
+                  baseAssignValue(object, key, value);
+                }
+              }
+              function baseAssignValue(object, key, value) {
+                if (key == "__proto__" && defineProperty) {
+                  defineProperty(object, key, {
+                    "configurable": true,
+                    "enumerable": true,
+                    "value": value,
+                    "writable": true
+                  });
+                } else {
+                  object[key] = value;
+                }
+              }
+              function baseGetTag(value) {
+                if (value == null) {
+                  return value === void 0 ? undefinedTag : nullTag;
+                }
+                return symToStringTag && symToStringTag in Object(value) ? getRawTag(value) : objectToString(value);
+              }
+              function baseIsArguments(value) {
+                return isObjectLike(value) && baseGetTag(value) == argsTag;
+              }
+              function baseIsNative(value) {
+                if (!isObject(value) || isMasked(value)) {
+                  return false;
+                }
+                var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
+                return pattern.test(toSource(value));
+              }
+              function baseIsTypedArray(value) {
+                return isObjectLike(value) && isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
+              }
+              function baseKeys(object) {
+                if (!isPrototype(object)) {
+                  return nativeKeys(object);
+                }
+                var result = [];
+                for (var key in Object(object)) {
+                  if (hasOwnProperty.call(object, key) && key != "constructor") {
+                    result.push(key);
+                  }
+                }
+                return result;
+              }
+              function baseKeysIn(object) {
+                if (!isObject(object)) {
+                  return nativeKeysIn(object);
+                }
+                var isProto = isPrototype(object), result = [];
+                for (var key in object) {
+                  if (!(key == "constructor" && (isProto || !hasOwnProperty.call(object, key)))) {
+                    result.push(key);
+                  }
+                }
+                return result;
+              }
+              function baseRest(func, start) {
+                return setToString(overRest(func, start, identity), func + "");
+              }
+              var baseSetToString = !defineProperty ? identity : function(func, string) {
+                return defineProperty(func, "toString", {
+                  "configurable": true,
+                  "enumerable": false,
+                  "value": constant(string),
+                  "writable": true
+                });
+              };
+              function baseToString(value) {
+                if (typeof value == "string") {
+                  return value;
+                }
+                if (isArray(value)) {
+                  return arrayMap(value, baseToString) + "";
+                }
+                if (isSymbol(value)) {
+                  return symbolToString ? symbolToString.call(value) : "";
+                }
+                var result = value + "";
+                return result == "0" && 1 / value == -INFINITY ? "-0" : result;
+              }
+              function copyObject(source, props, object, customizer) {
+                var isNew = !object;
+                object || (object = {});
+                var index = -1, length = props.length;
+                while (++index < length) {
+                  var key = props[index];
+                  var newValue = customizer ? customizer(object[key], source[key], key, object, source) : void 0;
+                  if (newValue === void 0) {
+                    newValue = source[key];
+                  }
+                  if (isNew) {
+                    baseAssignValue(object, key, newValue);
+                  } else {
+                    assignValue(object, key, newValue);
                   }
                 }
                 return object;
-              });
-            }
-            function customDefaultsAssignIn(objValue, srcValue, key, object) {
-              if (objValue === void 0 || eq(objValue, objectProto[key]) && !hasOwnProperty.call(object, key)) {
-                return srcValue;
               }
-              return objValue;
-            }
-            function getNative(object, key) {
-              var value = getValue(object, key);
-              return baseIsNative(value) ? value : void 0;
-            }
-            function getRawTag(value) {
-              var isOwn = hasOwnProperty.call(value, symToStringTag), tag = value[symToStringTag];
-              try {
-                value[symToStringTag] = void 0;
-                var unmasked = true;
-              } catch (e) {
-              }
-              var result = nativeObjectToString.call(value);
-              if (unmasked) {
-                if (isOwn) {
-                  value[symToStringTag] = tag;
-                } else {
-                  delete value[symToStringTag];
-                }
-              }
-              return result;
-            }
-            function isIndex(value, length) {
-              var type = typeof value;
-              length = length == null ? MAX_SAFE_INTEGER : length;
-              return !!length && (type == "number" || type != "symbol" && reIsUint.test(value)) && (value > -1 && value % 1 == 0 && value < length);
-            }
-            function isIterateeCall(value, index, object) {
-              if (!isObject(object)) {
-                return false;
-              }
-              var type = typeof index;
-              if (type == "number" ? isArrayLike(object) && isIndex(index, object.length) : type == "string" && index in object) {
-                return eq(object[index], value);
-              }
-              return false;
-            }
-            function isMasked(func) {
-              return !!maskSrcKey && maskSrcKey in func;
-            }
-            function isPrototype(value) {
-              var Ctor = value && value.constructor, proto = typeof Ctor == "function" && Ctor.prototype || objectProto;
-              return value === proto;
-            }
-            function nativeKeysIn(object) {
-              var result = [];
-              if (object != null) {
-                for (var key in Object(object)) {
-                  result.push(key);
-                }
-              }
-              return result;
-            }
-            function objectToString(value) {
-              return nativeObjectToString.call(value);
-            }
-            function overRest(func, start, transform) {
-              start = nativeMax(start === void 0 ? func.length - 1 : start, 0);
-              return function() {
-                var args = arguments, index = -1, length = nativeMax(args.length - start, 0), array = Array(length);
-                while (++index < length) {
-                  array[index] = args[start + index];
-                }
-                index = -1;
-                var otherArgs = Array(start + 1);
-                while (++index < start) {
-                  otherArgs[index] = args[index];
-                }
-                otherArgs[start] = transform(array);
-                return apply(func, this, otherArgs);
-              };
-            }
-            var setToString = shortOut(baseSetToString);
-            function shortOut(func) {
-              var count = 0, lastCalled = 0;
-              return function() {
-                var stamp = nativeNow(), remaining = HOT_SPAN - (stamp - lastCalled);
-                lastCalled = stamp;
-                if (remaining > 0) {
-                  if (++count >= HOT_COUNT) {
-                    return arguments[0];
+              function createAssigner(assigner) {
+                return baseRest(function(object, sources) {
+                  var index = -1, length = sources.length, customizer = length > 1 ? sources[length - 1] : void 0, guard = length > 2 ? sources[2] : void 0;
+                  customizer = assigner.length > 3 && typeof customizer == "function" ? (length--, customizer) : void 0;
+                  if (guard && isIterateeCall(sources[0], sources[1], guard)) {
+                    customizer = length < 3 ? void 0 : customizer;
+                    length = 1;
                   }
-                } else {
-                  count = 0;
+                  object = Object(object);
+                  while (++index < length) {
+                    var source = sources[index];
+                    if (source) {
+                      assigner(object, source, index, customizer);
+                    }
+                  }
+                  return object;
+                });
+              }
+              function customDefaultsAssignIn(objValue, srcValue, key, object) {
+                if (objValue === void 0 || eq(objValue, objectProto[key]) && !hasOwnProperty.call(object, key)) {
+                  return srcValue;
                 }
-                return func.apply(void 0, arguments);
+                return objValue;
+              }
+              function getNative(object, key) {
+                var value = getValue(object, key);
+                return baseIsNative(value) ? value : void 0;
+              }
+              function getRawTag(value) {
+                var isOwn = hasOwnProperty.call(value, symToStringTag), tag = value[symToStringTag];
+                try {
+                  value[symToStringTag] = void 0;
+                  var unmasked = true;
+                } catch (e) {
+                }
+                var result = nativeObjectToString.call(value);
+                if (unmasked) {
+                  if (isOwn) {
+                    value[symToStringTag] = tag;
+                  } else {
+                    delete value[symToStringTag];
+                  }
+                }
+                return result;
+              }
+              function isIndex(value, length) {
+                var type = typeof value;
+                length = length == null ? MAX_SAFE_INTEGER : length;
+                return !!length && (type == "number" || type != "symbol" && reIsUint.test(value)) && (value > -1 && value % 1 == 0 && value < length);
+              }
+              function isIterateeCall(value, index, object) {
+                if (!isObject(object)) {
+                  return false;
+                }
+                var type = typeof index;
+                if (type == "number" ? isArrayLike(object) && isIndex(index, object.length) : type == "string" && index in object) {
+                  return eq(object[index], value);
+                }
+                return false;
+              }
+              function isMasked(func) {
+                return !!maskSrcKey && maskSrcKey in func;
+              }
+              function isPrototype(value) {
+                var Ctor = value && value.constructor, proto = typeof Ctor == "function" && Ctor.prototype || objectProto;
+                return value === proto;
+              }
+              function nativeKeysIn(object) {
+                var result = [];
+                if (object != null) {
+                  for (var key in Object(object)) {
+                    result.push(key);
+                  }
+                }
+                return result;
+              }
+              function objectToString(value) {
+                return nativeObjectToString.call(value);
+              }
+              function overRest(func, start, transform) {
+                start = nativeMax(start === void 0 ? func.length - 1 : start, 0);
+                return function() {
+                  var args = arguments, index = -1, length = nativeMax(args.length - start, 0), array = Array(length);
+                  while (++index < length) {
+                    array[index] = args[start + index];
+                  }
+                  index = -1;
+                  var otherArgs = Array(start + 1);
+                  while (++index < start) {
+                    otherArgs[index] = args[index];
+                  }
+                  otherArgs[start] = transform(array);
+                  return apply(func, this, otherArgs);
+                };
+              }
+              var setToString = shortOut(baseSetToString);
+              function shortOut(func) {
+                var count = 0, lastCalled = 0;
+                return function() {
+                  var stamp = nativeNow(), remaining = HOT_SPAN - (stamp - lastCalled);
+                  lastCalled = stamp;
+                  if (remaining > 0) {
+                    if (++count >= HOT_COUNT) {
+                      return arguments[0];
+                    }
+                  } else {
+                    count = 0;
+                  }
+                  return func.apply(void 0, arguments);
+                };
+              }
+              function toSource(func) {
+                if (func != null) {
+                  try {
+                    return funcToString.call(func);
+                  } catch (e) {
+                  }
+                  try {
+                    return func + "";
+                  } catch (e) {
+                  }
+                }
+                return "";
+              }
+              function eq(value, other) {
+                return value === other || value !== value && other !== other;
+              }
+              var isArguments = baseIsArguments(/* @__PURE__ */ function() {
+                return arguments;
+              }()) ? baseIsArguments : function(value) {
+                return isObjectLike(value) && hasOwnProperty.call(value, "callee") && !propertyIsEnumerable.call(value, "callee");
               };
-            }
-            function toSource(func) {
-              if (func != null) {
-                try {
-                  return funcToString.call(func);
-                } catch (e) {
+              var isArray = Array.isArray;
+              function isArrayLike(value) {
+                return value != null && isLength(value.length) && !isFunction(value);
+              }
+              var isBuffer = nativeIsBuffer || stubFalse;
+              function isError(value) {
+                if (!isObjectLike(value)) {
+                  return false;
                 }
-                try {
-                  return func + "";
-                } catch (e) {
+                var tag = baseGetTag(value);
+                return tag == errorTag || tag == domExcTag || typeof value.message == "string" && typeof value.name == "string" && !isPlainObject(value);
+              }
+              function isFunction(value) {
+                if (!isObject(value)) {
+                  return false;
                 }
+                var tag = baseGetTag(value);
+                return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
               }
-              return "";
-            }
-            function eq(value, other) {
-              return value === other || value !== value && other !== other;
-            }
-            var isArguments = baseIsArguments(/* @__PURE__ */ function() {
-              return arguments;
-            }()) ? baseIsArguments : function(value) {
-              return isObjectLike(value) && hasOwnProperty.call(value, "callee") && !propertyIsEnumerable.call(value, "callee");
-            };
-            var isArray = Array.isArray;
-            function isArrayLike(value) {
-              return value != null && isLength(value.length) && !isFunction(value);
-            }
-            var isBuffer = nativeIsBuffer || stubFalse;
-            function isError(value) {
-              if (!isObjectLike(value)) {
-                return false;
+              function isLength(value) {
+                return typeof value == "number" && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
               }
-              var tag = baseGetTag(value);
-              return tag == errorTag || tag == domExcTag || typeof value.message == "string" && typeof value.name == "string" && !isPlainObject(value);
-            }
-            function isFunction(value) {
-              if (!isObject(value)) {
-                return false;
+              function isObject(value) {
+                var type = typeof value;
+                return value != null && (type == "object" || type == "function");
               }
-              var tag = baseGetTag(value);
-              return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
-            }
-            function isLength(value) {
-              return typeof value == "number" && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-            }
-            function isObject(value) {
-              var type = typeof value;
-              return value != null && (type == "object" || type == "function");
-            }
-            function isObjectLike(value) {
-              return value != null && typeof value == "object";
-            }
-            function isPlainObject(value) {
-              if (!isObjectLike(value) || baseGetTag(value) != objectTag) {
-                return false;
+              function isObjectLike(value) {
+                return value != null && typeof value == "object";
               }
-              var proto = getPrototype(value);
-              if (proto === null) {
-                return true;
-              }
-              var Ctor = hasOwnProperty.call(proto, "constructor") && proto.constructor;
-              return typeof Ctor == "function" && Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString;
-            }
-            function isSymbol(value) {
-              return typeof value == "symbol" || isObjectLike(value) && baseGetTag(value) == symbolTag;
-            }
-            var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
-            function toString(value) {
-              return value == null ? "" : baseToString(value);
-            }
-            var assignInWith = createAssigner(function(object, source, srcIndex, customizer) {
-              copyObject(source, keysIn(source), object, customizer);
-            });
-            function keys(object) {
-              return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
-            }
-            function keysIn(object) {
-              return isArrayLike(object) ? arrayLikeKeys(object, true) : baseKeysIn(object);
-            }
-            function template(string, options, guard) {
-              var settings = templateSettings.imports._.templateSettings || templateSettings;
-              if (guard && isIterateeCall(string, options, guard)) {
-                options = void 0;
-              }
-              string = toString(string);
-              options = assignInWith({}, options, settings, customDefaultsAssignIn);
-              var imports = assignInWith({}, options.imports, settings.imports, customDefaultsAssignIn), importsKeys = keys(imports), importsValues = baseValues(imports, importsKeys);
-              var isEscaping, isEvaluating, index = 0, interpolate = options.interpolate || reNoMatch, source = "__p += '";
-              var reDelimiters = RegExp(
-                (options.escape || reNoMatch).source + "|" + interpolate.source + "|" + (interpolate === reInterpolate ? reEsTemplate : reNoMatch).source + "|" + (options.evaluate || reNoMatch).source + "|$",
-                "g"
-              );
-              var sourceURL = hasOwnProperty.call(options, "sourceURL") ? "//# sourceURL=" + (options.sourceURL + "").replace(/[\r\n]/g, " ") + "\n" : "";
-              string.replace(reDelimiters, function(match, escapeValue, interpolateValue, esTemplateValue, evaluateValue, offset) {
-                interpolateValue || (interpolateValue = esTemplateValue);
-                source += string.slice(index, offset).replace(reUnescapedString, escapeStringChar);
-                if (escapeValue) {
-                  isEscaping = true;
-                  source += "' +\n__e(" + escapeValue + ") +\n'";
+              function isPlainObject(value) {
+                if (!isObjectLike(value) || baseGetTag(value) != objectTag) {
+                  return false;
                 }
-                if (evaluateValue) {
-                  isEvaluating = true;
-                  source += "';\n" + evaluateValue + ";\n__p += '";
+                var proto = getPrototype(value);
+                if (proto === null) {
+                  return true;
                 }
-                if (interpolateValue) {
-                  source += "' +\n((__t = (" + interpolateValue + ")) == null ? '' : __t) +\n'";
-                }
-                index = offset + match.length;
-                return match;
+                var Ctor = hasOwnProperty.call(proto, "constructor") && proto.constructor;
+                return typeof Ctor == "function" && Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString;
+              }
+              function isSymbol(value) {
+                return typeof value == "symbol" || isObjectLike(value) && baseGetTag(value) == symbolTag;
+              }
+              var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
+              function toString(value) {
+                return value == null ? "" : baseToString(value);
+              }
+              var assignInWith = createAssigner(function(object, source, srcIndex, customizer) {
+                copyObject(source, keysIn(source), object, customizer);
               });
-              source += "';\n";
-              var variable = hasOwnProperty.call(options, "variable") && options.variable;
-              if (!variable) {
-                source = "with (obj) {\n" + source + "\n}\n";
+              function keys(object) {
+                return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
               }
-              source = (isEvaluating ? source.replace(reEmptyStringLeading, "") : source).replace(reEmptyStringMiddle, "$1").replace(reEmptyStringTrailing, "$1;");
-              source = "function(" + (variable || "obj") + ") {\n" + (variable ? "" : "obj || (obj = {});\n") + "var __t, __p = ''" + (isEscaping ? ", __e = _.escape" : "") + (isEvaluating ? ", __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n" : ";\n") + source + "return __p\n}";
-              var result = attempt(function() {
-                return Function(importsKeys, sourceURL + "return " + source).apply(void 0, importsValues);
+              function keysIn(object) {
+                return isArrayLike(object) ? arrayLikeKeys(object, true) : baseKeysIn(object);
+              }
+              function template(string, options, guard) {
+                var settings = templateSettings.imports._.templateSettings || templateSettings;
+                if (guard && isIterateeCall(string, options, guard)) {
+                  options = void 0;
+                }
+                string = toString(string);
+                options = assignInWith({}, options, settings, customDefaultsAssignIn);
+                var imports = assignInWith({}, options.imports, settings.imports, customDefaultsAssignIn), importsKeys = keys(imports), importsValues = baseValues(imports, importsKeys);
+                var isEscaping, isEvaluating, index = 0, interpolate = options.interpolate || reNoMatch, source = "__p += '";
+                var reDelimiters = RegExp(
+                  (options.escape || reNoMatch).source + "|" + interpolate.source + "|" + (interpolate === reInterpolate ? reEsTemplate : reNoMatch).source + "|" + (options.evaluate || reNoMatch).source + "|$",
+                  "g"
+                );
+                var sourceURL = hasOwnProperty.call(options, "sourceURL") ? "//# sourceURL=" + (options.sourceURL + "").replace(/[\r\n]/g, " ") + "\n" : "";
+                string.replace(reDelimiters, function(match, escapeValue, interpolateValue, esTemplateValue, evaluateValue, offset) {
+                  interpolateValue || (interpolateValue = esTemplateValue);
+                  source += string.slice(index, offset).replace(reUnescapedString, escapeStringChar);
+                  if (escapeValue) {
+                    isEscaping = true;
+                    source += "' +\n__e(" + escapeValue + ") +\n'";
+                  }
+                  if (evaluateValue) {
+                    isEvaluating = true;
+                    source += "';\n" + evaluateValue + ";\n__p += '";
+                  }
+                  if (interpolateValue) {
+                    source += "' +\n((__t = (" + interpolateValue + ")) == null ? '' : __t) +\n'";
+                  }
+                  index = offset + match.length;
+                  return match;
+                });
+                source += "';\n";
+                var variable = hasOwnProperty.call(options, "variable") && options.variable;
+                if (!variable) {
+                  source = "with (obj) {\n" + source + "\n}\n";
+                }
+                source = (isEvaluating ? source.replace(reEmptyStringLeading, "") : source).replace(reEmptyStringMiddle, "$1").replace(reEmptyStringTrailing, "$1;");
+                source = "function(" + (variable || "obj") + ") {\n" + (variable ? "" : "obj || (obj = {});\n") + "var __t, __p = ''" + (isEscaping ? ", __e = _.escape" : "") + (isEvaluating ? ", __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n" : ";\n") + source + "return __p\n}";
+                var result = attempt(function() {
+                  return Function(importsKeys, sourceURL + "return " + source).apply(void 0, importsValues);
+                });
+                result.source = source;
+                if (isError(result)) {
+                  throw result;
+                }
+                return result;
+              }
+              var attempt = baseRest(function(func, args) {
+                try {
+                  return apply(func, void 0, args);
+                } catch (e) {
+                  return isError(e) ? e : new Error(e);
+                }
               });
-              result.source = source;
-              if (isError(result)) {
-                throw result;
+              function constant(value) {
+                return function() {
+                  return value;
+                };
               }
-              return result;
-            }
-            var attempt = baseRest(function(func, args) {
-              try {
-                return apply(func, void 0, args);
-              } catch (e) {
-                return isError(e) ? e : new Error(e);
-              }
-            });
-            function constant(value) {
-              return function() {
+              function identity(value) {
                 return value;
+              }
+              function stubFalse() {
+                return false;
+              }
+              module3.exports = template;
+            }).call(this);
+          }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
+        }, { "lodash._reinterpolate": 6, "lodash.templatesettings": 10 }],
+        10: [function(require2, module3, exports3) {
+          (function(global2) {
+            (function() {
+              var reInterpolate = require2("lodash._reinterpolate");
+              var INFINITY = 1 / 0;
+              var nullTag = "[object Null]", symbolTag = "[object Symbol]", undefinedTag = "[object Undefined]";
+              var reUnescapedHtml = /[&<>"']/g, reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
+              var reEscape = /<%-([\s\S]+?)%>/g, reEvaluate = /<%([\s\S]+?)%>/g;
+              var htmlEscapes = {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
               };
+              var freeGlobal = typeof global2 == "object" && global2 && global2.Object === Object && global2;
+              var freeSelf = typeof self == "object" && self && self.Object === Object && self;
+              var root = freeGlobal || freeSelf || Function("return this")();
+              function arrayMap(array, iteratee) {
+                var index = -1, length = array == null ? 0 : array.length, result = Array(length);
+                while (++index < length) {
+                  result[index] = iteratee(array[index], index, array);
+                }
+                return result;
+              }
+              function basePropertyOf(object) {
+                return function(key) {
+                  return object == null ? void 0 : object[key];
+                };
+              }
+              var escapeHtmlChar = basePropertyOf(htmlEscapes);
+              var objectProto = Object.prototype;
+              var hasOwnProperty = objectProto.hasOwnProperty;
+              var nativeObjectToString = objectProto.toString;
+              var Symbol2 = root.Symbol, symToStringTag = Symbol2 ? Symbol2.toStringTag : void 0;
+              var symbolProto = Symbol2 ? Symbol2.prototype : void 0, symbolToString = symbolProto ? symbolProto.toString : void 0;
+              var templateSettings = {
+                /**
+                 * Used to detect `data` property values to be HTML-escaped.
+                 *
+                 * @memberOf _.templateSettings
+                 * @type {RegExp}
+                 */
+                "escape": reEscape,
+                /**
+                 * Used to detect code to be evaluated.
+                 *
+                 * @memberOf _.templateSettings
+                 * @type {RegExp}
+                 */
+                "evaluate": reEvaluate,
+                /**
+                 * Used to detect `data` property values to inject.
+                 *
+                 * @memberOf _.templateSettings
+                 * @type {RegExp}
+                 */
+                "interpolate": reInterpolate,
+                /**
+                 * Used to reference the data object in the template text.
+                 *
+                 * @memberOf _.templateSettings
+                 * @type {string}
+                 */
+                "variable": "",
+                /**
+                 * Used to import variables into the compiled template.
+                 *
+                 * @memberOf _.templateSettings
+                 * @type {Object}
+                 */
+                "imports": {
+                  /**
+                   * A reference to the `lodash` function.
+                   *
+                   * @memberOf _.templateSettings.imports
+                   * @type {Function}
+                   */
+                  "_": { "escape": escape2 }
+                }
+              };
+              function baseGetTag(value) {
+                if (value == null) {
+                  return value === void 0 ? undefinedTag : nullTag;
+                }
+                return symToStringTag && symToStringTag in Object(value) ? getRawTag(value) : objectToString(value);
+              }
+              function baseToString(value) {
+                if (typeof value == "string") {
+                  return value;
+                }
+                if (isArray(value)) {
+                  return arrayMap(value, baseToString) + "";
+                }
+                if (isSymbol(value)) {
+                  return symbolToString ? symbolToString.call(value) : "";
+                }
+                var result = value + "";
+                return result == "0" && 1 / value == -INFINITY ? "-0" : result;
+              }
+              function getRawTag(value) {
+                var isOwn = hasOwnProperty.call(value, symToStringTag), tag = value[symToStringTag];
+                try {
+                  value[symToStringTag] = void 0;
+                  var unmasked = true;
+                } catch (e) {
+                }
+                var result = nativeObjectToString.call(value);
+                if (unmasked) {
+                  if (isOwn) {
+                    value[symToStringTag] = tag;
+                  } else {
+                    delete value[symToStringTag];
+                  }
+                }
+                return result;
+              }
+              function objectToString(value) {
+                return nativeObjectToString.call(value);
+              }
+              var isArray = Array.isArray;
+              function isObjectLike(value) {
+                return value != null && typeof value == "object";
+              }
+              function isSymbol(value) {
+                return typeof value == "symbol" || isObjectLike(value) && baseGetTag(value) == symbolTag;
+              }
+              function toString(value) {
+                return value == null ? "" : baseToString(value);
+              }
+              function escape2(string) {
+                string = toString(string);
+                return string && reHasUnescapedHtml.test(string) ? string.replace(reUnescapedHtml, escapeHtmlChar) : string;
+              }
+              module3.exports = templateSettings;
+            }).call(this);
+          }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
+        }, { "lodash._reinterpolate": 6 }],
+        11: [function(require2, module3, exports3) {
+          var root = require2("./_root");
+          var Symbol2 = root.Symbol;
+          module3.exports = Symbol2;
+        }, { "./_root": 18 }],
+        12: [function(require2, module3, exports3) {
+          var Symbol2 = require2("./_Symbol"), getRawTag = require2("./_getRawTag"), objectToString = require2("./_objectToString");
+          var nullTag = "[object Null]", undefinedTag = "[object Undefined]";
+          var symToStringTag = Symbol2 ? Symbol2.toStringTag : void 0;
+          function baseGetTag(value) {
+            if (value == null) {
+              return value === void 0 ? undefinedTag : nullTag;
             }
-            function identity(value) {
-              return value;
+            return symToStringTag && symToStringTag in Object(value) ? getRawTag(value) : objectToString(value);
+          }
+          module3.exports = baseGetTag;
+        }, { "./_Symbol": 11, "./_getRawTag": 15, "./_objectToString": 16 }],
+        13: [function(require2, module3, exports3) {
+          (function(global2) {
+            (function() {
+              var freeGlobal = typeof global2 == "object" && global2 && global2.Object === Object && global2;
+              module3.exports = freeGlobal;
+            }).call(this);
+          }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
+        }, {}],
+        14: [function(require2, module3, exports3) {
+          var overArg = require2("./_overArg");
+          var getPrototype = overArg(Object.getPrototypeOf, Object);
+          module3.exports = getPrototype;
+        }, { "./_overArg": 17 }],
+        15: [function(require2, module3, exports3) {
+          var Symbol2 = require2("./_Symbol");
+          var objectProto = Object.prototype;
+          var hasOwnProperty = objectProto.hasOwnProperty;
+          var nativeObjectToString = objectProto.toString;
+          var symToStringTag = Symbol2 ? Symbol2.toStringTag : void 0;
+          function getRawTag(value) {
+            var isOwn = hasOwnProperty.call(value, symToStringTag), tag = value[symToStringTag];
+            try {
+              value[symToStringTag] = void 0;
+              var unmasked = true;
+            } catch (e) {
             }
-            function stubFalse() {
+            var result = nativeObjectToString.call(value);
+            if (unmasked) {
+              if (isOwn) {
+                value[symToStringTag] = tag;
+              } else {
+                delete value[symToStringTag];
+              }
+            }
+            return result;
+          }
+          module3.exports = getRawTag;
+        }, { "./_Symbol": 11 }],
+        16: [function(require2, module3, exports3) {
+          var objectProto = Object.prototype;
+          var nativeObjectToString = objectProto.toString;
+          function objectToString(value) {
+            return nativeObjectToString.call(value);
+          }
+          module3.exports = objectToString;
+        }, {}],
+        17: [function(require2, module3, exports3) {
+          function overArg(func, transform) {
+            return function(arg) {
+              return func(transform(arg));
+            };
+          }
+          module3.exports = overArg;
+        }, {}],
+        18: [function(require2, module3, exports3) {
+          var freeGlobal = require2("./_freeGlobal");
+          var freeSelf = typeof self == "object" && self && self.Object === Object && self;
+          var root = freeGlobal || freeSelf || Function("return this")();
+          module3.exports = root;
+        }, { "./_freeGlobal": 13 }],
+        19: [function(require2, module3, exports3) {
+          function isObjectLike(value) {
+            return value != null && typeof value == "object";
+          }
+          module3.exports = isObjectLike;
+        }, {}],
+        20: [function(require2, module3, exports3) {
+          var baseGetTag = require2("./_baseGetTag"), getPrototype = require2("./_getPrototype"), isObjectLike = require2("./isObjectLike");
+          var objectTag = "[object Object]";
+          var funcProto = Function.prototype, objectProto = Object.prototype;
+          var funcToString = funcProto.toString;
+          var hasOwnProperty = objectProto.hasOwnProperty;
+          var objectCtorString = funcToString.call(Object);
+          function isPlainObject(value) {
+            if (!isObjectLike(value) || baseGetTag(value) != objectTag) {
               return false;
             }
-            module3.exports = template;
-          }).call(this);
-        }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
-      }, { "lodash._reinterpolate": 6, "lodash.templatesettings": 10 }], 10: [function(require2, module3, exports3) {
-        (function(global2) {
+            var proto = getPrototype(value);
+            if (proto === null) {
+              return true;
+            }
+            var Ctor = hasOwnProperty.call(proto, "constructor") && proto.constructor;
+            return typeof Ctor == "function" && Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString;
+          }
+          module3.exports = isPlainObject;
+        }, { "./_baseGetTag": 12, "./_getPrototype": 14, "./isObjectLike": 19 }],
+        21: [function(require2, module3, exports3) {
+          var process2 = module3.exports = {};
+          var cachedSetTimeout;
+          var cachedClearTimeout;
+          function defaultSetTimout() {
+            throw new Error("setTimeout has not been defined");
+          }
+          function defaultClearTimeout() {
+            throw new Error("clearTimeout has not been defined");
+          }
           (function() {
-            var reInterpolate = require2("lodash._reinterpolate");
-            var INFINITY = 1 / 0;
-            var nullTag = "[object Null]", symbolTag = "[object Symbol]", undefinedTag = "[object Undefined]";
-            var reUnescapedHtml = /[&<>"']/g, reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
-            var reEscape = /<%-([\s\S]+?)%>/g, reEvaluate = /<%([\s\S]+?)%>/g;
-            var htmlEscapes = {
-              "&": "&amp;",
-              "<": "&lt;",
-              ">": "&gt;",
-              '"': "&quot;",
-              "'": "&#39;"
-            };
-            var freeGlobal = typeof global2 == "object" && global2 && global2.Object === Object && global2;
-            var freeSelf = typeof self == "object" && self && self.Object === Object && self;
-            var root = freeGlobal || freeSelf || Function("return this")();
-            function arrayMap(array, iteratee) {
-              var index = -1, length = array == null ? 0 : array.length, result = Array(length);
-              while (++index < length) {
-                result[index] = iteratee(array[index], index, array);
+            try {
+              if (typeof setTimeout === "function") {
+                cachedSetTimeout = setTimeout;
+              } else {
+                cachedSetTimeout = defaultSetTimout;
               }
-              return result;
-            }
-            function basePropertyOf(object) {
-              return function(key) {
-                return object == null ? void 0 : object[key];
-              };
-            }
-            var escapeHtmlChar = basePropertyOf(htmlEscapes);
-            var objectProto = Object.prototype;
-            var hasOwnProperty = objectProto.hasOwnProperty;
-            var nativeObjectToString = objectProto.toString;
-            var Symbol2 = root.Symbol, symToStringTag = Symbol2 ? Symbol2.toStringTag : void 0;
-            var symbolProto = Symbol2 ? Symbol2.prototype : void 0, symbolToString = symbolProto ? symbolProto.toString : void 0;
-            var templateSettings = {
-              /**
-               * Used to detect `data` property values to be HTML-escaped.
-               *
-               * @memberOf _.templateSettings
-               * @type {RegExp}
-               */
-              "escape": reEscape,
-              /**
-               * Used to detect code to be evaluated.
-               *
-               * @memberOf _.templateSettings
-               * @type {RegExp}
-               */
-              "evaluate": reEvaluate,
-              /**
-               * Used to detect `data` property values to inject.
-               *
-               * @memberOf _.templateSettings
-               * @type {RegExp}
-               */
-              "interpolate": reInterpolate,
-              /**
-               * Used to reference the data object in the template text.
-               *
-               * @memberOf _.templateSettings
-               * @type {string}
-               */
-              "variable": "",
-              /**
-               * Used to import variables into the compiled template.
-               *
-               * @memberOf _.templateSettings
-               * @type {Object}
-               */
-              "imports": {
-                /**
-                 * A reference to the `lodash` function.
-                 *
-                 * @memberOf _.templateSettings.imports
-                 * @type {Function}
-                 */
-                "_": { "escape": escape2 }
-              }
-            };
-            function baseGetTag(value) {
-              if (value == null) {
-                return value === void 0 ? undefinedTag : nullTag;
-              }
-              return symToStringTag && symToStringTag in Object(value) ? getRawTag(value) : objectToString(value);
-            }
-            function baseToString(value) {
-              if (typeof value == "string") {
-                return value;
-              }
-              if (isArray(value)) {
-                return arrayMap(value, baseToString) + "";
-              }
-              if (isSymbol(value)) {
-                return symbolToString ? symbolToString.call(value) : "";
-              }
-              var result = value + "";
-              return result == "0" && 1 / value == -INFINITY ? "-0" : result;
-            }
-            function getRawTag(value) {
-              var isOwn = hasOwnProperty.call(value, symToStringTag), tag = value[symToStringTag];
-              try {
-                value[symToStringTag] = void 0;
-                var unmasked = true;
-              } catch (e) {
-              }
-              var result = nativeObjectToString.call(value);
-              if (unmasked) {
-                if (isOwn) {
-                  value[symToStringTag] = tag;
-                } else {
-                  delete value[symToStringTag];
-                }
-              }
-              return result;
-            }
-            function objectToString(value) {
-              return nativeObjectToString.call(value);
-            }
-            var isArray = Array.isArray;
-            function isObjectLike(value) {
-              return value != null && typeof value == "object";
-            }
-            function isSymbol(value) {
-              return typeof value == "symbol" || isObjectLike(value) && baseGetTag(value) == symbolTag;
-            }
-            function toString(value) {
-              return value == null ? "" : baseToString(value);
-            }
-            function escape2(string) {
-              string = toString(string);
-              return string && reHasUnescapedHtml.test(string) ? string.replace(reUnescapedHtml, escapeHtmlChar) : string;
-            }
-            module3.exports = templateSettings;
-          }).call(this);
-        }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
-      }, { "lodash._reinterpolate": 6 }], 11: [function(require2, module3, exports3) {
-        var root = require2("./_root");
-        var Symbol2 = root.Symbol;
-        module3.exports = Symbol2;
-      }, { "./_root": 18 }], 12: [function(require2, module3, exports3) {
-        var Symbol2 = require2("./_Symbol"), getRawTag = require2("./_getRawTag"), objectToString = require2("./_objectToString");
-        var nullTag = "[object Null]", undefinedTag = "[object Undefined]";
-        var symToStringTag = Symbol2 ? Symbol2.toStringTag : void 0;
-        function baseGetTag(value) {
-          if (value == null) {
-            return value === void 0 ? undefinedTag : nullTag;
-          }
-          return symToStringTag && symToStringTag in Object(value) ? getRawTag(value) : objectToString(value);
-        }
-        module3.exports = baseGetTag;
-      }, { "./_Symbol": 11, "./_getRawTag": 15, "./_objectToString": 16 }], 13: [function(require2, module3, exports3) {
-        (function(global2) {
-          (function() {
-            var freeGlobal = typeof global2 == "object" && global2 && global2.Object === Object && global2;
-            module3.exports = freeGlobal;
-          }).call(this);
-        }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
-      }, {}], 14: [function(require2, module3, exports3) {
-        var overArg = require2("./_overArg");
-        var getPrototype = overArg(Object.getPrototypeOf, Object);
-        module3.exports = getPrototype;
-      }, { "./_overArg": 17 }], 15: [function(require2, module3, exports3) {
-        var Symbol2 = require2("./_Symbol");
-        var objectProto = Object.prototype;
-        var hasOwnProperty = objectProto.hasOwnProperty;
-        var nativeObjectToString = objectProto.toString;
-        var symToStringTag = Symbol2 ? Symbol2.toStringTag : void 0;
-        function getRawTag(value) {
-          var isOwn = hasOwnProperty.call(value, symToStringTag), tag = value[symToStringTag];
-          try {
-            value[symToStringTag] = void 0;
-            var unmasked = true;
-          } catch (e) {
-          }
-          var result = nativeObjectToString.call(value);
-          if (unmasked) {
-            if (isOwn) {
-              value[symToStringTag] = tag;
-            } else {
-              delete value[symToStringTag];
-            }
-          }
-          return result;
-        }
-        module3.exports = getRawTag;
-      }, { "./_Symbol": 11 }], 16: [function(require2, module3, exports3) {
-        var objectProto = Object.prototype;
-        var nativeObjectToString = objectProto.toString;
-        function objectToString(value) {
-          return nativeObjectToString.call(value);
-        }
-        module3.exports = objectToString;
-      }, {}], 17: [function(require2, module3, exports3) {
-        function overArg(func, transform) {
-          return function(arg) {
-            return func(transform(arg));
-          };
-        }
-        module3.exports = overArg;
-      }, {}], 18: [function(require2, module3, exports3) {
-        var freeGlobal = require2("./_freeGlobal");
-        var freeSelf = typeof self == "object" && self && self.Object === Object && self;
-        var root = freeGlobal || freeSelf || Function("return this")();
-        module3.exports = root;
-      }, { "./_freeGlobal": 13 }], 19: [function(require2, module3, exports3) {
-        function isObjectLike(value) {
-          return value != null && typeof value == "object";
-        }
-        module3.exports = isObjectLike;
-      }, {}], 20: [function(require2, module3, exports3) {
-        var baseGetTag = require2("./_baseGetTag"), getPrototype = require2("./_getPrototype"), isObjectLike = require2("./isObjectLike");
-        var objectTag = "[object Object]";
-        var funcProto = Function.prototype, objectProto = Object.prototype;
-        var funcToString = funcProto.toString;
-        var hasOwnProperty = objectProto.hasOwnProperty;
-        var objectCtorString = funcToString.call(Object);
-        function isPlainObject(value) {
-          if (!isObjectLike(value) || baseGetTag(value) != objectTag) {
-            return false;
-          }
-          var proto = getPrototype(value);
-          if (proto === null) {
-            return true;
-          }
-          var Ctor = hasOwnProperty.call(proto, "constructor") && proto.constructor;
-          return typeof Ctor == "function" && Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString;
-        }
-        module3.exports = isPlainObject;
-      }, { "./_baseGetTag": 12, "./_getPrototype": 14, "./isObjectLike": 19 }], 21: [function(require2, module3, exports3) {
-        var process2 = module3.exports = {};
-        var cachedSetTimeout;
-        var cachedClearTimeout;
-        function defaultSetTimout() {
-          throw new Error("setTimeout has not been defined");
-        }
-        function defaultClearTimeout() {
-          throw new Error("clearTimeout has not been defined");
-        }
-        (function() {
-          try {
-            if (typeof setTimeout === "function") {
-              cachedSetTimeout = setTimeout;
-            } else {
+            } catch (e) {
               cachedSetTimeout = defaultSetTimout;
             }
-          } catch (e) {
-            cachedSetTimeout = defaultSetTimout;
-          }
-          try {
-            if (typeof clearTimeout === "function") {
-              cachedClearTimeout = clearTimeout;
-            } else {
+            try {
+              if (typeof clearTimeout === "function") {
+                cachedClearTimeout = clearTimeout;
+              } else {
+                cachedClearTimeout = defaultClearTimeout;
+              }
+            } catch (e) {
               cachedClearTimeout = defaultClearTimeout;
             }
-          } catch (e) {
-            cachedClearTimeout = defaultClearTimeout;
-          }
-        })();
-        function runTimeout(fun) {
-          if (cachedSetTimeout === setTimeout) {
-            return setTimeout(fun, 0);
-          }
-          if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-            cachedSetTimeout = setTimeout;
-            return setTimeout(fun, 0);
-          }
-          try {
-            return cachedSetTimeout(fun, 0);
-          } catch (e) {
+          })();
+          function runTimeout(fun) {
+            if (cachedSetTimeout === setTimeout) {
+              return setTimeout(fun, 0);
+            }
+            if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+              cachedSetTimeout = setTimeout;
+              return setTimeout(fun, 0);
+            }
             try {
-              return cachedSetTimeout.call(null, fun, 0);
-            } catch (e2) {
-              return cachedSetTimeout.call(this, fun, 0);
-            }
-          }
-        }
-        function runClearTimeout(marker) {
-          if (cachedClearTimeout === clearTimeout) {
-            return clearTimeout(marker);
-          }
-          if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-            cachedClearTimeout = clearTimeout;
-            return clearTimeout(marker);
-          }
-          try {
-            return cachedClearTimeout(marker);
-          } catch (e) {
-            try {
-              return cachedClearTimeout.call(null, marker);
-            } catch (e2) {
-              return cachedClearTimeout.call(this, marker);
-            }
-          }
-        }
-        var queue = [];
-        var draining = false;
-        var currentQueue;
-        var queueIndex = -1;
-        function cleanUpNextTick() {
-          if (!draining || !currentQueue) {
-            return;
-          }
-          draining = false;
-          if (currentQueue.length) {
-            queue = currentQueue.concat(queue);
-          } else {
-            queueIndex = -1;
-          }
-          if (queue.length) {
-            drainQueue();
-          }
-        }
-        function drainQueue() {
-          if (draining) {
-            return;
-          }
-          var timeout = runTimeout(cleanUpNextTick);
-          draining = true;
-          var len = queue.length;
-          while (len) {
-            currentQueue = queue;
-            queue = [];
-            while (++queueIndex < len) {
-              if (currentQueue) {
-                currentQueue[queueIndex].run();
-              }
-            }
-            queueIndex = -1;
-            len = queue.length;
-          }
-          currentQueue = null;
-          draining = false;
-          runClearTimeout(timeout);
-        }
-        process2.nextTick = function(fun) {
-          var args = new Array(arguments.length - 1);
-          if (arguments.length > 1) {
-            for (var i = 1; i < arguments.length; i++) {
-              args[i - 1] = arguments[i];
-            }
-          }
-          queue.push(new Item(fun, args));
-          if (queue.length === 1 && !draining) {
-            runTimeout(drainQueue);
-          }
-        };
-        function Item(fun, array) {
-          this.fun = fun;
-          this.array = array;
-        }
-        Item.prototype.run = function() {
-          this.fun.apply(null, this.array);
-        };
-        process2.title = "browser";
-        process2.browser = true;
-        process2.env = {};
-        process2.argv = [];
-        process2.version = "";
-        process2.versions = {};
-        function noop() {
-        }
-        process2.on = noop;
-        process2.addListener = noop;
-        process2.once = noop;
-        process2.off = noop;
-        process2.removeListener = noop;
-        process2.removeAllListeners = noop;
-        process2.emit = noop;
-        process2.prependListener = noop;
-        process2.prependOnceListener = noop;
-        process2.listeners = function(name) {
-          return [];
-        };
-        process2.binding = function(name) {
-          throw new Error("process.binding is not supported");
-        };
-        process2.cwd = function() {
-          return "/";
-        };
-        process2.chdir = function(dir) {
-          throw new Error("process.chdir is not supported");
-        };
-        process2.umask = function() {
-          return 0;
-        };
-      }, {}], 22: [function(require2, module3, exports3) {
-        "use strict";
-        Object.defineProperty(exports3, "__esModule", {
-          value: true
-        });
-        exports3.default = void 0;
-        function createThunkMiddleware(extraArgument) {
-          var middleware = function middleware2(_ref) {
-            var dispatch = _ref.dispatch, getState = _ref.getState;
-            return function(next) {
-              return function(action) {
-                if (typeof action === "function") {
-                  return action(dispatch, getState, extraArgument);
-                }
-                return next(action);
-              };
-            };
-          };
-          return middleware;
-        }
-        var thunk = createThunkMiddleware();
-        thunk.withExtraArgument = createThunkMiddleware;
-        var _default = thunk;
-        exports3.default = _default;
-      }, {}], 23: [function(require2, module3, exports3) {
-        "use strict";
-        exports3.__esModule = true;
-        var _extends = Object.assign || function(target) {
-          for (var i = 1; i < arguments.length; i++) {
-            var source = arguments[i];
-            for (var key in source) {
-              if (Object.prototype.hasOwnProperty.call(source, key)) {
-                target[key] = source[key];
-              }
-            }
-          }
-          return target;
-        };
-        exports3["default"] = applyMiddleware;
-        var _compose = require2("./compose");
-        var _compose2 = _interopRequireDefault(_compose);
-        function _interopRequireDefault(obj) {
-          return obj && obj.__esModule ? obj : { "default": obj };
-        }
-        function applyMiddleware() {
-          for (var _len = arguments.length, middlewares = Array(_len), _key = 0; _key < _len; _key++) {
-            middlewares[_key] = arguments[_key];
-          }
-          return function(createStore) {
-            return function(reducer, preloadedState, enhancer) {
-              var store = createStore(reducer, preloadedState, enhancer);
-              var _dispatch = store.dispatch;
-              var chain = [];
-              var middlewareAPI = {
-                getState: store.getState,
-                dispatch: function dispatch(action) {
-                  return _dispatch(action);
-                }
-              };
-              chain = middlewares.map(function(middleware) {
-                return middleware(middlewareAPI);
-              });
-              _dispatch = _compose2["default"].apply(void 0, chain)(store.dispatch);
-              return _extends({}, store, {
-                dispatch: _dispatch
-              });
-            };
-          };
-        }
-      }, { "./compose": 26 }], 24: [function(require2, module3, exports3) {
-        "use strict";
-        exports3.__esModule = true;
-        exports3["default"] = bindActionCreators;
-        function bindActionCreator(actionCreator, dispatch) {
-          return function() {
-            return dispatch(actionCreator.apply(void 0, arguments));
-          };
-        }
-        function bindActionCreators(actionCreators, dispatch) {
-          if (typeof actionCreators === "function") {
-            return bindActionCreator(actionCreators, dispatch);
-          }
-          if (typeof actionCreators !== "object" || actionCreators === null) {
-            throw new Error("bindActionCreators expected an object or a function, instead received " + (actionCreators === null ? "null" : typeof actionCreators) + '. Did you write "import ActionCreators from" instead of "import * as ActionCreators from"?');
-          }
-          var keys = Object.keys(actionCreators);
-          var boundActionCreators = {};
-          for (var i = 0; i < keys.length; i++) {
-            var key = keys[i];
-            var actionCreator = actionCreators[key];
-            if (typeof actionCreator === "function") {
-              boundActionCreators[key] = bindActionCreator(actionCreator, dispatch);
-            }
-          }
-          return boundActionCreators;
-        }
-      }, {}], 25: [function(require2, module3, exports3) {
-        (function(process2) {
-          (function() {
-            "use strict";
-            exports3.__esModule = true;
-            exports3["default"] = combineReducers;
-            var _createStore = require2("./createStore");
-            var _isPlainObject = require2("lodash/isPlainObject");
-            var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
-            var _warning = require2("./utils/warning");
-            var _warning2 = _interopRequireDefault(_warning);
-            function _interopRequireDefault(obj) {
-              return obj && obj.__esModule ? obj : { "default": obj };
-            }
-            function getUndefinedStateErrorMessage(key, action) {
-              var actionType = action && action.type;
-              var actionName = actionType && '"' + actionType.toString() + '"' || "an action";
-              return "Given action " + actionName + ', reducer "' + key + '" returned undefined. To ignore an action, you must explicitly return the previous state. If you want this reducer to hold no value, you can return null instead of undefined.';
-            }
-            function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
-              var reducerKeys = Object.keys(reducers);
-              var argumentName = action && action.type === _createStore.ActionTypes.INIT ? "preloadedState argument passed to createStore" : "previous state received by the reducer";
-              if (reducerKeys.length === 0) {
-                return "Store does not have a valid reducer. Make sure the argument passed to combineReducers is an object whose values are reducers.";
-              }
-              if (!(0, _isPlainObject2["default"])(inputState)) {
-                return "The " + argumentName + ' has unexpected type of "' + {}.toString.call(inputState).match(/\s([a-z|A-Z]+)/)[1] + '". Expected argument to be an object with the following ' + ('keys: "' + reducerKeys.join('", "') + '"');
-              }
-              var unexpectedKeys = Object.keys(inputState).filter(function(key) {
-                return !reducers.hasOwnProperty(key) && !unexpectedKeyCache[key];
-              });
-              unexpectedKeys.forEach(function(key) {
-                unexpectedKeyCache[key] = true;
-              });
-              if (unexpectedKeys.length > 0) {
-                return "Unexpected " + (unexpectedKeys.length > 1 ? "keys" : "key") + " " + ('"' + unexpectedKeys.join('", "') + '" found in ' + argumentName + ". ") + "Expected to find one of the known reducer keys instead: " + ('"' + reducerKeys.join('", "') + '". Unexpected keys will be ignored.');
-              }
-            }
-            function assertReducerShape(reducers) {
-              Object.keys(reducers).forEach(function(key) {
-                var reducer = reducers[key];
-                var initialState = reducer(void 0, { type: _createStore.ActionTypes.INIT });
-                if (typeof initialState === "undefined") {
-                  throw new Error('Reducer "' + key + "\" returned undefined during initialization. If the state passed to the reducer is undefined, you must explicitly return the initial state. The initial state may not be undefined. If you don't want to set a value for this reducer, you can use null instead of undefined.");
-                }
-                var type = "@@redux/PROBE_UNKNOWN_ACTION_" + Math.random().toString(36).substring(7).split("").join(".");
-                if (typeof reducer(void 0, { type }) === "undefined") {
-                  throw new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + ("Don't try to handle " + _createStore.ActionTypes.INIT + ' or other actions in "redux/*" ') + "namespace. They are considered private. Instead, you must return the current state for any unknown actions, unless it is undefined, in which case you must return the initial state, regardless of the action type. The initial state may not be undefined, but can be null.");
-                }
-              });
-            }
-            function combineReducers(reducers) {
-              var reducerKeys = Object.keys(reducers);
-              var finalReducers = {};
-              for (var i = 0; i < reducerKeys.length; i++) {
-                var key = reducerKeys[i];
-                if (process2.env.NODE_ENV !== "production") {
-                  if (typeof reducers[key] === "undefined") {
-                    (0, _warning2["default"])('No reducer provided for key "' + key + '"');
-                  }
-                }
-                if (typeof reducers[key] === "function") {
-                  finalReducers[key] = reducers[key];
-                }
-              }
-              var finalReducerKeys = Object.keys(finalReducers);
-              var unexpectedKeyCache = void 0;
-              if (process2.env.NODE_ENV !== "production") {
-                unexpectedKeyCache = {};
-              }
-              var shapeAssertionError = void 0;
+              return cachedSetTimeout(fun, 0);
+            } catch (e) {
               try {
-                assertReducerShape(finalReducers);
-              } catch (e) {
-                shapeAssertionError = e;
+                return cachedSetTimeout.call(null, fun, 0);
+              } catch (e2) {
+                return cachedSetTimeout.call(this, fun, 0);
               }
-              return function combination() {
-                var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-                var action = arguments[1];
-                if (shapeAssertionError) {
-                  throw shapeAssertionError;
-                }
-                if (process2.env.NODE_ENV !== "production") {
-                  var warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action, unexpectedKeyCache);
-                  if (warningMessage) {
-                    (0, _warning2["default"])(warningMessage);
-                  }
-                }
-                var hasChanged = false;
-                var nextState = {};
-                for (var _i2 = 0; _i2 < finalReducerKeys.length; _i2++) {
-                  var _key = finalReducerKeys[_i2];
-                  var reducer = finalReducers[_key];
-                  var previousStateForKey = state[_key];
-                  var nextStateForKey = reducer(previousStateForKey, action);
-                  if (typeof nextStateForKey === "undefined") {
-                    var errorMessage = getUndefinedStateErrorMessage(_key, action);
-                    throw new Error(errorMessage);
-                  }
-                  nextState[_key] = nextStateForKey;
-                  hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
-                }
-                return hasChanged ? nextState : state;
-              };
-            }
-          }).call(this);
-        }).call(this, require2("_process"));
-      }, { "./createStore": 27, "./utils/warning": 29, "_process": 21, "lodash/isPlainObject": 20 }], 26: [function(require2, module3, exports3) {
-        "use strict";
-        exports3.__esModule = true;
-        exports3["default"] = compose;
-        function compose() {
-          for (var _len = arguments.length, funcs = Array(_len), _key = 0; _key < _len; _key++) {
-            funcs[_key] = arguments[_key];
-          }
-          if (funcs.length === 0) {
-            return function(arg) {
-              return arg;
-            };
-          }
-          if (funcs.length === 1) {
-            return funcs[0];
-          }
-          return funcs.reduce(function(a, b) {
-            return function() {
-              return a(b.apply(void 0, arguments));
-            };
-          });
-        }
-      }, {}], 27: [function(require2, module3, exports3) {
-        "use strict";
-        exports3.__esModule = true;
-        exports3.ActionTypes = void 0;
-        exports3["default"] = createStore;
-        var _isPlainObject = require2("lodash/isPlainObject");
-        var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
-        var _symbolObservable = require2("symbol-observable");
-        var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
-        function _interopRequireDefault(obj) {
-          return obj && obj.__esModule ? obj : { "default": obj };
-        }
-        var ActionTypes = exports3.ActionTypes = {
-          INIT: "@@redux/INIT"
-          /**
-           * Creates a Redux store that holds the state tree.
-           * The only way to change the data in the store is to call `dispatch()` on it.
-           *
-           * There should only be a single store in your app. To specify how different
-           * parts of the state tree respond to actions, you may combine several reducers
-           * into a single reducer function by using `combineReducers`.
-           *
-           * @param {Function} reducer A function that returns the next state tree, given
-           * the current state tree and the action to handle.
-           *
-           * @param {any} [preloadedState] The initial state. You may optionally specify it
-           * to hydrate the state from the server in universal apps, or to restore a
-           * previously serialized user session.
-           * If you use `combineReducers` to produce the root reducer function, this must be
-           * an object with the same shape as `combineReducers` keys.
-           *
-           * @param {Function} [enhancer] The store enhancer. You may optionally specify it
-           * to enhance the store with third-party capabilities such as middleware,
-           * time travel, persistence, etc. The only store enhancer that ships with Redux
-           * is `applyMiddleware()`.
-           *
-           * @returns {Store} A Redux store that lets you read the state, dispatch actions
-           * and subscribe to changes.
-           */
-        };
-        function createStore(reducer, preloadedState, enhancer) {
-          var _ref2;
-          if (typeof preloadedState === "function" && typeof enhancer === "undefined") {
-            enhancer = preloadedState;
-            preloadedState = void 0;
-          }
-          if (typeof enhancer !== "undefined") {
-            if (typeof enhancer !== "function") {
-              throw new Error("Expected the enhancer to be a function.");
-            }
-            return enhancer(createStore)(reducer, preloadedState);
-          }
-          if (typeof reducer !== "function") {
-            throw new Error("Expected the reducer to be a function.");
-          }
-          var currentReducer = reducer;
-          var currentState = preloadedState;
-          var currentListeners = [];
-          var nextListeners = currentListeners;
-          var isDispatching = false;
-          function ensureCanMutateNextListeners() {
-            if (nextListeners === currentListeners) {
-              nextListeners = currentListeners.slice();
             }
           }
-          function getState() {
-            return currentState;
-          }
-          function subscribe(listener) {
-            if (typeof listener !== "function") {
-              throw new Error("Expected listener to be a function.");
+          function runClearTimeout(marker) {
+            if (cachedClearTimeout === clearTimeout) {
+              return clearTimeout(marker);
             }
-            var isSubscribed = true;
-            ensureCanMutateNextListeners();
-            nextListeners.push(listener);
-            return function unsubscribe() {
-              if (!isSubscribed) {
-                return;
-              }
-              isSubscribed = false;
-              ensureCanMutateNextListeners();
-              var index = nextListeners.indexOf(listener);
-              nextListeners.splice(index, 1);
-            };
-          }
-          function dispatch(action) {
-            if (!(0, _isPlainObject2["default"])(action)) {
-              throw new Error("Actions must be plain objects. Use custom middleware for async actions.");
-            }
-            if (typeof action.type === "undefined") {
-              throw new Error('Actions may not have an undefined "type" property. Have you misspelled a constant?');
-            }
-            if (isDispatching) {
-              throw new Error("Reducers may not dispatch actions.");
+            if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+              cachedClearTimeout = clearTimeout;
+              return clearTimeout(marker);
             }
             try {
-              isDispatching = true;
-              currentState = currentReducer(currentState, action);
-            } finally {
-              isDispatching = false;
+              return cachedClearTimeout(marker);
+            } catch (e) {
+              try {
+                return cachedClearTimeout.call(null, marker);
+              } catch (e2) {
+                return cachedClearTimeout.call(this, marker);
+              }
             }
-            var listeners = currentListeners = nextListeners;
-            for (var i = 0; i < listeners.length; i++) {
-              var listener = listeners[i];
-              listener();
-            }
-            return action;
           }
-          function replaceReducer(nextReducer) {
-            if (typeof nextReducer !== "function") {
-              throw new Error("Expected the nextReducer to be a function.");
+          var queue = [];
+          var draining = false;
+          var currentQueue;
+          var queueIndex = -1;
+          function cleanUpNextTick() {
+            if (!draining || !currentQueue) {
+              return;
             }
-            currentReducer = nextReducer;
-            dispatch({ type: ActionTypes.INIT });
+            draining = false;
+            if (currentQueue.length) {
+              queue = currentQueue.concat(queue);
+            } else {
+              queueIndex = -1;
+            }
+            if (queue.length) {
+              drainQueue();
+            }
           }
-          function observable() {
-            var _ref;
-            var outerSubscribe = subscribe;
-            return _ref = {
-              /**
-               * The minimal observable subscription method.
-               * @param {Object} observer Any object that can be used as an observer.
-               * The observer object should have a `next` method.
-               * @returns {subscription} An object with an `unsubscribe` method that can
-               * be used to unsubscribe the observable from the store, and prevent further
-               * emission of values from the observable.
-               */
-              subscribe: function subscribe2(observer) {
-                if (typeof observer !== "object") {
-                  throw new TypeError("Expected the observer to be an object.");
+          function drainQueue() {
+            if (draining) {
+              return;
+            }
+            var timeout = runTimeout(cleanUpNextTick);
+            draining = true;
+            var len = queue.length;
+            while (len) {
+              currentQueue = queue;
+              queue = [];
+              while (++queueIndex < len) {
+                if (currentQueue) {
+                  currentQueue[queueIndex].run();
                 }
-                function observeState() {
-                  if (observer.next) {
-                    observer.next(getState());
+              }
+              queueIndex = -1;
+              len = queue.length;
+            }
+            currentQueue = null;
+            draining = false;
+            runClearTimeout(timeout);
+          }
+          process2.nextTick = function(fun) {
+            var args = new Array(arguments.length - 1);
+            if (arguments.length > 1) {
+              for (var i = 1; i < arguments.length; i++) {
+                args[i - 1] = arguments[i];
+              }
+            }
+            queue.push(new Item(fun, args));
+            if (queue.length === 1 && !draining) {
+              runTimeout(drainQueue);
+            }
+          };
+          function Item(fun, array) {
+            this.fun = fun;
+            this.array = array;
+          }
+          Item.prototype.run = function() {
+            this.fun.apply(null, this.array);
+          };
+          process2.title = "browser";
+          process2.browser = true;
+          process2.env = {};
+          process2.argv = [];
+          process2.version = "";
+          process2.versions = {};
+          function noop() {
+          }
+          process2.on = noop;
+          process2.addListener = noop;
+          process2.once = noop;
+          process2.off = noop;
+          process2.removeListener = noop;
+          process2.removeAllListeners = noop;
+          process2.emit = noop;
+          process2.prependListener = noop;
+          process2.prependOnceListener = noop;
+          process2.listeners = function(name) {
+            return [];
+          };
+          process2.binding = function(name) {
+            throw new Error("process.binding is not supported");
+          };
+          process2.cwd = function() {
+            return "/";
+          };
+          process2.chdir = function(dir) {
+            throw new Error("process.chdir is not supported");
+          };
+          process2.umask = function() {
+            return 0;
+          };
+        }, {}],
+        22: [function(require2, module3, exports3) {
+          "use strict";
+          Object.defineProperty(exports3, "__esModule", {
+            value: true
+          });
+          exports3.default = void 0;
+          function createThunkMiddleware(extraArgument) {
+            var middleware = function middleware2(_ref) {
+              var dispatch = _ref.dispatch, getState = _ref.getState;
+              return function(next) {
+                return function(action) {
+                  if (typeof action === "function") {
+                    return action(dispatch, getState, extraArgument);
+                  }
+                  return next(action);
+                };
+              };
+            };
+            return middleware;
+          }
+          var thunk = createThunkMiddleware();
+          thunk.withExtraArgument = createThunkMiddleware;
+          var _default = thunk;
+          exports3.default = _default;
+        }, {}],
+        23: [function(require2, module3, exports3) {
+          "use strict";
+          exports3.__esModule = true;
+          var _extends = Object.assign || function(target) {
+            for (var i = 1; i < arguments.length; i++) {
+              var source = arguments[i];
+              for (var key in source) {
+                if (Object.prototype.hasOwnProperty.call(source, key)) {
+                  target[key] = source[key];
+                }
+              }
+            }
+            return target;
+          };
+          exports3["default"] = applyMiddleware;
+          var _compose = require2("./compose");
+          var _compose2 = _interopRequireDefault(_compose);
+          function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : { "default": obj };
+          }
+          function applyMiddleware() {
+            for (var _len = arguments.length, middlewares = Array(_len), _key = 0; _key < _len; _key++) {
+              middlewares[_key] = arguments[_key];
+            }
+            return function(createStore) {
+              return function(reducer, preloadedState, enhancer) {
+                var store = createStore(reducer, preloadedState, enhancer);
+                var _dispatch = store.dispatch;
+                var chain = [];
+                var middlewareAPI = {
+                  getState: store.getState,
+                  dispatch: function dispatch(action) {
+                    return _dispatch(action);
+                  }
+                };
+                chain = middlewares.map(function(middleware) {
+                  return middleware(middlewareAPI);
+                });
+                _dispatch = _compose2["default"].apply(void 0, chain)(store.dispatch);
+                return _extends({}, store, {
+                  dispatch: _dispatch
+                });
+              };
+            };
+          }
+        }, { "./compose": 26 }],
+        24: [function(require2, module3, exports3) {
+          "use strict";
+          exports3.__esModule = true;
+          exports3["default"] = bindActionCreators;
+          function bindActionCreator(actionCreator, dispatch) {
+            return function() {
+              return dispatch(actionCreator.apply(void 0, arguments));
+            };
+          }
+          function bindActionCreators(actionCreators, dispatch) {
+            if (typeof actionCreators === "function") {
+              return bindActionCreator(actionCreators, dispatch);
+            }
+            if (typeof actionCreators !== "object" || actionCreators === null) {
+              throw new Error("bindActionCreators expected an object or a function, instead received " + (actionCreators === null ? "null" : typeof actionCreators) + '. Did you write "import ActionCreators from" instead of "import * as ActionCreators from"?');
+            }
+            var keys = Object.keys(actionCreators);
+            var boundActionCreators = {};
+            for (var i = 0; i < keys.length; i++) {
+              var key = keys[i];
+              var actionCreator = actionCreators[key];
+              if (typeof actionCreator === "function") {
+                boundActionCreators[key] = bindActionCreator(actionCreator, dispatch);
+              }
+            }
+            return boundActionCreators;
+          }
+        }, {}],
+        25: [function(require2, module3, exports3) {
+          (function(process2) {
+            (function() {
+              "use strict";
+              exports3.__esModule = true;
+              exports3["default"] = combineReducers;
+              var _createStore = require2("./createStore");
+              var _isPlainObject = require2("lodash/isPlainObject");
+              var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
+              var _warning = require2("./utils/warning");
+              var _warning2 = _interopRequireDefault(_warning);
+              function _interopRequireDefault(obj) {
+                return obj && obj.__esModule ? obj : { "default": obj };
+              }
+              function getUndefinedStateErrorMessage(key, action) {
+                var actionType = action && action.type;
+                var actionName = actionType && '"' + actionType.toString() + '"' || "an action";
+                return "Given action " + actionName + ', reducer "' + key + '" returned undefined. To ignore an action, you must explicitly return the previous state. If you want this reducer to hold no value, you can return null instead of undefined.';
+              }
+              function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
+                var reducerKeys = Object.keys(reducers);
+                var argumentName = action && action.type === _createStore.ActionTypes.INIT ? "preloadedState argument passed to createStore" : "previous state received by the reducer";
+                if (reducerKeys.length === 0) {
+                  return "Store does not have a valid reducer. Make sure the argument passed to combineReducers is an object whose values are reducers.";
+                }
+                if (!(0, _isPlainObject2["default"])(inputState)) {
+                  return "The " + argumentName + ' has unexpected type of "' + {}.toString.call(inputState).match(/\s([a-z|A-Z]+)/)[1] + '". Expected argument to be an object with the following ' + ('keys: "' + reducerKeys.join('", "') + '"');
+                }
+                var unexpectedKeys = Object.keys(inputState).filter(function(key) {
+                  return !reducers.hasOwnProperty(key) && !unexpectedKeyCache[key];
+                });
+                unexpectedKeys.forEach(function(key) {
+                  unexpectedKeyCache[key] = true;
+                });
+                if (unexpectedKeys.length > 0) {
+                  return "Unexpected " + (unexpectedKeys.length > 1 ? "keys" : "key") + " " + ('"' + unexpectedKeys.join('", "') + '" found in ' + argumentName + ". ") + "Expected to find one of the known reducer keys instead: " + ('"' + reducerKeys.join('", "') + '". Unexpected keys will be ignored.');
+                }
+              }
+              function assertReducerShape(reducers) {
+                Object.keys(reducers).forEach(function(key) {
+                  var reducer = reducers[key];
+                  var initialState = reducer(void 0, { type: _createStore.ActionTypes.INIT });
+                  if (typeof initialState === "undefined") {
+                    throw new Error('Reducer "' + key + "\" returned undefined during initialization. If the state passed to the reducer is undefined, you must explicitly return the initial state. The initial state may not be undefined. If you don't want to set a value for this reducer, you can use null instead of undefined.");
+                  }
+                  var type = "@@redux/PROBE_UNKNOWN_ACTION_" + Math.random().toString(36).substring(7).split("").join(".");
+                  if (typeof reducer(void 0, { type }) === "undefined") {
+                    throw new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + ("Don't try to handle " + _createStore.ActionTypes.INIT + ' or other actions in "redux/*" ') + "namespace. They are considered private. Instead, you must return the current state for any unknown actions, unless it is undefined, in which case you must return the initial state, regardless of the action type. The initial state may not be undefined, but can be null.");
+                  }
+                });
+              }
+              function combineReducers(reducers) {
+                var reducerKeys = Object.keys(reducers);
+                var finalReducers = {};
+                for (var i = 0; i < reducerKeys.length; i++) {
+                  var key = reducerKeys[i];
+                  if (process2.env.NODE_ENV !== "production") {
+                    if (typeof reducers[key] === "undefined") {
+                      (0, _warning2["default"])('No reducer provided for key "' + key + '"');
+                    }
+                  }
+                  if (typeof reducers[key] === "function") {
+                    finalReducers[key] = reducers[key];
                   }
                 }
-                observeState();
-                var unsubscribe = outerSubscribe(observeState);
-                return { unsubscribe };
-              }
-            }, _ref[_symbolObservable2["default"]] = function() {
-              return this;
-            }, _ref;
-          }
-          dispatch({ type: ActionTypes.INIT });
-          return _ref2 = {
-            dispatch,
-            subscribe,
-            getState,
-            replaceReducer
-          }, _ref2[_symbolObservable2["default"]] = observable, _ref2;
-        }
-      }, { "lodash/isPlainObject": 20, "symbol-observable": 33 }], 28: [function(require2, module3, exports3) {
-        (function(process2) {
-          (function() {
-            "use strict";
-            exports3.__esModule = true;
-            exports3.compose = exports3.applyMiddleware = exports3.bindActionCreators = exports3.combineReducers = exports3.createStore = void 0;
-            var _createStore = require2("./createStore");
-            var _createStore2 = _interopRequireDefault(_createStore);
-            var _combineReducers = require2("./combineReducers");
-            var _combineReducers2 = _interopRequireDefault(_combineReducers);
-            var _bindActionCreators = require2("./bindActionCreators");
-            var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
-            var _applyMiddleware = require2("./applyMiddleware");
-            var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
-            var _compose = require2("./compose");
-            var _compose2 = _interopRequireDefault(_compose);
-            var _warning = require2("./utils/warning");
-            var _warning2 = _interopRequireDefault(_warning);
-            function _interopRequireDefault(obj) {
-              return obj && obj.__esModule ? obj : { "default": obj };
-            }
-            function isCrushed() {
-            }
-            if (process2.env.NODE_ENV !== "production" && typeof isCrushed.name === "string" && isCrushed.name !== "isCrushed") {
-              (0, _warning2["default"])("You are currently using minified code outside of NODE_ENV === 'production'. This means that you are running a slower development build of Redux. You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) to ensure you have the correct code for your production build.");
-            }
-            exports3.createStore = _createStore2["default"];
-            exports3.combineReducers = _combineReducers2["default"];
-            exports3.bindActionCreators = _bindActionCreators2["default"];
-            exports3.applyMiddleware = _applyMiddleware2["default"];
-            exports3.compose = _compose2["default"];
-          }).call(this);
-        }).call(this, require2("_process"));
-      }, { "./applyMiddleware": 23, "./bindActionCreators": 24, "./combineReducers": 25, "./compose": 26, "./createStore": 27, "./utils/warning": 29, "_process": 21 }], 29: [function(require2, module3, exports3) {
-        "use strict";
-        exports3.__esModule = true;
-        exports3["default"] = warning;
-        function warning(message) {
-          if (typeof console !== "undefined" && typeof console.error === "function") {
-            console.error(message);
-          }
-          try {
-            throw new Error(message);
-          } catch (e) {
-          }
-        }
-      }, {}], 30: [function(require2, module3, exports3) {
-        "use strict";
-        var Suggestions = require2("./src/suggestions");
-        window.Suggestions = module3.exports = Suggestions;
-      }, { "./src/suggestions": 32 }], 31: [function(require2, module3, exports3) {
-        "Use strict";
-        var List = function(component) {
-          this.component = component;
-          this.items = [];
-          this.active = 0;
-          this.element = document.createElement("ul");
-          this.element.className = "suggestions";
-          this.selectingListItem = false;
-          component.el.parentNode.insertBefore(this.element, component.el.nextSibling);
-          return this;
-        };
-        List.prototype.show = function() {
-          this.element.style.display = "block";
-        };
-        List.prototype.hide = function() {
-          this.element.style.display = "none";
-        };
-        List.prototype.add = function(item) {
-          this.items.push(item);
-        };
-        List.prototype.clear = function() {
-          this.items = [];
-          this.active = 0;
-        };
-        List.prototype.isEmpty = function() {
-          return !this.items.length;
-        };
-        List.prototype.draw = function() {
-          this.element.innerHTML = "";
-          if (this.items.length === 0) {
-            this.hide();
-            return;
-          }
-          for (var i = 0; i < this.items.length; i++) {
-            this.drawItem(this.items[i], this.active === i);
-          }
-          this.show();
-        };
-        List.prototype.drawItem = function(item, active) {
-          var li2 = document.createElement("li"), a = document.createElement("a");
-          if (active) li2.className += " active";
-          a.innerHTML = item.string;
-          li2.appendChild(a);
-          this.element.appendChild(li2);
-          li2.addEventListener("mousedown", (function() {
-            this.selectingListItem = true;
-          }).bind(this));
-          li2.addEventListener("mouseup", (function() {
-            this.handleMouseUp.call(this, item);
-          }).bind(this));
-        };
-        List.prototype.handleMouseUp = function(item) {
-          this.selectingListItem = false;
-          this.component.value(item.original);
-          this.clear();
-          this.draw();
-        };
-        List.prototype.move = function(index) {
-          this.active = index;
-          this.draw();
-        };
-        List.prototype.previous = function() {
-          this.move(this.active === 0 ? this.items.length - 1 : this.active - 1);
-        };
-        List.prototype.next = function() {
-          this.move(this.active === this.items.length - 1 ? 0 : this.active + 1);
-        };
-        module3.exports = List;
-      }, {}], 32: [function(require2, module3, exports3) {
-        "use strict";
-        var extend = require2("xtend");
-        var fuzzy = require2("fuzzy");
-        var List = require2("./list");
-        var Suggestions = function(el2, data, options) {
-          options = options || {};
-          this.options = extend({
-            minLength: 2,
-            limit: 5,
-            filter: true
-          }, options);
-          this.el = el2;
-          this.data = data || [];
-          this.list = new List(this);
-          this.query = "";
-          this.selected = null;
-          this.list.draw();
-          this.el.addEventListener("keyup", (function(e) {
-            this.handleKeyUp(e.keyCode);
-          }).bind(this), false);
-          this.el.addEventListener("keydown", (function(e) {
-            this.handleKeyDown(e);
-          }).bind(this));
-          this.el.addEventListener("focus", (function() {
-            this.handleFocus();
-          }).bind(this));
-          this.el.addEventListener("blur", (function() {
-            this.handleBlur();
-          }).bind(this));
-          this.el.addEventListener("paste", (function(e) {
-            this.handlePaste(e);
-          }).bind(this));
-          return this;
-        };
-        Suggestions.prototype.handleKeyUp = function(keyCode) {
-          if (keyCode === 40 || keyCode === 38 || keyCode === 27 || keyCode === 13 || keyCode === 9) return;
-          this.handleInputChange(this.el.value);
-        };
-        Suggestions.prototype.handleKeyDown = function(e) {
-          switch (e.keyCode) {
-            case 13:
-            // ENTER
-            case 9:
-              e.preventDefault();
-              if (!this.list.isEmpty()) {
-                this.value(this.list.items[this.list.active].original);
-                this.list.hide();
-              }
-              break;
-            case 27:
-              if (!this.list.isEmpty()) this.list.hide();
-              break;
-            case 38:
-              this.list.previous();
-              break;
-            case 40:
-              this.list.next();
-              break;
-          }
-        };
-        Suggestions.prototype.handleBlur = function() {
-          if (!this.list.selectingListItem) {
-            this.list.hide();
-          }
-        };
-        Suggestions.prototype.handlePaste = function(e) {
-          if (e.clipboardData) {
-            this.handleInputChange(e.clipboardData.getData("Text"));
-          } else {
-            var self2 = this;
-            setTimeout(function() {
-              self2.handleInputChange(e.target.value);
-            }, 100);
-          }
-        };
-        Suggestions.prototype.handleInputChange = function(query) {
-          this.query = this.normalize(query);
-          this.list.clear();
-          if (this.query.length < this.options.minLength) {
-            this.list.draw();
-            return;
-          }
-          this.getCandidates((function(data) {
-            for (var i = 0; i < data.length; i++) {
-              this.list.add(data[i]);
-              if (i === this.options.limit - 1) break;
-            }
-            this.list.draw();
-          }).bind(this));
-        };
-        Suggestions.prototype.handleFocus = function() {
-          if (!this.list.isEmpty()) this.list.show();
-          this.list.selectingListItem = false;
-        };
-        Suggestions.prototype.update = function(revisedData) {
-          this.data = revisedData;
-          this.handleKeyUp();
-        };
-        Suggestions.prototype.clear = function() {
-          this.data = [];
-          this.list.clear();
-        };
-        Suggestions.prototype.normalize = function(value) {
-          value = value.toLowerCase();
-          return value;
-        };
-        Suggestions.prototype.match = function(candidate, query) {
-          return candidate.indexOf(query) > -1;
-        };
-        Suggestions.prototype.value = function(value) {
-          this.selected = value;
-          this.el.value = this.getItemValue(value);
-          if (document.createEvent) {
-            var e = document.createEvent("HTMLEvents");
-            e.initEvent("change", true, false);
-            this.el.dispatchEvent(e);
-          } else {
-            this.el.fireEvent("onchange");
-          }
-        };
-        Suggestions.prototype.getCandidates = function(callback) {
-          var options = {
-            pre: "<strong>",
-            post: "</strong>",
-            extract: (function(d) {
-              return this.getItemValue(d);
-            }).bind(this)
-          };
-          var results = this.options.filter ? fuzzy.filter(this.query, this.data, options) : this.data.map((function(d) {
-            var boldString = this.getItemValue(d);
-            var indexString = this.normalize(boldString);
-            var indexOfQuery = indexString.lastIndexOf(this.query);
-            while (indexOfQuery > -1) {
-              var endIndexOfQuery = indexOfQuery + this.query.length;
-              boldString = boldString.slice(0, indexOfQuery) + "<strong>" + boldString.slice(indexOfQuery, endIndexOfQuery) + "</strong>" + boldString.slice(endIndexOfQuery);
-              indexOfQuery = indexString.slice(0, indexOfQuery).lastIndexOf(this.query);
-            }
-            return {
-              original: d,
-              string: boldString
-            };
-          }).bind(this));
-          callback(results);
-        };
-        Suggestions.prototype.getItemValue = function(item) {
-          return item;
-        };
-        module3.exports = Suggestions;
-      }, { "./list": 31, "fuzzy": 4, "xtend": 37 }], 33: [function(require2, module3, exports3) {
-        (function(global2) {
-          (function() {
-            "use strict";
-            Object.defineProperty(exports3, "__esModule", {
-              value: true
-            });
-            var _ponyfill = require2("./ponyfill.js");
-            var _ponyfill2 = _interopRequireDefault(_ponyfill);
-            function _interopRequireDefault(obj) {
-              return obj && obj.__esModule ? obj : { "default": obj };
-            }
-            var root;
-            if (typeof self !== "undefined") {
-              root = self;
-            } else if (typeof window !== "undefined") {
-              root = window;
-            } else if (typeof global2 !== "undefined") {
-              root = global2;
-            } else if (typeof module3 !== "undefined") {
-              root = module3;
-            } else {
-              root = Function("return this")();
-            }
-            var result = (0, _ponyfill2["default"])(root);
-            exports3["default"] = result;
-          }).call(this);
-        }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
-      }, { "./ponyfill.js": 34 }], 34: [function(require2, module3, exports3) {
-        "use strict";
-        Object.defineProperty(exports3, "__esModule", {
-          value: true
-        });
-        exports3["default"] = symbolObservablePonyfill;
-        function symbolObservablePonyfill(root) {
-          var result;
-          var _Symbol = root.Symbol;
-          if (typeof _Symbol === "function") {
-            if (_Symbol.observable) {
-              result = _Symbol.observable;
-            } else {
-              result = _Symbol("observable");
-              _Symbol.observable = result;
-            }
-          } else {
-            result = "@@observable";
-          }
-          return result;
-        }
-        ;
-      }, {}], 35: [function(require2, module3, exports3) {
-        var each = require2("turf-meta").coordEach;
-        module3.exports = function(layer) {
-          var extent = [Infinity, Infinity, -Infinity, -Infinity];
-          each(layer, function(coord) {
-            if (extent[0] > coord[0]) extent[0] = coord[0];
-            if (extent[1] > coord[1]) extent[1] = coord[1];
-            if (extent[2] < coord[0]) extent[2] = coord[0];
-            if (extent[3] < coord[1]) extent[3] = coord[1];
-          });
-          return extent;
-        };
-      }, { "turf-meta": 36 }], 36: [function(require2, module3, exports3) {
-        function coordEach(layer, callback, excludeWrapCoord) {
-          var i, j, k, g, geometry, stopG, coords, geometryMaybeCollection, wrapShrink = 0, isGeometryCollection, isFeatureCollection = layer.type === "FeatureCollection", isFeature = layer.type === "Feature", stop = isFeatureCollection ? layer.features.length : 1;
-          for (i = 0; i < stop; i++) {
-            geometryMaybeCollection = isFeatureCollection ? layer.features[i].geometry : isFeature ? layer.geometry : layer;
-            isGeometryCollection = geometryMaybeCollection.type === "GeometryCollection";
-            stopG = isGeometryCollection ? geometryMaybeCollection.geometries.length : 1;
-            for (g = 0; g < stopG; g++) {
-              geometry = isGeometryCollection ? geometryMaybeCollection.geometries[g] : geometryMaybeCollection;
-              coords = geometry.coordinates;
-              wrapShrink = excludeWrapCoord && (geometry.type === "Polygon" || geometry.type === "MultiPolygon") ? 1 : 0;
-              if (geometry.type === "Point") {
-                callback(coords);
-              } else if (geometry.type === "LineString" || geometry.type === "MultiPoint") {
-                for (j = 0; j < coords.length; j++) callback(coords[j]);
-              } else if (geometry.type === "Polygon" || geometry.type === "MultiLineString") {
-                for (j = 0; j < coords.length; j++)
-                  for (k = 0; k < coords[j].length - wrapShrink; k++)
-                    callback(coords[j][k]);
-              } else if (geometry.type === "MultiPolygon") {
-                for (j = 0; j < coords.length; j++)
-                  for (k = 0; k < coords[j].length; k++)
-                    for (l = 0; l < coords[j][k].length - wrapShrink; l++)
-                      callback(coords[j][k][l]);
-              } else {
-                throw new Error("Unknown Geometry Type");
-              }
-            }
-          }
-        }
-        module3.exports.coordEach = coordEach;
-        function coordReduce(layer, callback, memo, excludeWrapCoord) {
-          coordEach(layer, function(coord) {
-            memo = callback(memo, coord);
-          }, excludeWrapCoord);
-          return memo;
-        }
-        module3.exports.coordReduce = coordReduce;
-        function propEach(layer, callback) {
-          var i;
-          switch (layer.type) {
-            case "FeatureCollection":
-              features = layer.features;
-              for (i = 0; i < layer.features.length; i++) {
-                callback(layer.features[i].properties);
-              }
-              break;
-            case "Feature":
-              callback(layer.properties);
-              break;
-          }
-        }
-        module3.exports.propEach = propEach;
-        function propReduce(layer, callback, memo) {
-          propEach(layer, function(prop) {
-            memo = callback(memo, prop);
-          });
-          return memo;
-        }
-        module3.exports.propReduce = propReduce;
-      }, {}], 37: [function(require2, module3, exports3) {
-        module3.exports = extend;
-        var hasOwnProperty = Object.prototype.hasOwnProperty;
-        function extend() {
-          var target = {};
-          for (var i = 0; i < arguments.length; i++) {
-            var source = arguments[i];
-            for (var key in source) {
-              if (hasOwnProperty.call(source, key)) {
-                target[key] = source[key];
-              }
-            }
-          }
-          return target;
-        }
-      }, {}], 38: [function(require2, module3, exports3) {
-        "use strict";
-        Object.defineProperty(exports3, "__esModule", {
-          value: true
-        });
-        exports3.queryOrigin = queryOrigin;
-        exports3.queryDestination = queryDestination;
-        exports3.queryOriginCoordinates = queryOriginCoordinates;
-        exports3.queryDestinationCoordinates = queryDestinationCoordinates;
-        exports3.clearOrigin = clearOrigin;
-        exports3.clearDestination = clearDestination;
-        exports3.setOptions = setOptions;
-        exports3.hoverMarker = hoverMarker;
-        exports3.setRouteIndex = setRouteIndex;
-        exports3.createOrigin = createOrigin;
-        exports3.createDestination = createDestination;
-        exports3.setProfile = setProfile;
-        exports3.reverse = reverse;
-        exports3.setOriginFromCoordinates = setOriginFromCoordinates;
-        exports3.setDestinationFromCoordinates = setDestinationFromCoordinates;
-        exports3.addWaypoint = addWaypoint;
-        exports3.setWaypoint = setWaypoint;
-        exports3.removeWaypoint = removeWaypoint;
-        exports3.eventSubscribe = eventSubscribe;
-        exports3.eventEmit = eventEmit;
-        var _action_types = require2("../constants/action_types");
-        var types = _interopRequireWildcard(_action_types);
-        var _utils = require2("../utils");
-        var _utils2 = _interopRequireDefault(_utils);
-        function _interopRequireDefault(obj) {
-          return obj && obj.__esModule ? obj : { default: obj };
-        }
-        function _interopRequireWildcard(obj) {
-          if (obj && obj.__esModule) {
-            return obj;
-          } else {
-            var newObj = {};
-            if (obj != null) {
-              for (var key in obj) {
-                if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-              }
-            }
-            newObj.default = obj;
-            return newObj;
-          }
-        }
-        var request = new XMLHttpRequest();
-        function originPoint(coordinates) {
-          return function(dispatch) {
-            var origin = _utils2.default.createPoint(coordinates, {
-              id: "origin",
-              "marker-symbol": "A"
-            });
-            dispatch({ type: types.ORIGIN, origin });
-            dispatch(eventEmit("origin", { feature: origin }));
-          };
-        }
-        function destinationPoint(coordinates) {
-          return function(dispatch) {
-            var destination = _utils2.default.createPoint(coordinates, {
-              id: "destination",
-              "marker-symbol": "B"
-            });
-            dispatch({ type: types.DESTINATION, destination });
-            dispatch(eventEmit("destination", { feature: destination }));
-          };
-        }
-        function setDirections(directions) {
-          return function(dispatch) {
-            dispatch({
-              type: types.DIRECTIONS,
-              directions
-            });
-            dispatch(eventEmit("route", { route: directions }));
-          };
-        }
-        function updateWaypoints(waypoints) {
-          return {
-            type: types.WAYPOINTS,
-            waypoints
-          };
-        }
-        function setHoverMarker(feature) {
-          return {
-            type: types.HOVER_MARKER,
-            hoverMarker: feature
-          };
-        }
-        function fetchDirections() {
-          return function(dispatch, getState) {
-            var _getState = getState(), api = _getState.api, routeIndex = _getState.routeIndex, profile = _getState.profile, alternatives = _getState.alternatives, congestion = _getState.congestion, destination = _getState.destination, language = _getState.language, exclude = _getState.exclude;
-            if (!(destination && destination.geometry)) return;
-            var query = buildDirectionsQuery(getState);
-            var options = [];
-            options.push("geometries=polyline");
-            if (alternatives) options.push("alternatives=true");
-            if (congestion) options.push("annotations=congestion");
-            options.push("steps=true");
-            options.push("overview=full");
-            request.abort();
-            request.open("GET", "" + api + profile + "/" + query + ".json?" + options.join("&"), true);
-            request.onload = function() {
-              if (request.status >= 200 && request.status < 400) {
-                var data = JSON.parse(request.responseText);
-                if (data.error) {
-                  dispatch(setDirections([]));
-                  return dispatch(setError(data.error));
+                var finalReducerKeys = Object.keys(finalReducers);
+                var unexpectedKeyCache = void 0;
+                if (process2.env.NODE_ENV !== "production") {
+                  unexpectedKeyCache = {};
                 }
-                dispatch(setError(null));
-                if (!data.routes[routeIndex]) dispatch(setRouteIndex(0));
-                dispatch(setDirections(data.routes));
-                dispatch(originPoint(data.waypoints[0].location));
-                dispatch(destinationPoint(data.waypoints[data.waypoints.length - 1].location));
+                var shapeAssertionError = void 0;
+                try {
+                  assertReducerShape(finalReducers);
+                } catch (e) {
+                  shapeAssertionError = e;
+                }
+                return function combination() {
+                  var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+                  var action = arguments[1];
+                  if (shapeAssertionError) {
+                    throw shapeAssertionError;
+                  }
+                  if (process2.env.NODE_ENV !== "production") {
+                    var warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action, unexpectedKeyCache);
+                    if (warningMessage) {
+                      (0, _warning2["default"])(warningMessage);
+                    }
+                  }
+                  var hasChanged = false;
+                  var nextState = {};
+                  for (var _i2 = 0; _i2 < finalReducerKeys.length; _i2++) {
+                    var _key = finalReducerKeys[_i2];
+                    var reducer = finalReducers[_key];
+                    var previousStateForKey = state[_key];
+                    var nextStateForKey = reducer(previousStateForKey, action);
+                    if (typeof nextStateForKey === "undefined") {
+                      var errorMessage = getUndefinedStateErrorMessage(_key, action);
+                      throw new Error(errorMessage);
+                    }
+                    nextState[_key] = nextStateForKey;
+                    hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+                  }
+                  return hasChanged ? nextState : state;
+                };
+              }
+            }).call(this);
+          }).call(this, require2("_process"));
+        }, { "./createStore": 27, "./utils/warning": 29, "_process": 21, "lodash/isPlainObject": 20 }],
+        26: [function(require2, module3, exports3) {
+          "use strict";
+          exports3.__esModule = true;
+          exports3["default"] = compose;
+          function compose() {
+            for (var _len = arguments.length, funcs = Array(_len), _key = 0; _key < _len; _key++) {
+              funcs[_key] = arguments[_key];
+            }
+            if (funcs.length === 0) {
+              return function(arg) {
+                return arg;
+              };
+            }
+            if (funcs.length === 1) {
+              return funcs[0];
+            }
+            return funcs.reduce(function(a, b) {
+              return function() {
+                return a(b.apply(void 0, arguments));
+              };
+            });
+          }
+        }, {}],
+        27: [function(require2, module3, exports3) {
+          "use strict";
+          exports3.__esModule = true;
+          exports3.ActionTypes = void 0;
+          exports3["default"] = createStore;
+          var _isPlainObject = require2("lodash/isPlainObject");
+          var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
+          var _symbolObservable = require2("symbol-observable");
+          var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
+          function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : { "default": obj };
+          }
+          var ActionTypes = exports3.ActionTypes = {
+            INIT: "@@redux/INIT"
+            /**
+             * Creates a Redux store that holds the state tree.
+             * The only way to change the data in the store is to call `dispatch()` on it.
+             *
+             * There should only be a single store in your app. To specify how different
+             * parts of the state tree respond to actions, you may combine several reducers
+             * into a single reducer function by using `combineReducers`.
+             *
+             * @param {Function} reducer A function that returns the next state tree, given
+             * the current state tree and the action to handle.
+             *
+             * @param {any} [preloadedState] The initial state. You may optionally specify it
+             * to hydrate the state from the server in universal apps, or to restore a
+             * previously serialized user session.
+             * If you use `combineReducers` to produce the root reducer function, this must be
+             * an object with the same shape as `combineReducers` keys.
+             *
+             * @param {Function} [enhancer] The store enhancer. You may optionally specify it
+             * to enhance the store with third-party capabilities such as middleware,
+             * time travel, persistence, etc. The only store enhancer that ships with Redux
+             * is `applyMiddleware()`.
+             *
+             * @returns {Store} A Redux store that lets you read the state, dispatch actions
+             * and subscribe to changes.
+             */
+          };
+          function createStore(reducer, preloadedState, enhancer) {
+            var _ref2;
+            if (typeof preloadedState === "function" && typeof enhancer === "undefined") {
+              enhancer = preloadedState;
+              preloadedState = void 0;
+            }
+            if (typeof enhancer !== "undefined") {
+              if (typeof enhancer !== "function") {
+                throw new Error("Expected the enhancer to be a function.");
+              }
+              return enhancer(createStore)(reducer, preloadedState);
+            }
+            if (typeof reducer !== "function") {
+              throw new Error("Expected the reducer to be a function.");
+            }
+            var currentReducer = reducer;
+            var currentState = preloadedState;
+            var currentListeners = [];
+            var nextListeners = currentListeners;
+            var isDispatching = false;
+            function ensureCanMutateNextListeners() {
+              if (nextListeners === currentListeners) {
+                nextListeners = currentListeners.slice();
+              }
+            }
+            function getState() {
+              return currentState;
+            }
+            function subscribe(listener) {
+              if (typeof listener !== "function") {
+                throw new Error("Expected listener to be a function.");
+              }
+              var isSubscribed = true;
+              ensureCanMutateNextListeners();
+              nextListeners.push(listener);
+              return function unsubscribe() {
+                if (!isSubscribed) {
+                  return;
+                }
+                isSubscribed = false;
+                ensureCanMutateNextListeners();
+                var index = nextListeners.indexOf(listener);
+                nextListeners.splice(index, 1);
+              };
+            }
+            function dispatch(action) {
+              if (!(0, _isPlainObject2["default"])(action)) {
+                throw new Error("Actions must be plain objects. Use custom middleware for async actions.");
+              }
+              if (typeof action.type === "undefined") {
+                throw new Error('Actions may not have an undefined "type" property. Have you misspelled a constant?');
+              }
+              if (isDispatching) {
+                throw new Error("Reducers may not dispatch actions.");
+              }
+              try {
+                isDispatching = true;
+                currentState = currentReducer(currentState, action);
+              } finally {
+                isDispatching = false;
+              }
+              var listeners = currentListeners = nextListeners;
+              for (var i = 0; i < listeners.length; i++) {
+                var listener = listeners[i];
+                listener();
+              }
+              return action;
+            }
+            function replaceReducer(nextReducer) {
+              if (typeof nextReducer !== "function") {
+                throw new Error("Expected the nextReducer to be a function.");
+              }
+              currentReducer = nextReducer;
+              dispatch({ type: ActionTypes.INIT });
+            }
+            function observable() {
+              var _ref;
+              var outerSubscribe = subscribe;
+              return _ref = {
+                /**
+                 * The minimal observable subscription method.
+                 * @param {Object} observer Any object that can be used as an observer.
+                 * The observer object should have a `next` method.
+                 * @returns {subscription} An object with an `unsubscribe` method that can
+                 * be used to unsubscribe the observable from the store, and prevent further
+                 * emission of values from the observable.
+                 */
+                subscribe: function subscribe2(observer) {
+                  if (typeof observer !== "object") {
+                    throw new TypeError("Expected the observer to be an object.");
+                  }
+                  function observeState() {
+                    if (observer.next) {
+                      observer.next(getState());
+                    }
+                  }
+                  observeState();
+                  var unsubscribe = outerSubscribe(observeState);
+                  return { unsubscribe };
+                }
+              }, _ref[_symbolObservable2["default"]] = function() {
+                return this;
+              }, _ref;
+            }
+            dispatch({ type: ActionTypes.INIT });
+            return _ref2 = {
+              dispatch,
+              subscribe,
+              getState,
+              replaceReducer
+            }, _ref2[_symbolObservable2["default"]] = observable, _ref2;
+          }
+        }, { "lodash/isPlainObject": 20, "symbol-observable": 33 }],
+        28: [function(require2, module3, exports3) {
+          (function(process2) {
+            (function() {
+              "use strict";
+              exports3.__esModule = true;
+              exports3.compose = exports3.applyMiddleware = exports3.bindActionCreators = exports3.combineReducers = exports3.createStore = void 0;
+              var _createStore = require2("./createStore");
+              var _createStore2 = _interopRequireDefault(_createStore);
+              var _combineReducers = require2("./combineReducers");
+              var _combineReducers2 = _interopRequireDefault(_combineReducers);
+              var _bindActionCreators = require2("./bindActionCreators");
+              var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
+              var _applyMiddleware = require2("./applyMiddleware");
+              var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
+              var _compose = require2("./compose");
+              var _compose2 = _interopRequireDefault(_compose);
+              var _warning = require2("./utils/warning");
+              var _warning2 = _interopRequireDefault(_warning);
+              function _interopRequireDefault(obj) {
+                return obj && obj.__esModule ? obj : { "default": obj };
+              }
+              function isCrushed() {
+              }
+              if (process2.env.NODE_ENV !== "production" && typeof isCrushed.name === "string" && isCrushed.name !== "isCrushed") {
+                (0, _warning2["default"])("You are currently using minified code outside of NODE_ENV === 'production'. This means that you are running a slower development build of Redux. You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) to ensure you have the correct code for your production build.");
+              }
+              exports3.createStore = _createStore2["default"];
+              exports3.combineReducers = _combineReducers2["default"];
+              exports3.bindActionCreators = _bindActionCreators2["default"];
+              exports3.applyMiddleware = _applyMiddleware2["default"];
+              exports3.compose = _compose2["default"];
+            }).call(this);
+          }).call(this, require2("_process"));
+        }, { "./applyMiddleware": 23, "./bindActionCreators": 24, "./combineReducers": 25, "./compose": 26, "./createStore": 27, "./utils/warning": 29, "_process": 21 }],
+        29: [function(require2, module3, exports3) {
+          "use strict";
+          exports3.__esModule = true;
+          exports3["default"] = warning;
+          function warning(message) {
+            if (typeof console !== "undefined" && typeof console.error === "function") {
+              console.error(message);
+            }
+            try {
+              throw new Error(message);
+            } catch (e) {
+            }
+          }
+        }, {}],
+        30: [function(require2, module3, exports3) {
+          "use strict";
+          var Suggestions = require2("./src/suggestions");
+          window.Suggestions = module3.exports = Suggestions;
+        }, { "./src/suggestions": 32 }],
+        31: [function(require2, module3, exports3) {
+          "Use strict";
+          var List = function(component) {
+            this.component = component;
+            this.items = [];
+            this.active = 0;
+            this.element = document.createElement("ul");
+            this.element.className = "suggestions";
+            this.selectingListItem = false;
+            component.el.parentNode.insertBefore(this.element, component.el.nextSibling);
+            return this;
+          };
+          List.prototype.show = function() {
+            this.element.style.display = "block";
+          };
+          List.prototype.hide = function() {
+            this.element.style.display = "none";
+          };
+          List.prototype.add = function(item) {
+            this.items.push(item);
+          };
+          List.prototype.clear = function() {
+            this.items = [];
+            this.active = 0;
+          };
+          List.prototype.isEmpty = function() {
+            return !this.items.length;
+          };
+          List.prototype.draw = function() {
+            this.element.innerHTML = "";
+            if (this.items.length === 0) {
+              this.hide();
+              return;
+            }
+            for (var i = 0; i < this.items.length; i++) {
+              this.drawItem(this.items[i], this.active === i);
+            }
+            this.show();
+          };
+          List.prototype.drawItem = function(item, active) {
+            var li2 = document.createElement("li"), a = document.createElement("a");
+            if (active) li2.className += " active";
+            a.innerHTML = item.string;
+            li2.appendChild(a);
+            this.element.appendChild(li2);
+            li2.addEventListener("mousedown", (function() {
+              this.selectingListItem = true;
+            }).bind(this));
+            li2.addEventListener("mouseup", (function() {
+              this.handleMouseUp.call(this, item);
+            }).bind(this));
+          };
+          List.prototype.handleMouseUp = function(item) {
+            this.selectingListItem = false;
+            this.component.value(item.original);
+            this.clear();
+            this.draw();
+          };
+          List.prototype.move = function(index) {
+            this.active = index;
+            this.draw();
+          };
+          List.prototype.previous = function() {
+            this.move(this.active === 0 ? this.items.length - 1 : this.active - 1);
+          };
+          List.prototype.next = function() {
+            this.move(this.active === this.items.length - 1 ? 0 : this.active + 1);
+          };
+          module3.exports = List;
+        }, {}],
+        32: [function(require2, module3, exports3) {
+          "use strict";
+          var extend = require2("xtend");
+          var fuzzy = require2("fuzzy");
+          var List = require2("./list");
+          var Suggestions = function(el2, data, options) {
+            options = options || {};
+            this.options = extend({
+              minLength: 2,
+              limit: 5,
+              filter: true
+            }, options);
+            this.el = el2;
+            this.data = data || [];
+            this.list = new List(this);
+            this.query = "";
+            this.selected = null;
+            this.list.draw();
+            this.el.addEventListener("keyup", (function(e) {
+              this.handleKeyUp(e.keyCode);
+            }).bind(this), false);
+            this.el.addEventListener("keydown", (function(e) {
+              this.handleKeyDown(e);
+            }).bind(this));
+            this.el.addEventListener("focus", (function() {
+              this.handleFocus();
+            }).bind(this));
+            this.el.addEventListener("blur", (function() {
+              this.handleBlur();
+            }).bind(this));
+            this.el.addEventListener("paste", (function(e) {
+              this.handlePaste(e);
+            }).bind(this));
+            return this;
+          };
+          Suggestions.prototype.handleKeyUp = function(keyCode) {
+            if (keyCode === 40 || keyCode === 38 || keyCode === 27 || keyCode === 13 || keyCode === 9) return;
+            this.handleInputChange(this.el.value);
+          };
+          Suggestions.prototype.handleKeyDown = function(e) {
+            switch (e.keyCode) {
+              case 13:
+              // ENTER
+              case 9:
+                e.preventDefault();
+                if (!this.list.isEmpty()) {
+                  this.value(this.list.items[this.list.active].original);
+                  this.list.hide();
+                }
+                break;
+              case 27:
+                if (!this.list.isEmpty()) this.list.hide();
+                break;
+              case 38:
+                this.list.previous();
+                break;
+              case 40:
+                this.list.next();
+                break;
+            }
+          };
+          Suggestions.prototype.handleBlur = function() {
+            if (!this.list.selectingListItem) {
+              this.list.hide();
+            }
+          };
+          Suggestions.prototype.handlePaste = function(e) {
+            if (e.clipboardData) {
+              this.handleInputChange(e.clipboardData.getData("Text"));
+            } else {
+              var self2 = this;
+              setTimeout(function() {
+                self2.handleInputChange(e.target.value);
+              }, 100);
+            }
+          };
+          Suggestions.prototype.handleInputChange = function(query) {
+            this.query = this.normalize(query);
+            this.list.clear();
+            if (this.query.length < this.options.minLength) {
+              this.list.draw();
+              return;
+            }
+            this.getCandidates((function(data) {
+              for (var i = 0; i < data.length; i++) {
+                this.list.add(data[i]);
+                if (i === this.options.limit - 1) break;
+              }
+              this.list.draw();
+            }).bind(this));
+          };
+          Suggestions.prototype.handleFocus = function() {
+            if (!this.list.isEmpty()) this.list.show();
+            this.list.selectingListItem = false;
+          };
+          Suggestions.prototype.update = function(revisedData) {
+            this.data = revisedData;
+            this.handleKeyUp();
+          };
+          Suggestions.prototype.clear = function() {
+            this.data = [];
+            this.list.clear();
+          };
+          Suggestions.prototype.normalize = function(value) {
+            value = value.toLowerCase();
+            return value;
+          };
+          Suggestions.prototype.match = function(candidate, query) {
+            return candidate.indexOf(query) > -1;
+          };
+          Suggestions.prototype.value = function(value) {
+            this.selected = value;
+            this.el.value = this.getItemValue(value);
+            if (document.createEvent) {
+              var e = document.createEvent("HTMLEvents");
+              e.initEvent("change", true, false);
+              this.el.dispatchEvent(e);
+            } else {
+              this.el.fireEvent("onchange");
+            }
+          };
+          Suggestions.prototype.getCandidates = function(callback) {
+            var options = {
+              pre: "<strong>",
+              post: "</strong>",
+              extract: (function(d) {
+                return this.getItemValue(d);
+              }).bind(this)
+            };
+            var results = this.options.filter ? fuzzy.filter(this.query, this.data, options) : this.data.map((function(d) {
+              var boldString = this.getItemValue(d);
+              var indexString = this.normalize(boldString);
+              var indexOfQuery = indexString.lastIndexOf(this.query);
+              while (indexOfQuery > -1) {
+                var endIndexOfQuery = indexOfQuery + this.query.length;
+                boldString = boldString.slice(0, indexOfQuery) + "<strong>" + boldString.slice(indexOfQuery, endIndexOfQuery) + "</strong>" + boldString.slice(endIndexOfQuery);
+                indexOfQuery = indexString.slice(0, indexOfQuery).lastIndexOf(this.query);
+              }
+              return {
+                original: d,
+                string: boldString
+              };
+            }).bind(this));
+            callback(results);
+          };
+          Suggestions.prototype.getItemValue = function(item) {
+            return item;
+          };
+          module3.exports = Suggestions;
+        }, { "./list": 31, "fuzzy": 4, "xtend": 37 }],
+        33: [function(require2, module3, exports3) {
+          (function(global2) {
+            (function() {
+              "use strict";
+              Object.defineProperty(exports3, "__esModule", {
+                value: true
+              });
+              var _ponyfill = require2("./ponyfill.js");
+              var _ponyfill2 = _interopRequireDefault(_ponyfill);
+              function _interopRequireDefault(obj) {
+                return obj && obj.__esModule ? obj : { "default": obj };
+              }
+              var root;
+              if (typeof self !== "undefined") {
+                root = self;
+              } else if (typeof window !== "undefined") {
+                root = window;
+              } else if (typeof global2 !== "undefined") {
+                root = global2;
+              } else if (typeof module3 !== "undefined") {
+                root = module3;
               } else {
+                root = Function("return this")();
+              }
+              var result = (0, _ponyfill2["default"])(root);
+              exports3["default"] = result;
+            }).call(this);
+          }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
+        }, { "./ponyfill.js": 34 }],
+        34: [function(require2, module3, exports3) {
+          "use strict";
+          Object.defineProperty(exports3, "__esModule", {
+            value: true
+          });
+          exports3["default"] = symbolObservablePonyfill;
+          function symbolObservablePonyfill(root) {
+            var result;
+            var _Symbol = root.Symbol;
+            if (typeof _Symbol === "function") {
+              if (_Symbol.observable) {
+                result = _Symbol.observable;
+              } else {
+                result = _Symbol("observable");
+                _Symbol.observable = result;
+              }
+            } else {
+              result = "@@observable";
+            }
+            return result;
+          }
+          ;
+        }, {}],
+        35: [function(require2, module3, exports3) {
+          var each = require2("turf-meta").coordEach;
+          module3.exports = function(layer) {
+            var extent = [Infinity, Infinity, -Infinity, -Infinity];
+            each(layer, function(coord) {
+              if (extent[0] > coord[0]) extent[0] = coord[0];
+              if (extent[1] > coord[1]) extent[1] = coord[1];
+              if (extent[2] < coord[0]) extent[2] = coord[0];
+              if (extent[3] < coord[1]) extent[3] = coord[1];
+            });
+            return extent;
+          };
+        }, { "turf-meta": 36 }],
+        36: [function(require2, module3, exports3) {
+          function coordEach(layer, callback, excludeWrapCoord) {
+            var i, j, k, g, geometry, stopG, coords, geometryMaybeCollection, wrapShrink = 0, isGeometryCollection, isFeatureCollection = layer.type === "FeatureCollection", isFeature = layer.type === "Feature", stop = isFeatureCollection ? layer.features.length : 1;
+            for (i = 0; i < stop; i++) {
+              geometryMaybeCollection = isFeatureCollection ? layer.features[i].geometry : isFeature ? layer.geometry : layer;
+              isGeometryCollection = geometryMaybeCollection.type === "GeometryCollection";
+              stopG = isGeometryCollection ? geometryMaybeCollection.geometries.length : 1;
+              for (g = 0; g < stopG; g++) {
+                geometry = isGeometryCollection ? geometryMaybeCollection.geometries[g] : geometryMaybeCollection;
+                coords = geometry.coordinates;
+                wrapShrink = excludeWrapCoord && (geometry.type === "Polygon" || geometry.type === "MultiPolygon") ? 1 : 0;
+                if (geometry.type === "Point") {
+                  callback(coords);
+                } else if (geometry.type === "LineString" || geometry.type === "MultiPoint") {
+                  for (j = 0; j < coords.length; j++) callback(coords[j]);
+                } else if (geometry.type === "Polygon" || geometry.type === "MultiLineString") {
+                  for (j = 0; j < coords.length; j++)
+                    for (k = 0; k < coords[j].length - wrapShrink; k++)
+                      callback(coords[j][k]);
+                } else if (geometry.type === "MultiPolygon") {
+                  for (j = 0; j < coords.length; j++)
+                    for (k = 0; k < coords[j].length; k++)
+                      for (l = 0; l < coords[j][k].length - wrapShrink; l++)
+                        callback(coords[j][k][l]);
+                } else {
+                  throw new Error("Unknown Geometry Type");
+                }
+              }
+            }
+          }
+          module3.exports.coordEach = coordEach;
+          function coordReduce(layer, callback, memo, excludeWrapCoord) {
+            coordEach(layer, function(coord) {
+              memo = callback(memo, coord);
+            }, excludeWrapCoord);
+            return memo;
+          }
+          module3.exports.coordReduce = coordReduce;
+          function propEach(layer, callback) {
+            var i;
+            switch (layer.type) {
+              case "FeatureCollection":
+                features = layer.features;
+                for (i = 0; i < layer.features.length; i++) {
+                  callback(layer.features[i].properties);
+                }
+                break;
+              case "Feature":
+                callback(layer.properties);
+                break;
+            }
+          }
+          module3.exports.propEach = propEach;
+          function propReduce(layer, callback, memo) {
+            propEach(layer, function(prop) {
+              memo = callback(memo, prop);
+            });
+            return memo;
+          }
+          module3.exports.propReduce = propReduce;
+        }, {}],
+        37: [function(require2, module3, exports3) {
+          module3.exports = extend;
+          var hasOwnProperty = Object.prototype.hasOwnProperty;
+          function extend() {
+            var target = {};
+            for (var i = 0; i < arguments.length; i++) {
+              var source = arguments[i];
+              for (var key in source) {
+                if (hasOwnProperty.call(source, key)) {
+                  target[key] = source[key];
+                }
+              }
+            }
+            return target;
+          }
+        }, {}],
+        38: [function(require2, module3, exports3) {
+          "use strict";
+          Object.defineProperty(exports3, "__esModule", {
+            value: true
+          });
+          exports3.queryOrigin = queryOrigin;
+          exports3.queryDestination = queryDestination;
+          exports3.queryOriginCoordinates = queryOriginCoordinates;
+          exports3.queryDestinationCoordinates = queryDestinationCoordinates;
+          exports3.clearOrigin = clearOrigin;
+          exports3.clearDestination = clearDestination;
+          exports3.setOptions = setOptions;
+          exports3.hoverMarker = hoverMarker;
+          exports3.setRouteIndex = setRouteIndex;
+          exports3.createOrigin = createOrigin;
+          exports3.createDestination = createDestination;
+          exports3.setProfile = setProfile;
+          exports3.reverse = reverse;
+          exports3.setOriginFromCoordinates = setOriginFromCoordinates;
+          exports3.setDestinationFromCoordinates = setDestinationFromCoordinates;
+          exports3.addWaypoint = addWaypoint;
+          exports3.setWaypoint = setWaypoint;
+          exports3.removeWaypoint = removeWaypoint;
+          exports3.eventSubscribe = eventSubscribe;
+          exports3.eventEmit = eventEmit;
+          var _action_types = require2("../constants/action_types");
+          var types = _interopRequireWildcard(_action_types);
+          var _utils = require2("../utils");
+          var _utils2 = _interopRequireDefault(_utils);
+          function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _interopRequireWildcard(obj) {
+            if (obj && obj.__esModule) {
+              return obj;
+            } else {
+              var newObj = {};
+              if (obj != null) {
+                for (var key in obj) {
+                  if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+                }
+              }
+              newObj.default = obj;
+              return newObj;
+            }
+          }
+          var request = new XMLHttpRequest();
+          function originPoint(coordinates) {
+            return function(dispatch) {
+              var origin = _utils2.default.createPoint(coordinates, {
+                id: "origin",
+                "marker-symbol": "A"
+              });
+              dispatch({ type: types.ORIGIN, origin });
+              dispatch(eventEmit("origin", { feature: origin }));
+            };
+          }
+          function destinationPoint(coordinates) {
+            return function(dispatch) {
+              var destination = _utils2.default.createPoint(coordinates, {
+                id: "destination",
+                "marker-symbol": "B"
+              });
+              dispatch({ type: types.DESTINATION, destination });
+              dispatch(eventEmit("destination", { feature: destination }));
+            };
+          }
+          function setDirections(directions) {
+            return function(dispatch) {
+              dispatch({
+                type: types.DIRECTIONS,
+                directions
+              });
+              dispatch(eventEmit("route", { route: directions }));
+            };
+          }
+          function updateWaypoints(waypoints) {
+            return {
+              type: types.WAYPOINTS,
+              waypoints
+            };
+          }
+          function setHoverMarker(feature) {
+            return {
+              type: types.HOVER_MARKER,
+              hoverMarker: feature
+            };
+          }
+          function fetchDirections() {
+            return function(dispatch, getState) {
+              var _getState = getState(), api = _getState.api, routeIndex = _getState.routeIndex, profile = _getState.profile, alternatives = _getState.alternatives, congestion = _getState.congestion, destination = _getState.destination, language = _getState.language, exclude = _getState.exclude;
+              if (!(destination && destination.geometry)) return;
+              var query = buildDirectionsQuery(getState);
+              var options = [];
+              options.push("geometries=polyline");
+              if (alternatives) options.push("alternatives=true");
+              if (congestion) options.push("annotations=congestion");
+              options.push("steps=true");
+              options.push("overview=full");
+              request.abort();
+              request.open("GET", "" + api + profile + "/" + query + ".json?" + options.join("&"), true);
+              request.onload = function() {
+                if (request.status >= 200 && request.status < 400) {
+                  var data = JSON.parse(request.responseText);
+                  if (data.error) {
+                    dispatch(setDirections([]));
+                    return dispatch(setError(data.error));
+                  }
+                  dispatch(setError(null));
+                  if (!data.routes[routeIndex]) dispatch(setRouteIndex(0));
+                  dispatch(setDirections(data.routes));
+                  dispatch(originPoint(data.waypoints[0].location));
+                  dispatch(destinationPoint(data.waypoints[data.waypoints.length - 1].location));
+                } else {
+                  dispatch(setDirections([]));
+                  return dispatch(setError(JSON.parse(request.responseText).message));
+                }
+              };
+              request.onerror = function() {
                 dispatch(setDirections([]));
                 return dispatch(setError(JSON.parse(request.responseText).message));
-              }
+              };
+              request.send();
             };
-            request.onerror = function() {
-              dispatch(setDirections([]));
-              return dispatch(setError(JSON.parse(request.responseText).message));
-            };
-            request.send();
-          };
-        }
-        function buildDirectionsQuery(state) {
-          var _state = state(), origin = _state.origin, destination = _state.destination, waypoints = _state.waypoints;
-          var query = [];
-          query.push(origin.geometry.coordinates.join(","));
-          query.push(";");
-          if (waypoints.length) {
-            waypoints.forEach(function(waypoint) {
-              query.push(waypoint.geometry.coordinates.join(","));
-              query.push(";");
+          }
+          function buildDirectionsQuery(state) {
+            var _state = state(), origin = _state.origin, destination = _state.destination, waypoints = _state.waypoints;
+            var query = [];
+            query.push(origin.geometry.coordinates.join(","));
+            query.push(";");
+            if (waypoints.length) {
+              waypoints.forEach(function(waypoint) {
+                query.push(waypoint.geometry.coordinates.join(","));
+                query.push(";");
+              });
+            }
+            query.push(destination.geometry.coordinates.join(","));
+            return encodeURIComponent(query.join(""));
+          }
+          function normalizeWaypoint(waypoint) {
+            var properties = { id: "waypoint" };
+            return Object.assign(waypoint, {
+              properties: waypoint.properties ? Object.assign(waypoint.properties, properties) : properties
             });
           }
-          query.push(destination.geometry.coordinates.join(","));
-          return encodeURIComponent(query.join(""));
-        }
-        function normalizeWaypoint(waypoint) {
-          var properties = { id: "waypoint" };
-          return Object.assign(waypoint, {
-            properties: waypoint.properties ? Object.assign(waypoint.properties, properties) : properties
-          });
-        }
-        function setError(error) {
-          return function(dispatch) {
-            dispatch({
-              type: "ERROR",
-              error
-            });
-            if (error) dispatch(eventEmit("error", { error }));
-          };
-        }
-        function queryOrigin(query) {
-          return {
-            type: types.ORIGIN_QUERY,
-            query
-          };
-        }
-        function queryDestination(query) {
-          return {
-            type: types.DESTINATION_QUERY,
-            query
-          };
-        }
-        function queryOriginCoordinates(coords) {
-          return {
-            type: types.ORIGIN_FROM_COORDINATES,
-            coordinates: coords
-          };
-        }
-        function queryDestinationCoordinates(coords) {
-          return {
-            type: types.DESTINATION_FROM_COORDINATES,
-            coordinates: coords
-          };
-        }
-        function clearOrigin() {
-          return function(dispatch) {
-            dispatch({
-              type: types.ORIGIN_CLEAR
-            });
-            dispatch(eventEmit("clear", { type: "origin" }));
-            dispatch(setError(null));
-          };
-        }
-        function clearDestination() {
-          return function(dispatch) {
-            dispatch({
-              type: types.DESTINATION_CLEAR
-            });
-            dispatch(eventEmit("clear", { type: "destination" }));
-            dispatch(setError(null));
-          };
-        }
-        function setOptions(options) {
-          return {
-            type: types.SET_OPTIONS,
-            options
-          };
-        }
-        function hoverMarker(coordinates) {
-          return function(dispatch) {
-            var feature = coordinates ? _utils2.default.createPoint(coordinates, { id: "hover" }) : {};
-            dispatch(setHoverMarker(feature));
-          };
-        }
-        function setRouteIndex(routeIndex) {
-          return {
-            type: types.ROUTE_INDEX,
-            routeIndex
-          };
-        }
-        function createOrigin(coordinates) {
-          return function(dispatch, getState) {
-            var _getState2 = getState(), destination = _getState2.destination;
-            dispatch(originPoint(coordinates));
-            if (destination.geometry) dispatch(fetchDirections());
-          };
-        }
-        function createDestination(coordinates) {
-          return function(dispatch, getState) {
-            var _getState3 = getState(), origin = _getState3.origin;
-            dispatch(destinationPoint(coordinates));
-            if (origin.geometry) dispatch(fetchDirections());
-          };
-        }
-        function setProfile(profile) {
-          return function(dispatch, getState) {
-            var _getState4 = getState(), origin = _getState4.origin, destination = _getState4.destination;
-            dispatch({ type: types.DIRECTIONS_PROFILE, profile });
-            dispatch(eventEmit("profile", { profile }));
-            if (origin.geometry && destination.geometry) dispatch(fetchDirections());
-          };
-        }
-        function reverse() {
-          return function(dispatch, getState) {
-            var state = getState();
-            if (state.destination.geometry) dispatch(originPoint(state.destination.geometry.coordinates));
-            if (state.origin.geometry) dispatch(destinationPoint(state.origin.geometry.coordinates));
-            if (state.origin.geometry && state.destination.geometry) dispatch(fetchDirections());
-            var suggestions = document.getElementsByClassName("suggestions");
-            for (var i = 0; i < suggestions.length; i++) {
-              suggestions[i].style.visibility = "hidden";
-            }
-            ;
-          };
-        }
-        function setOriginFromCoordinates(coords) {
-          return function(dispatch) {
-            if (!_utils2.default.validCoords(coords)) coords = [_utils2.default.wrap(coords[0]), _utils2.default.wrap(coords[1])];
-            if (isNaN(coords[0]) && isNaN(coords[1])) return dispatch(setError(new Error("Coordinates are not valid")));
-            dispatch(queryOriginCoordinates(coords));
-            dispatch(createOrigin(coords));
-          };
-        }
-        function setDestinationFromCoordinates(coords) {
-          return function(dispatch) {
-            if (!_utils2.default.validCoords(coords)) coords = [_utils2.default.wrap(coords[0]), _utils2.default.wrap(coords[1])];
-            if (isNaN(coords[0]) && isNaN(coords[1])) return dispatch(setError(new Error("Coordinates are not valid")));
-            dispatch(createDestination(coords));
-            dispatch(queryDestinationCoordinates(coords));
-          };
-        }
-        function addWaypoint(index, waypoint) {
-          return function(dispatch, getState) {
-            var _getState5 = getState(), destination = _getState5.destination, waypoints = _getState5.waypoints;
-            waypoints.splice(index, 0, normalizeWaypoint(waypoint));
-            dispatch(updateWaypoints(waypoints));
-            if (destination.geometry) dispatch(fetchDirections());
-          };
-        }
-        function setWaypoint(index, waypoint) {
-          return function(dispatch, getState) {
-            var _getState6 = getState(), destination = _getState6.destination, waypoints = _getState6.waypoints;
-            waypoints[index] = normalizeWaypoint(waypoint);
-            dispatch(updateWaypoints(waypoints));
-            if (destination.geometry) dispatch(fetchDirections());
-          };
-        }
-        function removeWaypoint(waypoint) {
-          return function(dispatch, getState) {
-            var _getState7 = getState(), destination = _getState7.destination, waypoints = _getState7.waypoints;
-            waypoints = waypoints.filter(function(way) {
-              return !_utils2.default.coordinateMatch(way, waypoint);
-            });
-            dispatch(updateWaypoints(waypoints));
-            if (destination.geometry) dispatch(fetchDirections());
-          };
-        }
-        function eventSubscribe(type, fn2) {
-          return function(dispatch, getState) {
-            var _getState8 = getState(), events = _getState8.events;
-            events[type] = events[type] || [];
-            events[type].push(fn2);
-            return {
-              type: types.EVENTS,
-              events
+          function setError(error) {
+            return function(dispatch) {
+              dispatch({
+                type: "ERROR",
+                error
+              });
+              if (error) dispatch(eventEmit("error", { error }));
             };
-          };
-        }
-        function eventEmit(type, data) {
-          var _this = this;
-          return function(dispatch, getState) {
-            var _getState9 = getState(), events = _getState9.events;
-            if (!events[type]) {
+          }
+          function queryOrigin(query) {
+            return {
+              type: types.ORIGIN_QUERY,
+              query
+            };
+          }
+          function queryDestination(query) {
+            return {
+              type: types.DESTINATION_QUERY,
+              query
+            };
+          }
+          function queryOriginCoordinates(coords) {
+            return {
+              type: types.ORIGIN_FROM_COORDINATES,
+              coordinates: coords
+            };
+          }
+          function queryDestinationCoordinates(coords) {
+            return {
+              type: types.DESTINATION_FROM_COORDINATES,
+              coordinates: coords
+            };
+          }
+          function clearOrigin() {
+            return function(dispatch) {
+              dispatch({
+                type: types.ORIGIN_CLEAR
+              });
+              dispatch(eventEmit("clear", { type: "origin" }));
+              dispatch(setError(null));
+            };
+          }
+          function clearDestination() {
+            return function(dispatch) {
+              dispatch({
+                type: types.DESTINATION_CLEAR
+              });
+              dispatch(eventEmit("clear", { type: "destination" }));
+              dispatch(setError(null));
+            };
+          }
+          function setOptions(options) {
+            return {
+              type: types.SET_OPTIONS,
+              options
+            };
+          }
+          function hoverMarker(coordinates) {
+            return function(dispatch) {
+              var feature = coordinates ? _utils2.default.createPoint(coordinates, { id: "hover" }) : {};
+              dispatch(setHoverMarker(feature));
+            };
+          }
+          function setRouteIndex(routeIndex) {
+            return {
+              type: types.ROUTE_INDEX,
+              routeIndex
+            };
+          }
+          function createOrigin(coordinates) {
+            return function(dispatch, getState) {
+              var _getState2 = getState(), destination = _getState2.destination;
+              dispatch(originPoint(coordinates));
+              if (destination.geometry) dispatch(fetchDirections());
+            };
+          }
+          function createDestination(coordinates) {
+            return function(dispatch, getState) {
+              var _getState3 = getState(), origin = _getState3.origin;
+              dispatch(destinationPoint(coordinates));
+              if (origin.geometry) dispatch(fetchDirections());
+            };
+          }
+          function setProfile(profile) {
+            return function(dispatch, getState) {
+              var _getState4 = getState(), origin = _getState4.origin, destination = _getState4.destination;
+              dispatch({ type: types.DIRECTIONS_PROFILE, profile });
+              dispatch(eventEmit("profile", { profile }));
+              if (origin.geometry && destination.geometry) dispatch(fetchDirections());
+            };
+          }
+          function reverse() {
+            return function(dispatch, getState) {
+              var state = getState();
+              if (state.destination.geometry) dispatch(originPoint(state.destination.geometry.coordinates));
+              if (state.origin.geometry) dispatch(destinationPoint(state.origin.geometry.coordinates));
+              if (state.origin.geometry && state.destination.geometry) dispatch(fetchDirections());
+              var suggestions = document.getElementsByClassName("suggestions");
+              for (var i = 0; i < suggestions.length; i++) {
+                suggestions[i].style.visibility = "hidden";
+              }
+              ;
+            };
+          }
+          function setOriginFromCoordinates(coords) {
+            return function(dispatch) {
+              if (!_utils2.default.validCoords(coords)) coords = [_utils2.default.wrap(coords[0]), _utils2.default.wrap(coords[1])];
+              if (isNaN(coords[0]) && isNaN(coords[1])) return dispatch(setError(new Error("Coordinates are not valid")));
+              dispatch(queryOriginCoordinates(coords));
+              dispatch(createOrigin(coords));
+            };
+          }
+          function setDestinationFromCoordinates(coords) {
+            return function(dispatch) {
+              if (!_utils2.default.validCoords(coords)) coords = [_utils2.default.wrap(coords[0]), _utils2.default.wrap(coords[1])];
+              if (isNaN(coords[0]) && isNaN(coords[1])) return dispatch(setError(new Error("Coordinates are not valid")));
+              dispatch(createDestination(coords));
+              dispatch(queryDestinationCoordinates(coords));
+            };
+          }
+          function addWaypoint(index, waypoint) {
+            return function(dispatch, getState) {
+              var _getState5 = getState(), destination = _getState5.destination, waypoints = _getState5.waypoints;
+              waypoints.splice(index, 0, normalizeWaypoint(waypoint));
+              dispatch(updateWaypoints(waypoints));
+              if (destination.geometry) dispatch(fetchDirections());
+            };
+          }
+          function setWaypoint(index, waypoint) {
+            return function(dispatch, getState) {
+              var _getState6 = getState(), destination = _getState6.destination, waypoints = _getState6.waypoints;
+              waypoints[index] = normalizeWaypoint(waypoint);
+              dispatch(updateWaypoints(waypoints));
+              if (destination.geometry) dispatch(fetchDirections());
+            };
+          }
+          function removeWaypoint(waypoint) {
+            return function(dispatch, getState) {
+              var _getState7 = getState(), destination = _getState7.destination, waypoints = _getState7.waypoints;
+              waypoints = waypoints.filter(function(way) {
+                return !_utils2.default.coordinateMatch(way, waypoint);
+              });
+              dispatch(updateWaypoints(waypoints));
+              if (destination.geometry) dispatch(fetchDirections());
+            };
+          }
+          function eventSubscribe(type, fn2) {
+            return function(dispatch, getState) {
+              var _getState8 = getState(), events = _getState8.events;
+              events[type] = events[type] || [];
+              events[type].push(fn2);
               return {
                 type: types.EVENTS,
                 events
               };
-            }
-            var listeners = events[type].slice();
-            for (var i = 0; i < listeners.length; i++) {
-              listeners[i].call(_this, data);
-            }
-          };
-        }
-      }, { "../constants/action_types": 39, "../utils": 47 }], 39: [function(require2, module3, exports3) {
-        "use strict";
-        Object.defineProperty(exports3, "__esModule", {
-          value: true
-        });
-        var DESTINATION = exports3.DESTINATION = "DESTINATION";
-        var DESTINATION_CLEAR = exports3.DESTINATION_CLEAR = "DESTINATION_CLEAR";
-        var DESTINATION_QUERY = exports3.DESTINATION_QUERY = "DESTINATION_QUERY";
-        var DESTINATION_FROM_COORDINATES = exports3.DESTINATION_FROM_COORDINATES = "DESTINATION_FROM_COORDINATES";
-        var DIRECTIONS = exports3.DIRECTIONS = "DIRECTIONS";
-        var DIRECTIONS_PROFILE = exports3.DIRECTIONS_PROFILE = "DIRECTIONS_PROFILE";
-        var EVENTS = exports3.EVENTS = "EVENTS";
-        var ERROR = exports3.ERROR = "ERROR";
-        var HOVER_MARKER = exports3.HOVER_MARKER = "HOVER_MARKER";
-        var ORIGIN = exports3.ORIGIN = "ORIGIN";
-        var ORIGIN_CLEAR = exports3.ORIGIN_CLEAR = "ORIGIN_CLEAR";
-        var ORIGIN_QUERY = exports3.ORIGIN_QUERY = "ORIGIN_QUERY";
-        var ORIGIN_FROM_COORDINATES = exports3.ORIGIN_FROM_COORDINATES = "ORIGIN_FROM_COORDINATES";
-        var ROUTE_INDEX = exports3.ROUTE_INDEX = "ROUTE_INDEX";
-        var SET_OPTIONS = exports3.SET_OPTIONS = "SET_OPTIONS";
-        var WAYPOINTS = exports3.WAYPOINTS = "WAYPOINTS";
-      }, {}], 40: [function(require2, module3, exports3) {
-        "use strict";
-        Object.defineProperty(exports3, "__esModule", {
-          value: true
-        });
-        var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(obj) {
-          return typeof obj;
-        } : function(obj) {
-          return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-        };
-        var _createClass = /* @__PURE__ */ function() {
-          function defineProperties(target, props) {
-            for (var i = 0; i < props.length; i++) {
-              var descriptor = props[i];
-              descriptor.enumerable = descriptor.enumerable || false;
-              descriptor.configurable = true;
-              if ("value" in descriptor) descriptor.writable = true;
-              Object.defineProperty(target, descriptor.key, descriptor);
-            }
+            };
           }
-          return function(Constructor, protoProps, staticProps) {
-            if (protoProps) defineProperties(Constructor.prototype, protoProps);
-            if (staticProps) defineProperties(Constructor, staticProps);
-            return Constructor;
-          };
-        }();
-        var _suggestions = require2("suggestions");
-        var _suggestions2 = _interopRequireDefault(_suggestions);
-        var _lodash = require2("lodash.debounce");
-        var _lodash2 = _interopRequireDefault(_lodash);
-        var _events = require2("events");
-        var _utils = require2("../utils");
-        var _utils2 = _interopRequireDefault(_utils);
-        function _interopRequireDefault(obj) {
-          return obj && obj.__esModule ? obj : { default: obj };
-        }
-        function _classCallCheck(instance, Constructor) {
-          if (!(instance instanceof Constructor)) {
-            throw new TypeError("Cannot call a class as a function");
-          }
-        }
-        var Geocoder = function() {
-          function Geocoder2(options) {
-            _classCallCheck(this, Geocoder2);
-            this._ev = new _events.EventEmitter();
-            this.options = options;
-            this.api = options && options.api || "https://nominatim.openstreetmap.org/search?format=geojson&limit=5&q=";
-          }
-          _createClass(Geocoder2, [{
-            key: "onAdd",
-            value: function onAdd(map2) {
-              this._map = map2;
-              this.request = new XMLHttpRequest();
-              var el2 = document.createElement("div");
-              el2.className = "maplibregl-ctrl-geocoder";
-              var icon = document.createElement("span");
-              icon.className = "geocoder-icon geocoder-icon-search";
-              var input = this._inputEl = document.createElement("input");
-              input.type = "text";
-              input.placeholder = this.options.placeholder;
-              input.addEventListener("keydown", (0, _lodash2.default)((function(e) {
-                if (!e.target.value) return this._clearEl.classList.remove("active");
-                if (e.metaKey || [9, 27, 37, 39, 13, 38, 40].indexOf(e.keyCode) !== -1) return;
-                this._queryFromInput(e.target.value);
-              }).bind(this)), 200);
-              input.addEventListener("change", (function(e) {
-                if (e.target.value) this._clearEl.classList.add("active");
-                var selected = this._typeahead.selected;
-                if (selected) {
-                  if (this.options.flyTo) {
-                    if (selected.bbox && selected.context && selected.context.length <= 3 || selected.bbox && !selected.context) {
-                      var bbox = selected.bbox;
-                      map2.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
-                    } else {
-                      map2.flyTo({
-                        center: selected.center,
-                        zoom: this.options.zoom
-                      });
-                    }
-                  }
-                  this._input = selected;
-                  this.fire("result", { result: selected });
-                }
-              }).bind(this));
-              var actions = document.createElement("div");
-              actions.classList.add("geocoder-pin-right");
-              var clear = this._clearEl = document.createElement("button");
-              clear.className = "geocoder-icon geocoder-icon-close";
-              clear.addEventListener("click", this._clear.bind(this));
-              var loading = this._loadingEl = document.createElement("span");
-              loading.className = "geocoder-icon geocoder-icon-loading";
-              actions.appendChild(clear);
-              actions.appendChild(loading);
-              el2.appendChild(icon);
-              el2.appendChild(input);
-              el2.appendChild(actions);
-              if (this.options.container) this.options.position = false;
-              this._typeahead = new _suggestions2.default(input, [], { filter: false });
-              this._typeahead.getItemValue = function(item) {
-                return item.properties.display_name;
-              };
-              return el2;
-            }
-          }, {
-            key: "_geocode",
-            value: function _geocode(q, callback) {
-              this._loadingEl.classList.add("active");
-              this.fire("loading");
-              var geocodingOptions = this.options;
-              var exclude = ["placeholder", "zoom", "flyTo", "api"];
-              var options = Object.keys(this.options).filter(function(key) {
-                return exclude.indexOf(key) === -1;
-              }).map(function(key) {
-                return key + "=" + geocodingOptions[key];
-              });
-              this.request.abort();
-              this.request.open("GET", this.api + encodeURIComponent(q.trim()) + "&" + options.join("&"), true);
-              this.request.onload = (function() {
-                this._loadingEl.classList.remove("active");
-                if (this.request.status >= 200 && this.request.status < 400) {
-                  var data = JSON.parse(this.request.responseText);
-                  if (data.features.length) {
-                    this._clearEl.classList.add("active");
-                  } else {
-                    this._clearEl.classList.remove("active");
-                    this._typeahead.selected = null;
-                  }
-                  this.fire("results", { results: data.features });
-                  this._typeahead.update(data.features);
-                  return callback(data.features);
-                } else {
-                  this.fire("error", { error: JSON.parse(this.request.responseText).message });
-                }
-              }).bind(this);
-              this.request.onerror = (function() {
-                this._loadingEl.classList.remove("active");
-                this.fire("error", { error: JSON.parse(this.request.responseText).message });
-              }).bind(this);
-              this.request.send();
-            }
-          }, {
-            key: "_queryFromInput",
-            value: function _queryFromInput(q) {
-              q = q.trim();
-              if (!q) this._clear();
-              if (q.length > 2) {
-                this._geocode(q, (function(results) {
-                  this._results = results;
-                }).bind(this));
-              }
-            }
-          }, {
-            key: "_change",
-            value: function _change() {
-              var onChange = document.createEvent("HTMLEvents");
-              onChange.initEvent("change", true, false);
-              this._inputEl.dispatchEvent(onChange);
-            }
-          }, {
-            key: "_query",
-            value: function _query(input) {
-              if (!input) return;
-              if ((typeof input === "undefined" ? "undefined" : _typeof(input)) === "object" && input.length) {
-                input = [_utils2.default.wrap(input[0]), _utils2.default.wrap(input[1])].join();
-              }
-              this._geocode(input, (function(results) {
-                if (!results.length) return;
-                var result = results[0];
-                this._results = results;
-                this._typeahead.selected = result;
-                this._inputEl.value = result.properties.display_name;
-                this._change();
-              }).bind(this));
-            }
-          }, {
-            key: "_setInput",
-            value: function _setInput(input) {
-              if (!input) return;
-              if ((typeof input === "undefined" ? "undefined" : _typeof(input)) === "object" && input.length) {
-                input = [_utils2.default.roundWithOriginalPrecision(_utils2.default.wrap(input[0]), input[0]), _utils2.default.roundWithOriginalPrecision(_utils2.default.wrap(input[1]), input[1])].join();
-              }
-              this._inputEl.value = input;
-              this._input = null;
-              this._typeahead.selected = null;
-              this._typeahead.clear();
-              this._change();
-            }
-          }, {
-            key: "_clear",
-            value: function _clear() {
-              this._input = null;
-              this._inputEl.value = "";
-              this._typeahead.selected = null;
-              this._typeahead.clear();
-              this._change();
-              this._inputEl.focus();
-              this._clearEl.classList.remove("active");
-              this.fire("clear");
-            }
-          }, {
-            key: "getResult",
-            value: function getResult() {
-              return this._input;
-            }
-            /**
-             * Set & query the input
-             * @param {Array|String} query An array of coordinates [lng, lat] or location name as a string.
-             * @returns {Geocoder} this
-             */
-          }, {
-            key: "query",
-            value: function query(_query2) {
-              this._query(_query2);
-              return this;
-            }
-            /**
-             * Set input
-             * @param {Array|String} value An array of coordinates [lng, lat] or location name as a string. Calling this function just sets the input and does not trigger an API request.
-             * @returns {Geocoder} this
-             */
-          }, {
-            key: "setInput",
-            value: function setInput(value) {
-              this._setInput(value);
-              return this;
-            }
-            /**
-             * Subscribe to events that happen within the plugin.
-             * @param {String} type name of event. Available events and the data passed into their respective event objects are:
-             *
-             * - __clear__ `Emitted when the input is cleared`
-             * - __loading__ `Emitted when the geocoder is looking up a query`
-             * - __results__ `{ results } Fired when the geocoder returns a response`
-             * - __result__ `{ result } Fired when input is set`
-             * - __error__ `{ error } Error as string`
-             * @param {Function} fn function that's called when the event is emitted.
-             * @returns {Geocoder} this;
-             */
-          }, {
-            key: "on",
-            value: function on2(type, fn2) {
-              this._ev.on(type, fn2);
-              this._ev.on("error", function(err) {
-                console.log(err);
-              });
-              return this;
-            }
-            /**
-             * Fire an event
-             * @param {String} type event name.
-             * @param {Object} data event data to pass to the function subscribed.
-             * @returns {Geocoder} this
-             */
-          }, {
-            key: "fire",
-            value: function fire(type, data) {
-              this._ev.emit(type, data);
-              return this;
-            }
-            /**
-             * Remove an event
-             * @returns {Geocoder} this
-             * @param {String} type Event name.
-             * @param {Function} fn Function that should unsubscribe to the event emitted.
-             */
-          }, {
-            key: "off",
-            value: function off(type, fn2) {
-              this._ev.removeListener(type, fn2);
-              return this;
-            }
-          }]);
-          return Geocoder2;
-        }();
-        exports3.default = Geocoder;
-        ;
-      }, { "../utils": 47, "events": 3, "lodash.debounce": 7, "suggestions": 30 }], 41: [function(require2, module3, exports3) {
-        "use strict";
-        Object.defineProperty(exports3, "__esModule", {
-          value: true
-        });
-        var _createClass = /* @__PURE__ */ function() {
-          function defineProperties(target, props) {
-            for (var i = 0; i < props.length; i++) {
-              var descriptor = props[i];
-              descriptor.enumerable = descriptor.enumerable || false;
-              descriptor.configurable = true;
-              if ("value" in descriptor) descriptor.writable = true;
-              Object.defineProperty(target, descriptor.key, descriptor);
-            }
-          }
-          return function(Constructor, protoProps, staticProps) {
-            if (protoProps) defineProperties(Constructor.prototype, protoProps);
-            if (staticProps) defineProperties(Constructor, staticProps);
-            return Constructor;
-          };
-        }();
-        var _geocoder = require2("./geocoder");
-        var _geocoder2 = _interopRequireDefault(_geocoder);
-        var _lodash = require2("lodash.template");
-        var _lodash2 = _interopRequireDefault(_lodash);
-        var _lodash3 = require2("lodash.isequal");
-        var _lodash4 = _interopRequireDefault(_lodash3);
-        var _turfExtent = require2("turf-extent");
-        var _turfExtent2 = _interopRequireDefault(_turfExtent);
-        function _interopRequireDefault(obj) {
-          return obj && obj.__esModule ? obj : { default: obj };
-        }
-        function _classCallCheck(instance, Constructor) {
-          if (!(instance instanceof Constructor)) {
-            throw new TypeError("Cannot call a class as a function");
-          }
-        }
-        var tmpl = (0, _lodash2.default)("<div class='maplibre-directions-component maplibre-directions-inputs'>\n  <div class='maplibre-directions-component-keyline'>\n    <div class='maplibre-directions-origin'>\n      <label class='maplibre-form-label'>\n        <span class='directions-icon directions-icon-depart'></span>\n      </label>\n      <div id='maplibre-directions-origin-input'></div>\n    </div>\n\n    <button\n      class='directions-icon directions-icon-reverse directions-reverse js-reverse-inputs'\n      title='Reverse origin &amp; destination'>\n    </button>\n\n    <div class='maplibre-directions-destination'>\n      <label class='maplibre-form-label'>\n        <span class='directions-icon directions-icon-arrive'></span>\n      </label>\n      <div id='maplibre-directions-destination-input'></div>\n    </div>\n  </div>\n\n  <% if (controls.profileSwitcher) { %>\n  <div class='maplibre-directions-profile maplibre-directions-component-keyline maplibre-directions-clearfix'><input\n      id='maplibre-directions-profile-driving-traffic'\n      type='radio'\n      name='profile'\n      value='maplibre/driving-traffic'\n      <% if (profile === 'maplibre/driving-traffic') { %>checked<% } %>\n    />\n    <label for='maplibre-directions-profile-driving-traffic'>Traffic</label>\n    <input\n      id='maplibre-directions-profile-driving'\n      type='radio'\n      name='profile'\n      value='maplibre/driving'\n      <% if (profile === 'maplibre/driving') { %>checked<% } %>\n    />\n    <label for='maplibre-directions-profile-driving'>Driving</label>\n    <input\n      id='maplibre-directions-profile-walking'\n      type='radio'\n      name='profile'\n      value='maplibre/walking'\n      <% if (profile === 'maplibre/walking') { %>checked<% } %>\n    />\n    <label for='maplibre-directions-profile-walking'>Walking</label>\n    <input\n      id='maplibre-directions-profile-cycling'\n      type='radio'\n      name='profile'\n      value='maplibre/cycling'\n      <% if (profile === 'maplibre/cycling') { %>checked<% } %>\n    />\n    <label for='maplibre-directions-profile-cycling'>Cycling</label>\n  </div>\n  <% } %>\n</div>\n");
-        var Inputs = function() {
-          function Inputs2(el2, store, actions, map2) {
-            _classCallCheck(this, Inputs2);
-            var _store$getState = store.getState(), originQuery = _store$getState.originQuery, destinationQuery = _store$getState.destinationQuery, profile = _store$getState.profile, controls = _store$getState.controls;
-            el2.innerHTML = tmpl({
-              originQuery,
-              destinationQuery,
-              profile,
-              controls
-            });
-            this.container = el2;
-            this.actions = actions;
-            this.store = store;
-            this._map = map2;
-            this.onAdd();
-            this.render();
-          }
-          _createClass(Inputs2, [{
-            key: "animateToCoordinates",
-            value: function animateToCoordinates(mode, coords) {
-              var _store$getState2 = this.store.getState(), origin = _store$getState2.origin, destination = _store$getState2.destination, routePadding = _store$getState2.routePadding;
-              if (origin.geometry && destination.geometry && !(0, _lodash4.default)(origin.geometry, destination.geometry)) {
-                var bb = (0, _turfExtent2.default)({
-                  type: "FeatureCollection",
-                  features: [origin, destination]
-                });
-                this._map.fitBounds([[bb[0], bb[1]], [bb[2], bb[3]]], { padding: routePadding });
-              } else {
-                this._map.flyTo({ center: coords });
-              }
-            }
-          }, {
-            key: "onAdd",
-            value: function onAdd() {
-              var _this = this;
-              var _actions = this.actions, clearOrigin = _actions.clearOrigin, clearDestination = _actions.clearDestination, createOrigin = _actions.createOrigin, createDestination = _actions.createDestination, setProfile = _actions.setProfile, reverse = _actions.reverse;
-              var _store$getState3 = this.store.getState(), geocoder = _store$getState3.geocoder, flyTo = _store$getState3.flyTo, placeholderOrigin = _store$getState3.placeholderOrigin, placeholderDestination = _store$getState3.placeholderDestination, zoom = _store$getState3.zoom;
-              this.originInput = new _geocoder2.default(Object.assign({}, {}, geocoder, { flyTo, placeholder: placeholderOrigin, zoom }));
-              var originEl = this.originInput.onAdd(this._map);
-              var originContainerEl = this.container.querySelector("#maplibre-directions-origin-input");
-              originContainerEl.appendChild(originEl);
-              this.destinationInput = new _geocoder2.default(Object.assign({}, {}, geocoder, { flyTo, placeholder: placeholderDestination, zoom }));
-              var destinationEl = this.destinationInput.onAdd(this._map);
-              this.container.querySelector("#maplibre-directions-destination-input").appendChild(destinationEl);
-              this.originInput.on("result", function(e) {
-                var coords = e.result.geometry.coordinates;
-                createOrigin(coords);
-                _this.animateToCoordinates("origin", coords);
-              });
-              this.originInput.on("clear", clearOrigin);
-              this.destinationInput.on("result", function(e) {
-                var coords = e.result.geometry.coordinates;
-                createDestination(coords);
-                _this.animateToCoordinates("destination", coords);
-              });
-              this.destinationInput.on("clear", clearDestination);
-              var profiles = this.container.querySelectorAll('input[type="radio"]');
-              Array.prototype.forEach.call(profiles, function(el2) {
-                el2.addEventListener("change", function() {
-                  setProfile(el2.value);
-                });
-              });
-              this.container.querySelector(".js-reverse-inputs").addEventListener("click", function() {
-                var _store$getState4 = _this.store.getState(), origin = _store$getState4.origin, destination = _store$getState4.destination;
-                if (origin) _this.actions.queryDestination(origin.geometry.coordinates);
-                if (destination) _this.actions.queryOrigin(destination.geometry.coordinates);
-                reverse();
-              });
-            }
-          }, {
-            key: "render",
-            value: function render() {
-              var _this2 = this;
-              this.store.subscribe(function() {
-                var _store$getState5 = _this2.store.getState(), originQuery = _store$getState5.originQuery, destinationQuery = _store$getState5.destinationQuery, originQueryCoordinates = _store$getState5.originQueryCoordinates, destinationQueryCoordinates = _store$getState5.destinationQueryCoordinates;
-                if (originQuery) {
-                  _this2.originInput.query(originQuery);
-                  _this2.actions.queryOrigin(null);
-                }
-                if (destinationQuery) {
-                  _this2.destinationInput.query(destinationQuery);
-                  _this2.actions.queryDestination(null);
-                }
-                if (originQueryCoordinates) {
-                  _this2.originInput.setInput(originQueryCoordinates);
-                  _this2.animateToCoordinates("origin", originQueryCoordinates);
-                  _this2.actions.queryOriginCoordinates(null);
-                }
-                if (destinationQueryCoordinates) {
-                  _this2.destinationInput.setInput(destinationQueryCoordinates);
-                  _this2.animateToCoordinates("destination", destinationQueryCoordinates);
-                  _this2.actions.queryDestinationCoordinates(null);
-                }
-              });
-            }
-          }]);
-          return Inputs2;
-        }();
-        exports3.default = Inputs;
-      }, { "./geocoder": 40, "lodash.isequal": 8, "lodash.template": 9, "turf-extent": 35 }], 42: [function(require2, module3, exports3) {
-        "use strict";
-        Object.defineProperty(exports3, "__esModule", {
-          value: true
-        });
-        var _createClass = /* @__PURE__ */ function() {
-          function defineProperties(target, props) {
-            for (var i = 0; i < props.length; i++) {
-              var descriptor = props[i];
-              descriptor.enumerable = descriptor.enumerable || false;
-              descriptor.configurable = true;
-              if ("value" in descriptor) descriptor.writable = true;
-              Object.defineProperty(target, descriptor.key, descriptor);
-            }
-          }
-          return function(Constructor, protoProps, staticProps) {
-            if (protoProps) defineProperties(Constructor.prototype, protoProps);
-            if (staticProps) defineProperties(Constructor, staticProps);
-            return Constructor;
-          };
-        }();
-        var _utils = require2("../utils");
-        var _utils2 = _interopRequireDefault(_utils);
-        var _lodash = require2("lodash.template");
-        var _lodash2 = _interopRequireDefault(_lodash);
-        var _lodash3 = require2("lodash.isequal");
-        var _lodash4 = _interopRequireDefault(_lodash3);
-        function _interopRequireDefault(obj) {
-          return obj && obj.__esModule ? obj : { default: obj };
-        }
-        function _classCallCheck(instance, Constructor) {
-          if (!(instance instanceof Constructor)) {
-            throw new TypeError("Cannot call a class as a function");
-          }
-        }
-        var instructionsTemplate = (0, _lodash2.default)("<div class='directions-control directions-control-directions'>\n  <div class='mapbox-directions-component mapbox-directions-route-summary<% if (routes > 1) { %> mapbox-directions-multiple<% } %>'>\n    <% if (routes > 1) { %>\n    <div class='mapbox-directions-routes mapbox-directions-clearfix'>\n      <% for (var i = 0; i < routes; i++) { %>\n        <input type='radio' name='routes' id='<%= i %>' <% if (i === routeIndex) { %>checked<% } %>>\n        <label for='<%= i %>' class='mapbox-directions-route'><%= i + 1 %></label>\n      <% } %>\n    </div>\n    <% } %>\n    <h1><%- duration %></h1>\n    <span><%- distance %></span>\n  </div>\n\n  <div class='mapbox-directions-instructions'>\n    <div class='mapbox-directions-instructions-wrapper'>\n      <ol class='mapbox-directions-steps'>\n        <% steps.forEach(function(step) { %>\n          <%\n            var distance = step.distance ? format(step.distance) : false;\n            var icon = step.maneuver.modifier ? step.maneuver.modifier.replace(/\\s+/g, '-').toLowerCase() : step.maneuver.type.replace(/\\s+/g, '-').toLowerCase();\n\n            if (step.maneuver.type === 'arrive' || step.maneuver.type === 'depart') {\n              icon = step.maneuver.type;\n            }\n\n            if (step.maneuver.type === 'roundabout' || step.maneuver.type === 'rotary') {\n              icon= 'roundabout';\n            }\n\n            var lng = step.maneuver.location[0];\n            var lat = step.maneuver.location[1];\n          %>\n          <li\n            data-lat='<%= lat %>'\n            data-lng='<%= lng %>'\n            class='mapbox-directions-step'>\n            <span class='directions-icon directions-icon-<%= icon %>'></span>\n            <div class='mapbox-directions-step-maneuver'>\n              <%= step.maneuver.instruction %>\n              <%= step.maneuver.modifier %>\n            </div>\n            <% if (distance) { %>\n              <div class='mapbox-directions-step-distance'>\n                <%= distance %>\n              </div>\n            <% } %>\n          </li>\n        <% }); %>\n      </ol>\n    </div>\n  </div>\n</div>\n");
-        var errorTemplate = (0, _lodash2.default)("<div class='directions-control directions-control-directions'>\n  <div class='maplibre-directions-error'>\n    <%= error %>\n  </div>\n</div>\n");
-        var Instructions = function() {
-          function Instructions2(el2, store, actions, map2) {
-            _classCallCheck(this, Instructions2);
-            this.container = el2;
-            this.actions = actions;
-            this.store = store;
-            this._map = map2;
-            this.directions = {};
-            this.render();
-          }
-          _createClass(Instructions2, [{
-            key: "render",
-            value: function render() {
-              var _this = this;
-              this.store.subscribe(function() {
-                var _actions = _this.actions, hoverMarker = _actions.hoverMarker, setRouteIndex = _actions.setRouteIndex;
-                var _store$getState = _this.store.getState(), routeIndex = _store$getState.routeIndex, unit = _store$getState.unit, directions = _store$getState.directions, error = _store$getState.error, compile = _store$getState.compile;
-                var shouldRender = !(0, _lodash4.default)(directions[routeIndex], _this.directions);
-                if (error) {
-                  _this.container.innerHTML = errorTemplate({ error });
-                  return;
-                }
-                if (directions.length && shouldRender) {
-                  var direction = _this.directions = directions[routeIndex];
-                  if (compile) {
-                    direction.legs.forEach(function(leg) {
-                      leg.steps.forEach(function(step) {
-                        step.maneuver.instruction = compile("en", step);
-                      });
-                    });
-                  }
-                  _this.container.innerHTML = instructionsTemplate({
-                    routeIndex,
-                    routes: directions.length,
-                    steps: direction.legs[0].steps,
-                    // Todo: Respect all legs,
-                    format: _utils2.default.format[unit],
-                    duration: _utils2.default.format[unit](direction.distance),
-                    distance: _utils2.default.format.duration(direction.duration)
-                  });
-                  var steps = _this.container.querySelectorAll(".maplibre-directions-step");
-                  Array.prototype.forEach.call(steps, function(el2) {
-                    var lng = el2.getAttribute("data-lng");
-                    var lat = el2.getAttribute("data-lat");
-                    el2.addEventListener("mouseover", function() {
-                      hoverMarker([lng, lat]);
-                    });
-                    el2.addEventListener("mouseout", function() {
-                      hoverMarker(null);
-                    });
-                    el2.addEventListener("click", function() {
-                      _this._map.flyTo({
-                        center: [lng, lat],
-                        zoom: 16
-                      });
-                    });
-                  });
-                  var routes = _this.container.querySelectorAll('input[type="radio"]');
-                  Array.prototype.forEach.call(routes, function(el2) {
-                    el2.addEventListener("change", function(e) {
-                      setRouteIndex(parseInt(e.target.id, 10));
-                    });
-                  });
-                } else if (_this.container.innerHTML && shouldRender) {
-                  _this.container.innerHTML = "";
-                }
-              });
-            }
-          }]);
-          return Instructions2;
-        }();
-        exports3.default = Instructions;
-      }, { "../utils": 47, "lodash.isequal": 8, "lodash.template": 9 }], 43: [function(require2, module3, exports3) {
-        "use strict";
-        Object.defineProperty(exports3, "__esModule", {
-          value: true
-        });
-        var _createClass = /* @__PURE__ */ function() {
-          function defineProperties(target, props) {
-            for (var i = 0; i < props.length; i++) {
-              var descriptor = props[i];
-              descriptor.enumerable = descriptor.enumerable || false;
-              descriptor.configurable = true;
-              if ("value" in descriptor) descriptor.writable = true;
-              Object.defineProperty(target, descriptor.key, descriptor);
-            }
-          }
-          return function(Constructor, protoProps, staticProps) {
-            if (protoProps) defineProperties(Constructor.prototype, protoProps);
-            if (staticProps) defineProperties(Constructor, staticProps);
-            return Constructor;
-          };
-        }();
-        var _redux = require2("redux");
-        var _reduxThunk = require2("redux-thunk");
-        var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
-        var _polyline = require2("@mapbox/polyline");
-        var _utils = require2("./utils");
-        var _utils2 = _interopRequireDefault(_utils);
-        var _reducers = require2("./reducers");
-        var _reducers2 = _interopRequireDefault(_reducers);
-        var _actions = require2("./actions");
-        var actions = _interopRequireWildcard(_actions);
-        var _directions_style = require2("./directions_style");
-        var _directions_style2 = _interopRequireDefault(_directions_style);
-        var _inputs = require2("./controls/inputs");
-        var _inputs2 = _interopRequireDefault(_inputs);
-        var _instructions = require2("./controls/instructions");
-        var _instructions2 = _interopRequireDefault(_instructions);
-        function _interopRequireWildcard(obj) {
-          if (obj && obj.__esModule) {
-            return obj;
-          } else {
-            var newObj = {};
-            if (obj != null) {
-              for (var key in obj) {
-                if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-              }
-            }
-            newObj.default = obj;
-            return newObj;
-          }
-        }
-        function _interopRequireDefault(obj) {
-          return obj && obj.__esModule ? obj : { default: obj };
-        }
-        function _classCallCheck(instance, Constructor) {
-          if (!(instance instanceof Constructor)) {
-            throw new TypeError("Cannot call a class as a function");
-          }
-        }
-        var storeWithMiddleware = (0, _redux.applyMiddleware)(_reduxThunk2.default)(_redux.createStore);
-        var store = storeWithMiddleware(_reducers2.default);
-        var MapLibreDirections2 = function() {
-          function MapLibreDirections3(options) {
-            _classCallCheck(this, MapLibreDirections3);
-            this.actions = (0, _redux.bindActionCreators)(actions, store.dispatch);
-            this.actions.setOptions(options || {});
-            this.options = options || {};
-            this.onDragDown = this._onDragDown.bind(this);
-            this.onDragMove = this._onDragMove.bind(this);
-            this.onDragUp = this._onDragUp.bind(this);
-            this.move = this._move.bind(this);
-            this.onClick = this._clickHandler().bind(this);
-          }
-          _createClass(MapLibreDirections3, [{
-            key: "onAdd",
-            value: function onAdd(map2) {
-              var _this = this;
-              this._map = map2;
-              var _store$getState = store.getState(), controls = _store$getState.controls;
-              var el2 = this.container = document.createElement("div");
-              el2.className = "maplibregl-ctrl-directions maplibregl-ctrl";
-              var inputEl = document.createElement("div");
-              inputEl.className = "directions-control directions-control-inputs";
-              new _inputs2.default(inputEl, store, this.actions, this._map);
-              var directionsEl = document.createElement("div");
-              directionsEl.className = "directions-control directions-control-instructions";
-              new _instructions2.default(directionsEl, store, {
-                hoverMarker: this.actions.hoverMarker,
-                setRouteIndex: this.actions.setRouteIndex
-              }, this._map);
-              if (controls.inputs) el2.appendChild(inputEl);
-              if (controls.instructions) el2.appendChild(directionsEl);
-              this.subscribedActions();
-              if (this._map.loaded()) this.mapState();
-              else this._map.on("load", function() {
-                return _this.mapState();
-              });
-              return el2;
-            }
-            /**
-             * Removes the control from the map it has been added to. This is called by `map.removeControl`,
-             * which is the recommended method to remove controls.
-             *
-             * @returns {Control} `this`
-             */
-          }, {
-            key: "onRemove",
-            value: function onRemove(map2) {
-              this.container.parentNode.removeChild(this.container);
-              this.removeRoutes();
-              map2.off("mousedown", this.onDragDown);
-              map2.off("mousemove", this.move);
-              map2.off("touchstart", this.onDragDown);
-              map2.off("touchstart", this.move);
-              map2.off("click", this.onClick);
-              if (this.storeUnsubscribe) {
-                this.storeUnsubscribe();
-                delete this.storeUnsubscribe;
-              }
-              _directions_style2.default.forEach(function(layer) {
-                if (map2.getLayer(layer.id)) map2.removeLayer(layer.id);
-              });
-              if (map2.getSource("directions")) map2.removeSource("directions");
-              this._map = null;
-              return this;
-            }
-          }, {
-            key: "mapState",
-            value: function mapState() {
-              var _this2 = this;
-              var _store$getState2 = store.getState(), profile = _store$getState2.profile, alternatives = _store$getState2.alternatives, congestion = _store$getState2.congestion, styles = _store$getState2.styles, interactive = _store$getState2.interactive, compile = _store$getState2.compile;
-              this.actions.eventEmit("profile", { profile });
-              var geojson = {
-                type: "geojson",
-                data: {
-                  type: "FeatureCollection",
-                  features: []
-                }
-              };
-              this._map.addSource("directions", geojson);
-              if (styles && styles.length) styles.forEach(function(style) {
-                return _this2._map.addLayer(style);
-              });
-              _directions_style2.default.forEach(function(style) {
-                if (!_this2._map.getLayer(style.id)) _this2._map.addLayer(style);
-              });
-              if (interactive) {
-                this._map.on("mousedown", this.onDragDown);
-                this._map.on("mousemove", this.move);
-                this._map.on("click", this.onClick);
-                this._map.on("touchstart", this.move);
-                this._map.on("touchstart", this.onDragDown);
-              }
-            }
-          }, {
-            key: "subscribedActions",
-            value: function subscribedActions() {
-              var _this3 = this;
-              this.storeUnsubscribe = store.subscribe(function() {
-                var _store$getState3 = store.getState(), origin = _store$getState3.origin, destination = _store$getState3.destination, hoverMarker = _store$getState3.hoverMarker, directions = _store$getState3.directions, routeIndex = _store$getState3.routeIndex;
-                var geojson = {
-                  type: "FeatureCollection",
-                  features: [origin, destination, hoverMarker].filter(function(d) {
-                    return d.geometry;
-                  })
+          function eventEmit(type, data) {
+            var _this = this;
+            return function(dispatch, getState) {
+              var _getState9 = getState(), events = _getState9.events;
+              if (!events[type]) {
+                return {
+                  type: types.EVENTS,
+                  events
                 };
-                if (directions.length) {
-                  directions.forEach(function(feature, index) {
-                    var features2 = [];
-                    var decoded = (0, _polyline.decode)(feature.geometry, 5).map(function(c) {
-                      return c.reverse();
-                    });
-                    decoded.forEach(function(c, i) {
-                      var previous = features2[features2.length - 1];
-                      var congestion = feature.legs[0].annotation && feature.legs[0].annotation.congestion && feature.legs[0].annotation.congestion[i - 1];
-                      if (previous && (!congestion || previous.properties.congestion === congestion)) {
-                        previous.geometry.coordinates.push(c);
-                      } else {
-                        var segment = {
-                          geometry: {
-                            type: "LineString",
-                            coordinates: []
-                          },
-                          properties: {
-                            "route-index": index,
-                            route: index === routeIndex ? "selected" : "alternate"
-                          }
-                        };
-                        if (previous) segment.geometry.coordinates.push(previous.geometry.coordinates[previous.geometry.coordinates.length - 1]);
-                        segment.geometry.coordinates.push(c);
-                        if (congestion) {
-                          segment.properties.congestion = feature.legs[0].annotation.congestion[i - 1];
-                        }
-                        features2.push(segment);
-                      }
-                    });
-                    geojson.features = geojson.features.concat(features2);
-                    if (index === routeIndex) {
-                      feature.legs[0].steps.forEach(function(d) {
-                        if (d.maneuver.type === "waypoint") {
-                          geojson.features.push({
-                            type: "Feature",
-                            geometry: d.maneuver.location,
-                            properties: {
-                              id: "waypoint"
-                            }
+              }
+              var listeners = events[type].slice();
+              for (var i = 0; i < listeners.length; i++) {
+                listeners[i].call(_this, data);
+              }
+            };
+          }
+        }, { "../constants/action_types": 39, "../utils": 47 }],
+        39: [function(require2, module3, exports3) {
+          "use strict";
+          Object.defineProperty(exports3, "__esModule", {
+            value: true
+          });
+          var DESTINATION = exports3.DESTINATION = "DESTINATION";
+          var DESTINATION_CLEAR = exports3.DESTINATION_CLEAR = "DESTINATION_CLEAR";
+          var DESTINATION_QUERY = exports3.DESTINATION_QUERY = "DESTINATION_QUERY";
+          var DESTINATION_FROM_COORDINATES = exports3.DESTINATION_FROM_COORDINATES = "DESTINATION_FROM_COORDINATES";
+          var DIRECTIONS = exports3.DIRECTIONS = "DIRECTIONS";
+          var DIRECTIONS_PROFILE = exports3.DIRECTIONS_PROFILE = "DIRECTIONS_PROFILE";
+          var EVENTS = exports3.EVENTS = "EVENTS";
+          var ERROR = exports3.ERROR = "ERROR";
+          var HOVER_MARKER = exports3.HOVER_MARKER = "HOVER_MARKER";
+          var ORIGIN = exports3.ORIGIN = "ORIGIN";
+          var ORIGIN_CLEAR = exports3.ORIGIN_CLEAR = "ORIGIN_CLEAR";
+          var ORIGIN_QUERY = exports3.ORIGIN_QUERY = "ORIGIN_QUERY";
+          var ORIGIN_FROM_COORDINATES = exports3.ORIGIN_FROM_COORDINATES = "ORIGIN_FROM_COORDINATES";
+          var ROUTE_INDEX = exports3.ROUTE_INDEX = "ROUTE_INDEX";
+          var SET_OPTIONS = exports3.SET_OPTIONS = "SET_OPTIONS";
+          var WAYPOINTS = exports3.WAYPOINTS = "WAYPOINTS";
+        }, {}],
+        40: [function(require2, module3, exports3) {
+          "use strict";
+          Object.defineProperty(exports3, "__esModule", {
+            value: true
+          });
+          var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(obj) {
+            return typeof obj;
+          } : function(obj) {
+            return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+          };
+          var _createClass = /* @__PURE__ */ function() {
+            function defineProperties(target, props) {
+              for (var i = 0; i < props.length; i++) {
+                var descriptor = props[i];
+                descriptor.enumerable = descriptor.enumerable || false;
+                descriptor.configurable = true;
+                if ("value" in descriptor) descriptor.writable = true;
+                Object.defineProperty(target, descriptor.key, descriptor);
+              }
+            }
+            return function(Constructor, protoProps, staticProps) {
+              if (protoProps) defineProperties(Constructor.prototype, protoProps);
+              if (staticProps) defineProperties(Constructor, staticProps);
+              return Constructor;
+            };
+          }();
+          var _suggestions = require2("suggestions");
+          var _suggestions2 = _interopRequireDefault(_suggestions);
+          var _lodash = require2("lodash.debounce");
+          var _lodash2 = _interopRequireDefault(_lodash);
+          var _events = require2("events");
+          var _utils = require2("../utils");
+          var _utils2 = _interopRequireDefault(_utils);
+          function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _classCallCheck(instance, Constructor) {
+            if (!(instance instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _UrlExists(url) {
+            var http = new XMLHttpRequest();
+            http.open(url, true);
+            http.send();
+            if (http.status != 404) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+          var Geocoder = function() {
+            function Geocoder2(options) {
+              _classCallCheck(this, Geocoder2);
+              this._ev = new _events.EventEmitter();
+              this.options = options;
+              this.api = options && options.api || "https://nominatim.openstreetmap.org/search?format=geojson&limit=5&q=";
+            }
+            _createClass(Geocoder2, [
+              {
+                key: "onAdd",
+                value: function onAdd(map2) {
+                  this._map = map2;
+                  this.request = new XMLHttpRequest();
+                  var el2 = document.createElement("div");
+                  el2.className = "maplibregl-ctrl-geocoder";
+                  var icon = document.createElement("span");
+                  icon.className = "geocoder-icon geocoder-icon-search";
+                  var input = this._inputEl = document.createElement("input");
+                  input.type = "text";
+                  input.placeholder = this.options.placeholder;
+                  input.addEventListener("keydown", (0, _lodash2.default)((function(e) {
+                    if (!e.target.value) return this._clearEl.classList.remove("active");
+                    if (e.metaKey || [9, 27, 37, 39, 13, 38, 40].indexOf(e.keyCode) !== -1) return;
+                    this._queryFromInput(e.target.value);
+                  }).bind(this)), 200);
+                  input.addEventListener("change", (function(e) {
+                    if (e.target.value) this._clearEl.classList.add("active");
+                    var selected = this._typeahead.selected;
+                    if (selected) {
+                      if (this.options.flyTo) {
+                        if (selected.bbox && selected.context && selected.context.length <= 3 || selected.bbox && !selected.context) {
+                          var bbox = selected.bbox;
+                          map2.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
+                        } else {
+                          map2.flyTo({
+                            center: selected.center,
+                            zoom: this.options.zoom
                           });
                         }
-                      });
+                      }
+                      this._input = selected;
+                      this.fire("result", { result: selected });
                     }
+                  }).bind(this));
+                  var actions = document.createElement("div");
+                  actions.classList.add("geocoder-pin-right");
+                  var clear = this._clearEl = document.createElement("button");
+                  clear.className = "geocoder-icon geocoder-icon-close";
+                  clear.addEventListener("click", this._clear.bind(this));
+                  var loading = this._loadingEl = document.createElement("span");
+                  loading.className = "geocoder-icon geocoder-icon-loading";
+                  actions.appendChild(clear);
+                  actions.appendChild(loading);
+                  el2.appendChild(icon);
+                  el2.appendChild(input);
+                  el2.appendChild(actions);
+                  if (this.options.container) this.options.position = false;
+                  this._typeahead = new _suggestions2.default(input, [], { filter: false });
+                  this._typeahead.getItemValue = function(item) {
+                    return item.properties.display_name;
+                  };
+                  return el2;
+                }
+              },
+              {
+                key: "_geocode",
+                value: function _geocode(q, callback) {
+                  this._loadingEl.classList.add("active");
+                  this.fire("loading");
+                  var geocodingOptions = this.options;
+                  var exclude = ["placeholder", "zoom", "flyTo", "api"];
+                  var options = Object.keys(this.options).filter(function(key) {
+                    return exclude.indexOf(key) === -1;
+                  }).map(function(key) {
+                    return key + "=" + geocodingOptions[key];
                   });
-                }
-                if (_this3._map.style && _this3._map.getSource("directions")) {
-                  _this3._map.getSource("directions").setData(geojson);
-                }
-              });
-            }
-          }, {
-            key: "_clickHandler",
-            value: function _clickHandler() {
-              var timer = null;
-              var delay = 250;
-              return function(event) {
-                if (!timer) {
-                  var singleClickHandler = this._onSingleClick.bind(this);
-                  timer = setTimeout(function() {
-                    singleClickHandler(event);
-                    timer = null;
-                  }, delay);
-                } else {
-                  clearTimeout(timer);
-                  timer = null;
-                  this._map.zoomIn();
-                }
-              };
-            }
-          }, {
-            key: "_onSingleClick",
-            value: function _onSingleClick(e) {
-              var _this4 = this;
-              var _store$getState4 = store.getState(), origin = _store$getState4.origin;
-              var coords = [e.lngLat.lng, e.lngLat.lat];
-              if (!origin.geometry) {
-                this.actions.setOriginFromCoordinates(coords);
-              } else {
-                var features2 = this._map.queryRenderedFeatures(e.point, {
-                  layers: ["directions-origin-point", "directions-destination-point", "directions-waypoint-point", "directions-route-line-alt"]
-                });
-                if (features2.length) {
-                  features2.forEach(function(f) {
-                    if (f.layer.id === "directions-waypoint-point") {
-                      _this4.actions.removeWaypoint(f);
+                  this.request.abort();
+                  var xurl = this.api + encodeURIComponent(q.trim()) + "&" + options.join("&");
+                  var url0 = this.api + encodeURIComponent(q.trim()) + "&" + options.join("&");
+                  var url1 = this.api + encodeURIComponent(q.trim()) + "?overview=false";
+                  var url2 = this.api2 + encodeURIComponent(q.trim()) + "?overview=false";
+                  isMandeha = _UrlExists(url0);
+                  if (isMandeha) {
+                    this.request.open("GET", url0, true);
+                  } else {
+                    isMandeha = _UrlExists(url1);
+                    if (isMandeha) {
+                      this.request.open("GET", url1, true);
+                    } else {
+                      this.request.open("GET", url2, true);
                     }
-                  });
-                  if (features2[0].properties.route === "alternate") {
-                    var index = features2[0].properties["route-index"];
-                    this.actions.setRouteIndex(index);
                   }
+                  this.request.onload = (function() {
+                    this._loadingEl.classList.remove("active");
+                    if (this.request.status >= 200 && this.request.status < 400) {
+                      var data = JSON.parse(this.request.responseText);
+                      if (data.features.length) {
+                        this._clearEl.classList.add("active");
+                      } else {
+                        this._clearEl.classList.remove("active");
+                        this._typeahead.selected = null;
+                      }
+                      this.fire("results", { results: data.features });
+                      this._typeahead.update(data.features);
+                      return callback(data.features);
+                    } else {
+                      this.fire("error", { error: JSON.parse(this.request.responseText).message });
+                    }
+                  }).bind(this);
+                  this.request.onerror = (function() {
+                    this._loadingEl.classList.remove("active");
+                    this.fire("error", { error: JSON.parse(this.request.responseText).message });
+                  }).bind(this);
+                  this.request.send();
+                }
+              },
+              {
+                key: "_queryFromInput",
+                value: function _queryFromInput(q) {
+                  q = q.trim();
+                  if (!q) this._clear();
+                  if (q.length > 2) {
+                    this._geocode(q, (function(results) {
+                      this._results = results;
+                    }).bind(this));
+                  }
+                }
+              },
+              {
+                key: "_change",
+                value: function _change() {
+                  var onChange = document.createEvent("HTMLEvents");
+                  onChange.initEvent("change", true, false);
+                  this._inputEl.dispatchEvent(onChange);
+                }
+              },
+              {
+                key: "_query",
+                value: function _query(input) {
+                  if (!input) return;
+                  if ((typeof input === "undefined" ? "undefined" : _typeof(input)) === "object" && input.length) {
+                    input = [_utils2.default.wrap(input[0]), _utils2.default.wrap(input[1])].join();
+                  }
+                  this._geocode(input, (function(results) {
+                    if (!results.length) return;
+                    var result = results[0];
+                    this._results = results;
+                    this._typeahead.selected = result;
+                    this._inputEl.value = result.properties.display_name;
+                    this._change();
+                  }).bind(this));
+                }
+              },
+              {
+                key: "_setInput",
+                value: function _setInput(input) {
+                  if (!input) return;
+                  if ((typeof input === "undefined" ? "undefined" : _typeof(input)) === "object" && input.length) {
+                    input = [_utils2.default.roundWithOriginalPrecision(_utils2.default.wrap(input[0]), input[0]), _utils2.default.roundWithOriginalPrecision(_utils2.default.wrap(input[1]), input[1])].join();
+                  }
+                  this._inputEl.value = input;
+                  this._input = null;
+                  this._typeahead.selected = null;
+                  this._typeahead.clear();
+                  this._change();
+                }
+              },
+              {
+                key: "_clear",
+                value: function _clear() {
+                  this._input = null;
+                  this._inputEl.value = "";
+                  this._typeahead.selected = null;
+                  this._typeahead.clear();
+                  this._change();
+                  this._inputEl.focus();
+                  this._clearEl.classList.remove("active");
+                  this.fire("clear");
+                }
+              },
+              {
+                key: "getResult",
+                value: function getResult() {
+                  return this._input;
+                }
+                /**
+                 * Set & query the input
+                 * @param {Array|String} query An array of coordinates [lng, lat] or location name as a string.
+                 * @returns {Geocoder} this
+                 */
+              },
+              {
+                key: "query",
+                value: function query(_query2) {
+                  this._query(_query2);
+                  return this;
+                }
+                /**
+                 * Set input
+                 * @param {Array|String} value An array of coordinates [lng, lat] or location name as a string. Calling this function just sets the input and does not trigger an API request.
+                 * @returns {Geocoder} this
+                 */
+              },
+              {
+                key: "setInput",
+                value: function setInput(value) {
+                  this._setInput(value);
+                  return this;
+                }
+                /**
+                 * Subscribe to events that happen within the plugin.
+                 * @param {String} type name of event. Available events and the data passed into their respective event objects are:
+                 *
+                 * - __clear__ `Emitted when the input is cleared`
+                 * - __loading__ `Emitted when the geocoder is looking up a query`
+                 * - __results__ `{ results } Fired when the geocoder returns a response`
+                 * - __result__ `{ result } Fired when input is set`
+                 * - __error__ `{ error } Error as string`
+                 * @param {Function} fn function that's called when the event is emitted.
+                 * @returns {Geocoder} this;
+                 */
+              },
+              {
+                key: "on",
+                value: function on2(type, fn2) {
+                  this._ev.on(type, fn2);
+                  this._ev.on("error", function(err) {
+                    console.log(err);
+                  });
+                  return this;
+                }
+                /**
+                 * Fire an event
+                 * @param {String} type event name.
+                 * @param {Object} data event data to pass to the function subscribed.
+                 * @returns {Geocoder} this
+                 */
+              },
+              {
+                key: "fire",
+                value: function fire(type, data) {
+                  this._ev.emit(type, data);
+                  return this;
+                }
+                /**
+                 * Remove an event
+                 * @returns {Geocoder} this
+                 * @param {String} type Event name.
+                 * @param {Function} fn Function that should unsubscribe to the event emitted.
+                 */
+              },
+              {
+                key: "off",
+                value: function off(type, fn2) {
+                  this._ev.removeListener(type, fn2);
+                  return this;
+                }
+              }
+            ]);
+            return Geocoder2;
+          }();
+          exports3.default = Geocoder;
+          ;
+        }, { "../utils": 47, "events": 3, "lodash.debounce": 7, "suggestions": 30 }],
+        41: [function(require2, module3, exports3) {
+          "use strict";
+          Object.defineProperty(exports3, "__esModule", {
+            value: true
+          });
+          var _createClass = /* @__PURE__ */ function() {
+            function defineProperties(target, props) {
+              for (var i = 0; i < props.length; i++) {
+                var descriptor = props[i];
+                descriptor.enumerable = descriptor.enumerable || false;
+                descriptor.configurable = true;
+                if ("value" in descriptor) descriptor.writable = true;
+                Object.defineProperty(target, descriptor.key, descriptor);
+              }
+            }
+            return function(Constructor, protoProps, staticProps) {
+              if (protoProps) defineProperties(Constructor.prototype, protoProps);
+              if (staticProps) defineProperties(Constructor, staticProps);
+              return Constructor;
+            };
+          }();
+          var _geocoder = require2("./geocoder");
+          var _geocoder2 = _interopRequireDefault(_geocoder);
+          var _lodash = require2("lodash.template");
+          var _lodash2 = _interopRequireDefault(_lodash);
+          var _lodash3 = require2("lodash.isequal");
+          var _lodash4 = _interopRequireDefault(_lodash3);
+          var _turfExtent = require2("turf-extent");
+          var _turfExtent2 = _interopRequireDefault(_turfExtent);
+          function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _classCallCheck(instance, Constructor) {
+            if (!(instance instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          var tmpl = (0, _lodash2.default)("<div class='maplibre-directions-component maplibre-directions-inputs'>\n  <div class='maplibre-directions-component-keyline'>\n    <div class='maplibre-directions-origin'>\n      <label class='maplibre-form-label'>\n        <span class='directions-icon directions-icon-depart'></span>\n      </label>\n      <div id='maplibre-directions-origin-input'></div>\n    </div>\n\n    <button\n      class='directions-icon directions-icon-reverse directions-reverse js-reverse-inputs'\n      title='Reverse origin &amp; destination'>\n    </button>\n\n    <div class='maplibre-directions-destination'>\n      <label class='maplibre-form-label'>\n        <span class='directions-icon directions-icon-arrive'></span>\n      </label>\n      <div id='maplibre-directions-destination-input'></div>\n    </div>\n  </div>\n\n  <% if (controls.profileSwitcher) { %>\n  <div class='maplibre-directions-profile maplibre-directions-component-keyline maplibre-directions-clearfix'><input\n      id='maplibre-directions-profile-driving-traffic'\n      type='radio'\n      name='profile'\n      value='maplibre/driving-traffic'\n      <% if (profile === 'maplibre/driving-traffic') { %>checked<% } %>\n    />\n    <label for='maplibre-directions-profile-driving-traffic'>Traffic</label>\n    <input\n      id='maplibre-directions-profile-driving'\n      type='radio'\n      name='profile'\n      value='maplibre/driving'\n      <% if (profile === 'maplibre/driving') { %>checked<% } %>\n    />\n    <label for='maplibre-directions-profile-driving'>Driving</label>\n    <input\n      id='maplibre-directions-profile-walking'\n      type='radio'\n      name='profile'\n      value='maplibre/walking'\n      <% if (profile === 'maplibre/walking') { %>checked<% } %>\n    />\n    <label for='maplibre-directions-profile-walking'>Walking</label>\n    <input\n      id='maplibre-directions-profile-cycling'\n      type='radio'\n      name='profile'\n      value='maplibre/cycling'\n      <% if (profile === 'maplibre/cycling') { %>checked<% } %>\n    />\n    <label for='maplibre-directions-profile-cycling'>Cycling</label>\n  </div>\n  <% } %>\n</div>\n");
+          var Inputs = function() {
+            function Inputs2(el2, store, actions, map2) {
+              _classCallCheck(this, Inputs2);
+              var _store$getState = store.getState(), originQuery = _store$getState.originQuery, destinationQuery = _store$getState.destinationQuery, profile = _store$getState.profile, controls = _store$getState.controls;
+              el2.innerHTML = tmpl({
+                originQuery,
+                destinationQuery,
+                profile,
+                controls
+              });
+              this.container = el2;
+              this.actions = actions;
+              this.store = store;
+              this._map = map2;
+              this.onAdd();
+              this.render();
+            }
+            _createClass(Inputs2, [{
+              key: "animateToCoordinates",
+              value: function animateToCoordinates(mode, coords) {
+                var _store$getState2 = this.store.getState(), origin = _store$getState2.origin, destination = _store$getState2.destination, routePadding = _store$getState2.routePadding;
+                if (origin.geometry && destination.geometry && !(0, _lodash4.default)(origin.geometry, destination.geometry)) {
+                  var bb = (0, _turfExtent2.default)({
+                    type: "FeatureCollection",
+                    features: [origin, destination]
+                  });
+                  this._map.fitBounds([[bb[0], bb[1]], [bb[2], bb[3]]], { padding: routePadding });
                 } else {
-                  this.actions.setDestinationFromCoordinates(coords);
                   this._map.flyTo({ center: coords });
                 }
               }
-            }
-          }, {
-            key: "_move",
-            value: function _move(e) {
-              var _this5 = this;
-              var _store$getState5 = store.getState(), hoverMarker = _store$getState5.hoverMarker;
-              var features2 = this._map.queryRenderedFeatures(e.point, {
-                layers: ["directions-route-line-alt", "directions-route-line", "directions-origin-point", "directions-destination-point", "directions-hover-point"]
-              });
-              this._map.getCanvas().style.cursor = features2.length ? "pointer" : "";
-              if (features2.length) {
-                this.isCursorOverPoint = features2[0];
-                this._map.dragPan.disable();
-                features2.forEach(function(feature) {
-                  if (feature.layer.id === "directions-route-line") {
-                    _this5.actions.hoverMarker([e.lngLat.lng, e.lngLat.lat]);
-                  } else if (hoverMarker.geometry) {
-                    _this5.actions.hoverMarker(null);
+            }, {
+              key: "onAdd",
+              value: function onAdd() {
+                var _this = this;
+                var _actions = this.actions, clearOrigin = _actions.clearOrigin, clearDestination = _actions.clearDestination, createOrigin = _actions.createOrigin, createDestination = _actions.createDestination, setProfile = _actions.setProfile, reverse = _actions.reverse;
+                var _store$getState3 = this.store.getState(), geocoder = _store$getState3.geocoder, flyTo = _store$getState3.flyTo, placeholderOrigin = _store$getState3.placeholderOrigin, placeholderDestination = _store$getState3.placeholderDestination, zoom = _store$getState3.zoom;
+                this.originInput = new _geocoder2.default(Object.assign({}, {}, geocoder, { flyTo, placeholder: placeholderOrigin, zoom }));
+                var originEl = this.originInput.onAdd(this._map);
+                var originContainerEl = this.container.querySelector("#maplibre-directions-origin-input");
+                originContainerEl.appendChild(originEl);
+                this.destinationInput = new _geocoder2.default(Object.assign({}, {}, geocoder, { flyTo, placeholder: placeholderDestination, zoom }));
+                var destinationEl = this.destinationInput.onAdd(this._map);
+                this.container.querySelector("#maplibre-directions-destination-input").appendChild(destinationEl);
+                this.originInput.on("result", function(e) {
+                  var coords = e.result.geometry.coordinates;
+                  createOrigin(coords);
+                  _this.animateToCoordinates("origin", coords);
+                });
+                this.originInput.on("clear", clearOrigin);
+                this.destinationInput.on("result", function(e) {
+                  var coords = e.result.geometry.coordinates;
+                  createDestination(coords);
+                  _this.animateToCoordinates("destination", coords);
+                });
+                this.destinationInput.on("clear", clearDestination);
+                var profiles = this.container.querySelectorAll('input[type="radio"]');
+                Array.prototype.forEach.call(profiles, function(el2) {
+                  el2.addEventListener("change", function() {
+                    setProfile(el2.value);
+                  });
+                });
+                this.container.querySelector(".js-reverse-inputs").addEventListener("click", function() {
+                  var _store$getState4 = _this.store.getState(), origin = _store$getState4.origin, destination = _store$getState4.destination;
+                  if (origin) _this.actions.queryDestination(origin.geometry.coordinates);
+                  if (destination) _this.actions.queryOrigin(destination.geometry.coordinates);
+                  reverse();
+                });
+              }
+            }, {
+              key: "render",
+              value: function render() {
+                var _this2 = this;
+                this.store.subscribe(function() {
+                  var _store$getState5 = _this2.store.getState(), originQuery = _store$getState5.originQuery, destinationQuery = _store$getState5.destinationQuery, originQueryCoordinates = _store$getState5.originQueryCoordinates, destinationQueryCoordinates = _store$getState5.destinationQueryCoordinates;
+                  if (originQuery) {
+                    _this2.originInput.query(originQuery);
+                    _this2.actions.queryOrigin(null);
+                  }
+                  if (destinationQuery) {
+                    _this2.destinationInput.query(destinationQuery);
+                    _this2.actions.queryDestination(null);
+                  }
+                  if (originQueryCoordinates) {
+                    _this2.originInput.setInput(originQueryCoordinates);
+                    _this2.animateToCoordinates("origin", originQueryCoordinates);
+                    _this2.actions.queryOriginCoordinates(null);
+                  }
+                  if (destinationQueryCoordinates) {
+                    _this2.destinationInput.setInput(destinationQueryCoordinates);
+                    _this2.animateToCoordinates("destination", destinationQueryCoordinates);
+                    _this2.actions.queryDestinationCoordinates(null);
                   }
                 });
-              } else if (this.isCursorOverPoint) {
-                this.isCursorOverPoint = false;
-                this._map.dragPan.enable();
+              }
+            }]);
+            return Inputs2;
+          }();
+          exports3.default = Inputs;
+        }, { "./geocoder": 40, "lodash.isequal": 8, "lodash.template": 9, "turf-extent": 35 }],
+        42: [function(require2, module3, exports3) {
+          "use strict";
+          Object.defineProperty(exports3, "__esModule", {
+            value: true
+          });
+          var _createClass = /* @__PURE__ */ function() {
+            function defineProperties(target, props) {
+              for (var i = 0; i < props.length; i++) {
+                var descriptor = props[i];
+                descriptor.enumerable = descriptor.enumerable || false;
+                descriptor.configurable = true;
+                if ("value" in descriptor) descriptor.writable = true;
+                Object.defineProperty(target, descriptor.key, descriptor);
               }
             }
-          }, {
-            key: "_onDragDown",
-            value: function _onDragDown() {
-              if (!this.isCursorOverPoint) return;
-              this.isDragging = this.isCursorOverPoint;
-              this._map.getCanvas().style.cursor = "grab";
-              this._map.on("mousemove", this.onDragMove);
-              this._map.on("mouseup", this.onDragUp);
-              this._map.on("touchmove", this.onDragMove);
-              this._map.on("touchend", this.onDragUp);
+            return function(Constructor, protoProps, staticProps) {
+              if (protoProps) defineProperties(Constructor.prototype, protoProps);
+              if (staticProps) defineProperties(Constructor, staticProps);
+              return Constructor;
+            };
+          }();
+          var _utils = require2("../utils");
+          var _utils2 = _interopRequireDefault(_utils);
+          var _lodash = require2("lodash.template");
+          var _lodash2 = _interopRequireDefault(_lodash);
+          var _lodash3 = require2("lodash.isequal");
+          var _lodash4 = _interopRequireDefault(_lodash3);
+          function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _classCallCheck(instance, Constructor) {
+            if (!(instance instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
             }
-          }, {
-            key: "_onDragMove",
-            value: function _onDragMove(e) {
-              if (!this.isDragging) return;
-              var coords = [e.lngLat.lng, e.lngLat.lat];
-              switch (this.isDragging.layer.id) {
-                case "directions-origin-point":
-                  this.actions.createOrigin(coords);
-                  break;
-                case "directions-destination-point":
-                  this.actions.createDestination(coords);
-                  break;
-                case "directions-hover-point":
-                  this.actions.hoverMarker(coords);
-                  break;
-              }
+          }
+          var instructionsTemplate = (0, _lodash2.default)("<div class='directions-control directions-control-directions'>\n  <div class='mapbox-directions-component mapbox-directions-route-summary<% if (routes > 1) { %> mapbox-directions-multiple<% } %>'>\n    <% if (routes > 1) { %>\n    <div class='mapbox-directions-routes mapbox-directions-clearfix'>\n      <% for (var i = 0; i < routes; i++) { %>\n        <input type='radio' name='routes' id='<%= i %>' <% if (i === routeIndex) { %>checked<% } %>>\n        <label for='<%= i %>' class='mapbox-directions-route'><%= i + 1 %></label>\n      <% } %>\n    </div>\n    <% } %>\n    <h1><%- duration %></h1>\n    <span><%- distance %></span>\n  </div>\n\n  <div class='mapbox-directions-instructions'>\n    <div class='mapbox-directions-instructions-wrapper'>\n      <ol class='mapbox-directions-steps'>\n        <% steps.forEach(function(step) { %>\n          <%\n            var distance = step.distance ? format(step.distance) : false;\n            var icon = step.maneuver.modifier ? step.maneuver.modifier.replace(/\\s+/g, '-').toLowerCase() : step.maneuver.type.replace(/\\s+/g, '-').toLowerCase();\n\n            if (step.maneuver.type === 'arrive' || step.maneuver.type === 'depart') {\n              icon = step.maneuver.type;\n            }\n\n            if (step.maneuver.type === 'roundabout' || step.maneuver.type === 'rotary') {\n              icon= 'roundabout';\n            }\n\n            var lng = step.maneuver.location[0];\n            var lat = step.maneuver.location[1];\n          %>\n          <li\n            data-lat='<%= lat %>'\n            data-lng='<%= lng %>'\n            class='mapbox-directions-step'>\n            <span class='directions-icon directions-icon-<%= icon %>'></span>\n            <div class='mapbox-directions-step-maneuver'>\n              <%= step.maneuver.instruction %>\n              <%= step.maneuver.modifier %>\n            </div>\n            <% if (distance) { %>\n              <div class='mapbox-directions-step-distance'>\n                <%= distance %>\n              </div>\n            <% } %>\n          </li>\n        <% }); %>\n      </ol>\n    </div>\n  </div>\n</div>\n");
+          var errorTemplate = (0, _lodash2.default)("<div class='directions-control directions-control-directions'>\n  <div class='maplibre-directions-error'>\n    <%= error %>\n  </div>\n</div>\n");
+          var Instructions = function() {
+            function Instructions2(el2, store, actions, map2) {
+              _classCallCheck(this, Instructions2);
+              this.container = el2;
+              this.actions = actions;
+              this.store = store;
+              this._map = map2;
+              this.directions = {};
+              this.render();
             }
-          }, {
-            key: "_onDragUp",
-            value: function _onDragUp() {
-              if (!this.isDragging) return;
-              var _store$getState6 = store.getState(), hoverMarker = _store$getState6.hoverMarker, origin = _store$getState6.origin, destination = _store$getState6.destination;
-              switch (this.isDragging.layer.id) {
-                case "directions-origin-point":
-                  this.actions.setOriginFromCoordinates(origin.geometry.coordinates);
-                  break;
-                case "directions-destination-point":
-                  this.actions.setDestinationFromCoordinates(destination.geometry.coordinates);
-                  break;
-                case "directions-hover-point":
-                  if (hoverMarker.geometry && !_utils2.default.coordinateMatch(this.isDragging, hoverMarker)) {
-                    this.actions.addWaypoint(0, hoverMarker);
+            _createClass(Instructions2, [{
+              key: "render",
+              value: function render() {
+                var _this = this;
+                this.store.subscribe(function() {
+                  var _actions = _this.actions, hoverMarker = _actions.hoverMarker, setRouteIndex = _actions.setRouteIndex;
+                  var _store$getState = _this.store.getState(), routeIndex = _store$getState.routeIndex, unit = _store$getState.unit, directions = _store$getState.directions, error = _store$getState.error, compile = _store$getState.compile;
+                  var shouldRender = !(0, _lodash4.default)(directions[routeIndex], _this.directions);
+                  if (error) {
+                    _this.container.innerHTML = errorTemplate({ error });
+                    return;
                   }
-                  break;
+                  if (directions.length && shouldRender) {
+                    var direction = _this.directions = directions[routeIndex];
+                    if (compile) {
+                      direction.legs.forEach(function(leg) {
+                        leg.steps.forEach(function(step) {
+                          step.maneuver.instruction = compile("en", step);
+                        });
+                      });
+                    }
+                    _this.container.innerHTML = instructionsTemplate({
+                      routeIndex,
+                      routes: directions.length,
+                      steps: direction.legs[0].steps,
+                      // Todo: Respect all legs,
+                      format: _utils2.default.format[unit],
+                      duration: _utils2.default.format[unit](direction.distance),
+                      distance: _utils2.default.format.duration(direction.duration)
+                    });
+                    var steps = _this.container.querySelectorAll(".maplibre-directions-step");
+                    Array.prototype.forEach.call(steps, function(el2) {
+                      var lng = el2.getAttribute("data-lng");
+                      var lat = el2.getAttribute("data-lat");
+                      el2.addEventListener("mouseover", function() {
+                        hoverMarker([lng, lat]);
+                      });
+                      el2.addEventListener("mouseout", function() {
+                        hoverMarker(null);
+                      });
+                      el2.addEventListener("click", function() {
+                        _this._map.flyTo({
+                          center: [lng, lat],
+                          zoom: 16
+                        });
+                      });
+                    });
+                    var routes = _this.container.querySelectorAll('input[type="radio"]');
+                    Array.prototype.forEach.call(routes, function(el2) {
+                      el2.addEventListener("change", function(e) {
+                        setRouteIndex(parseInt(e.target.id, 10));
+                      });
+                    });
+                  } else if (_this.container.innerHTML && shouldRender) {
+                    _this.container.innerHTML = "";
+                  }
+                });
               }
-              this.isDragging = false;
-              this._map.getCanvas().style.cursor = "";
-              this._map.off("touchmove", this.onDragMove);
-              this._map.off("touchend", this.onDragUp);
-              this._map.off("mousemove", this.onDragMove);
-              this._map.off("mouseup", this.onDragUp);
-            }
-            // API Methods
-            // ============================
-            /**
-             * Turn on or off interactivity
-             * @param {Boolean} state sets interactivity based on a state of `true` or `false`.
-             * @returns {MapLibreDirections} this
-             */
-          }, {
-            key: "interactive",
-            value: function interactive(state) {
-              if (state) {
-                this._map.on("touchstart", this.move);
-                this._map.on("touchstart", this.onDragDown);
-                this._map.on("mousedown", this.onDragDown);
-                this._map.on("mousemove", this.move);
-                this._map.on("click", this.onClick);
-              } else {
-                this._map.off("touchstart", this.move);
-                this._map.off("touchstart", this.onDragDown);
-                this._map.off("mousedown", this.onDragDown);
-                this._map.off("mousemove", this.move);
-                this._map.off("click", this.onClick);
+            }]);
+            return Instructions2;
+          }();
+          exports3.default = Instructions;
+        }, { "../utils": 47, "lodash.isequal": 8, "lodash.template": 9 }],
+        43: [function(require2, module3, exports3) {
+          "use strict";
+          Object.defineProperty(exports3, "__esModule", {
+            value: true
+          });
+          var _createClass = /* @__PURE__ */ function() {
+            function defineProperties(target, props) {
+              for (var i = 0; i < props.length; i++) {
+                var descriptor = props[i];
+                descriptor.enumerable = descriptor.enumerable || false;
+                descriptor.configurable = true;
+                if ("value" in descriptor) descriptor.writable = true;
+                Object.defineProperty(target, descriptor.key, descriptor);
               }
-              return this;
             }
-            /**
-             * Returns the origin of the current route.
-             * @returns {Object} origin
-             */
-          }, {
-            key: "getOrigin",
-            value: function getOrigin() {
-              return store.getState().origin;
-            }
-            /**
-             * Sets origin. _Note:_ calling this method requires the [map load event](https://www.mapbox.com/mapbox-gl-js/api/#Map.load)
-             * to have run.
-             * @param {Array<number>|String} query An array of coordinates [lng, lat] or location name as a string.
-             * @returns {MapLibreDirections} this
-             */
-          }, {
-            key: "setOrigin",
-            value: function setOrigin(query) {
-              if (typeof query === "string") {
-                this.actions.queryOrigin(query);
-              } else {
-                this.actions.setOriginFromCoordinates(query);
+            return function(Constructor, protoProps, staticProps) {
+              if (protoProps) defineProperties(Constructor.prototype, protoProps);
+              if (staticProps) defineProperties(Constructor, staticProps);
+              return Constructor;
+            };
+          }();
+          var _redux = require2("redux");
+          var _reduxThunk = require2("redux-thunk");
+          var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
+          var _polyline = require2("@mapbox/polyline");
+          var _utils = require2("./utils");
+          var _utils2 = _interopRequireDefault(_utils);
+          var _reducers = require2("./reducers");
+          var _reducers2 = _interopRequireDefault(_reducers);
+          var _actions = require2("./actions");
+          var actions = _interopRequireWildcard(_actions);
+          var _directions_style = require2("./directions_style");
+          var _directions_style2 = _interopRequireDefault(_directions_style);
+          var _inputs = require2("./controls/inputs");
+          var _inputs2 = _interopRequireDefault(_inputs);
+          var _instructions = require2("./controls/instructions");
+          var _instructions2 = _interopRequireDefault(_instructions);
+          function _interopRequireWildcard(obj) {
+            if (obj && obj.__esModule) {
+              return obj;
+            } else {
+              var newObj = {};
+              if (obj != null) {
+                for (var key in obj) {
+                  if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+                }
               }
-              return this;
+              newObj.default = obj;
+              return newObj;
             }
-            /**
-             * Returns the destination of the current route.
-             * @returns {Object} destination
-             */
-          }, {
-            key: "getDestination",
-            value: function getDestination() {
-              return store.getState().destination;
+          }
+          function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _classCallCheck(instance, Constructor) {
+            if (!(instance instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
             }
-            /**
-             * Sets destination. _Note:_ calling this method requires the [map load event](https://www.mapbox.com/mapbox-gl-js/api/#Map.load)
-             * to have run.
-             * @param {Array<number>|String} query An array of coordinates [lng, lat] or location name as a string.
-             * @returns {MapLibreDirections} this
-             */
-          }, {
-            key: "setDestination",
-            value: function setDestination(query) {
-              if (typeof query === "string") {
-                this.actions.queryDestination(query);
-              } else {
-                this.actions.setDestinationFromCoordinates(query);
+          }
+          var storeWithMiddleware = (0, _redux.applyMiddleware)(_reduxThunk2.default)(_redux.createStore);
+          var store = storeWithMiddleware(_reducers2.default);
+          var MapLibreDirections2 = function() {
+            function MapLibreDirections3(options) {
+              _classCallCheck(this, MapLibreDirections3);
+              this.actions = (0, _redux.bindActionCreators)(actions, store.dispatch);
+              this.actions.setOptions(options || {});
+              this.options = options || {};
+              this.onDragDown = this._onDragDown.bind(this);
+              this.onDragMove = this._onDragMove.bind(this);
+              this.onDragUp = this._onDragUp.bind(this);
+              this.move = this._move.bind(this);
+              this.onClick = this._clickHandler().bind(this);
+            }
+            _createClass(MapLibreDirections3, [{
+              key: "onAdd",
+              value: function onAdd(map2) {
+                var _this = this;
+                this._map = map2;
+                var _store$getState = store.getState(), controls = _store$getState.controls;
+                var el2 = this.container = document.createElement("div");
+                el2.className = "maplibregl-ctrl-directions maplibregl-ctrl";
+                var inputEl = document.createElement("div");
+                inputEl.className = "directions-control directions-control-inputs";
+                new _inputs2.default(inputEl, store, this.actions, this._map);
+                var directionsEl = document.createElement("div");
+                directionsEl.className = "directions-control directions-control-instructions";
+                new _instructions2.default(directionsEl, store, {
+                  hoverMarker: this.actions.hoverMarker,
+                  setRouteIndex: this.actions.setRouteIndex
+                }, this._map);
+                if (controls.inputs) el2.appendChild(inputEl);
+                if (controls.instructions) el2.appendChild(directionsEl);
+                this.subscribedActions();
+                if (this._map.loaded()) this.mapState();
+                else this._map.on("load", function() {
+                  return _this.mapState();
+                });
+                return el2;
               }
-              return this;
-            }
-            /**
-             * Swap the origin and destination.
-             * @returns {MapLibreDirections} this
-             */
-          }, {
-            key: "reverse",
-            value: function reverse() {
-              this.actions.reverse();
-              return this;
-            }
-            /**
-             * Add a waypoint to the route. _Note:_ calling this method requires the
-             * [map load event](https://www.mapbox.com/mapbox-gl-js/api/#Map.load) to have run.
-             * @param {Number} index position waypoint should be placed in the waypoint array
-             * @param {Array<number>|Point} waypoint can be a GeoJSON Point Feature or [lng, lat] coordinates.
-             * @returns {MapLibreDirections} this;
-             */
-          }, {
-            key: "addWaypoint",
-            value: function addWaypoint(index, waypoint) {
-              if (!waypoint.type) waypoint = _utils2.default.createPoint(waypoint, { id: "waypoint" });
-              this.actions.addWaypoint(index, waypoint);
-              return this;
-            }
-            /**
-             * Change the waypoint at a given index in the route. _Note:_ calling this
-             * method requires the [map load event](https://www.mapbox.com/mapbox-gl-js/api/#Map.load)
-             * to have run.
-             * @param {Number} index indexed position of the waypoint to update
-             * @param {Array<number>|Point} waypoint can be a GeoJSON Point Feature or [lng, lat] coordinates.
-             * @returns {MapLibreDirections} this;
-             */
-          }, {
-            key: "setWaypoint",
-            value: function setWaypoint(index, waypoint) {
-              if (!waypoint.type) waypoint = _utils2.default.createPoint(waypoint, { id: "waypoint" });
-              this.actions.setWaypoint(index, waypoint);
-              return this;
-            }
-            /**
-             * Remove a waypoint from the route.
-             * @param {Number} index position in the waypoints array.
-             * @returns {MapLibreDirections} this;
-             */
-          }, {
-            key: "removeWaypoint",
-            value: function removeWaypoint(index) {
-              var _store$getState7 = store.getState(), waypoints = _store$getState7.waypoints;
-              this.actions.removeWaypoint(waypoints[index]);
-              return this;
-            }
-            /**
-             * Fetch all current waypoints in a route.
-             * @returns {Array} waypoints
-             */
-          }, {
-            key: "getWaypoints",
-            value: function getWaypoints() {
-              return store.getState().waypoints;
-            }
-            /**
-             * Removes all routes and waypoints from the map.
-             *
-             * @returns {MapLibreDirections} this;
-             */
-          }, {
-            key: "removeRoutes",
-            value: function removeRoutes() {
-              this.actions.clearOrigin();
-              this.actions.clearDestination();
-              return this;
-            }
-            /**
-             * Subscribe to events that happen within the plugin.
-             * @param {String} type name of event. Available events and the data passed into their respective event objects are:
-             *
-             * - __clear__ `{ type: } Type is one of 'origin' or 'destination'`
-             * - __loading__ `{ type: } Type is one of 'origin' or 'destination'`
-             * - __profile__ `{ profile } Profile is one of 'driving', 'walking', or 'cycling'`
-             * - __origin__ `{ feature } Fired when origin is set`
-             * - __destination__ `{ feature } Fired when destination is set`
-             * - __route__ `{ route } Fired when a route is updated`
-             * - __error__ `{ error } Error as string`
-             * @param {Function} fn function that's called when the event is emitted.
-             * @returns {MapLibreDirections} this;
-             */
-          }, {
-            key: "on",
-            value: function on2(type, fn2) {
-              this.actions.eventSubscribe(type, fn2);
-              return this;
-            }
-          }]);
-          return MapLibreDirections3;
-        }();
-        exports3.default = MapLibreDirections2;
-      }, { "./actions": 38, "./controls/inputs": 41, "./controls/instructions": 42, "./directions_style": 44, "./reducers": 46, "./utils": 47, "@mapbox/polyline": 1, "redux": 28, "redux-thunk": 22 }], 44: [function(require2, module3, exports3) {
-        "use strict";
-        Object.defineProperty(exports3, "__esModule", {
-          value: true
-        });
-        var style = [{
-          "id": "directions-route-line-alt",
-          "type": "line",
-          "source": "directions",
-          "layout": {
-            "line-cap": "round",
-            "line-join": "round"
-          },
-          "paint": {
-            "line-color": "#bbb",
-            "line-width": 4
-          },
-          "filter": ["all", ["in", "$type", "LineString"], ["in", "route", "alternate"]]
-        }, {
-          "id": "directions-route-line-casing",
-          "type": "line",
-          "source": "directions",
-          "layout": {
-            "line-cap": "round",
-            "line-join": "round"
-          },
-          "paint": {
-            "line-color": "#2d5f99",
-            "line-width": 12
-          },
-          "filter": ["all", ["in", "$type", "LineString"], ["in", "route", "selected"]]
-        }, {
-          "id": "directions-route-line",
-          "type": "line",
-          "source": "directions",
-          "layout": {
-            "line-cap": "butt",
-            "line-join": "round"
-          },
-          "paint": {
-            "line-color": {
-              "property": "congestion",
-              "type": "categorical",
-              "default": "#4882c5",
-              "stops": [["unknown", "#4882c5"], ["low", "#4882c5"], ["moderate", "#f09a46"], ["heavy", "#e34341"], ["severe", "#8b2342"]]
+              /**
+               * Removes the control from the map it has been added to. This is called by `map.removeControl`,
+               * which is the recommended method to remove controls.
+               *
+               * @returns {Control} `this`
+               */
+            }, {
+              key: "onRemove",
+              value: function onRemove(map2) {
+                this.container.parentNode.removeChild(this.container);
+                this.removeRoutes();
+                map2.off("mousedown", this.onDragDown);
+                map2.off("mousemove", this.move);
+                map2.off("touchstart", this.onDragDown);
+                map2.off("touchstart", this.move);
+                map2.off("click", this.onClick);
+                if (this.storeUnsubscribe) {
+                  this.storeUnsubscribe();
+                  delete this.storeUnsubscribe;
+                }
+                _directions_style2.default.forEach(function(layer) {
+                  if (map2.getLayer(layer.id)) map2.removeLayer(layer.id);
+                });
+                if (map2.getSource("directions")) map2.removeSource("directions");
+                this._map = null;
+                return this;
+              }
+            }, {
+              key: "mapState",
+              value: function mapState() {
+                var _this2 = this;
+                var _store$getState2 = store.getState(), profile = _store$getState2.profile, alternatives = _store$getState2.alternatives, congestion = _store$getState2.congestion, styles = _store$getState2.styles, interactive = _store$getState2.interactive, compile = _store$getState2.compile;
+                this.actions.eventEmit("profile", { profile });
+                var geojson = {
+                  type: "geojson",
+                  data: {
+                    type: "FeatureCollection",
+                    features: []
+                  }
+                };
+                this._map.addSource("directions", geojson);
+                if (styles && styles.length) styles.forEach(function(style) {
+                  return _this2._map.addLayer(style);
+                });
+                _directions_style2.default.forEach(function(style) {
+                  if (!_this2._map.getLayer(style.id)) _this2._map.addLayer(style);
+                });
+                if (interactive) {
+                  this._map.on("mousedown", this.onDragDown);
+                  this._map.on("mousemove", this.move);
+                  this._map.on("click", this.onClick);
+                  this._map.on("touchstart", this.move);
+                  this._map.on("touchstart", this.onDragDown);
+                }
+              }
+            }, {
+              key: "subscribedActions",
+              value: function subscribedActions() {
+                var _this3 = this;
+                this.storeUnsubscribe = store.subscribe(function() {
+                  var _store$getState3 = store.getState(), origin = _store$getState3.origin, destination = _store$getState3.destination, hoverMarker = _store$getState3.hoverMarker, directions = _store$getState3.directions, routeIndex = _store$getState3.routeIndex;
+                  var geojson = {
+                    type: "FeatureCollection",
+                    features: [origin, destination, hoverMarker].filter(function(d) {
+                      return d.geometry;
+                    })
+                  };
+                  if (directions.length) {
+                    directions.forEach(function(feature, index) {
+                      var features2 = [];
+                      var decoded = (0, _polyline.decode)(feature.geometry, 5).map(function(c) {
+                        return c.reverse();
+                      });
+                      decoded.forEach(function(c, i) {
+                        var previous = features2[features2.length - 1];
+                        var congestion = feature.legs[0].annotation && feature.legs[0].annotation.congestion && feature.legs[0].annotation.congestion[i - 1];
+                        if (previous && (!congestion || previous.properties.congestion === congestion)) {
+                          previous.geometry.coordinates.push(c);
+                        } else {
+                          var segment = {
+                            geometry: {
+                              type: "LineString",
+                              coordinates: []
+                            },
+                            properties: {
+                              "route-index": index,
+                              route: index === routeIndex ? "selected" : "alternate"
+                            }
+                          };
+                          if (previous) segment.geometry.coordinates.push(previous.geometry.coordinates[previous.geometry.coordinates.length - 1]);
+                          segment.geometry.coordinates.push(c);
+                          if (congestion) {
+                            segment.properties.congestion = feature.legs[0].annotation.congestion[i - 1];
+                          }
+                          features2.push(segment);
+                        }
+                      });
+                      geojson.features = geojson.features.concat(features2);
+                      if (index === routeIndex) {
+                        feature.legs[0].steps.forEach(function(d) {
+                          if (d.maneuver.type === "waypoint") {
+                            geojson.features.push({
+                              type: "Feature",
+                              geometry: d.maneuver.location,
+                              properties: {
+                                id: "waypoint"
+                              }
+                            });
+                          }
+                        });
+                      }
+                    });
+                  }
+                  if (_this3._map.style && _this3._map.getSource("directions")) {
+                    _this3._map.getSource("directions").setData(geojson);
+                  }
+                });
+              }
+            }, {
+              key: "_clickHandler",
+              value: function _clickHandler() {
+                var timer = null;
+                var delay = 250;
+                return function(event) {
+                  if (!timer) {
+                    var singleClickHandler = this._onSingleClick.bind(this);
+                    timer = setTimeout(function() {
+                      singleClickHandler(event);
+                      timer = null;
+                    }, delay);
+                  } else {
+                    clearTimeout(timer);
+                    timer = null;
+                    this._map.zoomIn();
+                  }
+                };
+              }
+            }, {
+              key: "_onSingleClick",
+              value: function _onSingleClick(e) {
+                var _this4 = this;
+                var _store$getState4 = store.getState(), origin = _store$getState4.origin;
+                var coords = [e.lngLat.lng, e.lngLat.lat];
+                if (!origin.geometry) {
+                  this.actions.setOriginFromCoordinates(coords);
+                } else {
+                  var features2 = this._map.queryRenderedFeatures(e.point, {
+                    layers: ["directions-origin-point", "directions-destination-point", "directions-waypoint-point", "directions-route-line-alt"]
+                  });
+                  if (features2.length) {
+                    features2.forEach(function(f) {
+                      if (f.layer.id === "directions-waypoint-point") {
+                        _this4.actions.removeWaypoint(f);
+                      }
+                    });
+                    if (features2[0].properties.route === "alternate") {
+                      var index = features2[0].properties["route-index"];
+                      this.actions.setRouteIndex(index);
+                    }
+                  } else {
+                    this.actions.setDestinationFromCoordinates(coords);
+                    this._map.flyTo({ center: coords });
+                  }
+                }
+              }
+            }, {
+              key: "_move",
+              value: function _move(e) {
+                var _this5 = this;
+                var _store$getState5 = store.getState(), hoverMarker = _store$getState5.hoverMarker;
+                var features2 = this._map.queryRenderedFeatures(e.point, {
+                  layers: ["directions-route-line-alt", "directions-route-line", "directions-origin-point", "directions-destination-point", "directions-hover-point"]
+                });
+                this._map.getCanvas().style.cursor = features2.length ? "pointer" : "";
+                if (features2.length) {
+                  this.isCursorOverPoint = features2[0];
+                  this._map.dragPan.disable();
+                  features2.forEach(function(feature) {
+                    if (feature.layer.id === "directions-route-line") {
+                      _this5.actions.hoverMarker([e.lngLat.lng, e.lngLat.lat]);
+                    } else if (hoverMarker.geometry) {
+                      _this5.actions.hoverMarker(null);
+                    }
+                  });
+                } else if (this.isCursorOverPoint) {
+                  this.isCursorOverPoint = false;
+                  this._map.dragPan.enable();
+                }
+              }
+            }, {
+              key: "_onDragDown",
+              value: function _onDragDown() {
+                if (!this.isCursorOverPoint) return;
+                this.isDragging = this.isCursorOverPoint;
+                this._map.getCanvas().style.cursor = "grab";
+                this._map.on("mousemove", this.onDragMove);
+                this._map.on("mouseup", this.onDragUp);
+                this._map.on("touchmove", this.onDragMove);
+                this._map.on("touchend", this.onDragUp);
+              }
+            }, {
+              key: "_onDragMove",
+              value: function _onDragMove(e) {
+                if (!this.isDragging) return;
+                var coords = [e.lngLat.lng, e.lngLat.lat];
+                switch (this.isDragging.layer.id) {
+                  case "directions-origin-point":
+                    this.actions.createOrigin(coords);
+                    break;
+                  case "directions-destination-point":
+                    this.actions.createDestination(coords);
+                    break;
+                  case "directions-hover-point":
+                    this.actions.hoverMarker(coords);
+                    break;
+                }
+              }
+            }, {
+              key: "_onDragUp",
+              value: function _onDragUp() {
+                if (!this.isDragging) return;
+                var _store$getState6 = store.getState(), hoverMarker = _store$getState6.hoverMarker, origin = _store$getState6.origin, destination = _store$getState6.destination;
+                switch (this.isDragging.layer.id) {
+                  case "directions-origin-point":
+                    this.actions.setOriginFromCoordinates(origin.geometry.coordinates);
+                    break;
+                  case "directions-destination-point":
+                    this.actions.setDestinationFromCoordinates(destination.geometry.coordinates);
+                    break;
+                  case "directions-hover-point":
+                    if (hoverMarker.geometry && !_utils2.default.coordinateMatch(this.isDragging, hoverMarker)) {
+                      this.actions.addWaypoint(0, hoverMarker);
+                    }
+                    break;
+                }
+                this.isDragging = false;
+                this._map.getCanvas().style.cursor = "";
+                this._map.off("touchmove", this.onDragMove);
+                this._map.off("touchend", this.onDragUp);
+                this._map.off("mousemove", this.onDragMove);
+                this._map.off("mouseup", this.onDragUp);
+              }
+              // API Methods
+              // ============================
+              /**
+               * Turn on or off interactivity
+               * @param {Boolean} state sets interactivity based on a state of `true` or `false`.
+               * @returns {MapLibreDirections} this
+               */
+            }, {
+              key: "interactive",
+              value: function interactive(state) {
+                if (state) {
+                  this._map.on("touchstart", this.move);
+                  this._map.on("touchstart", this.onDragDown);
+                  this._map.on("mousedown", this.onDragDown);
+                  this._map.on("mousemove", this.move);
+                  this._map.on("click", this.onClick);
+                } else {
+                  this._map.off("touchstart", this.move);
+                  this._map.off("touchstart", this.onDragDown);
+                  this._map.off("mousedown", this.onDragDown);
+                  this._map.off("mousemove", this.move);
+                  this._map.off("click", this.onClick);
+                }
+                return this;
+              }
+              /**
+               * Returns the origin of the current route.
+               * @returns {Object} origin
+               */
+            }, {
+              key: "getOrigin",
+              value: function getOrigin() {
+                return store.getState().origin;
+              }
+              /**
+               * Sets origin. _Note:_ calling this method requires the [map load event](https://www.mapbox.com/mapbox-gl-js/api/#Map.load)
+               * to have run.
+               * @param {Array<number>|String} query An array of coordinates [lng, lat] or location name as a string.
+               * @returns {MapLibreDirections} this
+               */
+            }, {
+              key: "setOrigin",
+              value: function setOrigin(query) {
+                if (typeof query === "string") {
+                  this.actions.queryOrigin(query);
+                } else {
+                  this.actions.setOriginFromCoordinates(query);
+                }
+                return this;
+              }
+              /**
+               * Returns the destination of the current route.
+               * @returns {Object} destination
+               */
+            }, {
+              key: "getDestination",
+              value: function getDestination() {
+                return store.getState().destination;
+              }
+              /**
+               * Sets destination. _Note:_ calling this method requires the [map load event](https://www.mapbox.com/mapbox-gl-js/api/#Map.load)
+               * to have run.
+               * @param {Array<number>|String} query An array of coordinates [lng, lat] or location name as a string.
+               * @returns {MapLibreDirections} this
+               */
+            }, {
+              key: "setDestination",
+              value: function setDestination(query) {
+                if (typeof query === "string") {
+                  this.actions.queryDestination(query);
+                } else {
+                  this.actions.setDestinationFromCoordinates(query);
+                }
+                return this;
+              }
+              /**
+               * Swap the origin and destination.
+               * @returns {MapLibreDirections} this
+               */
+            }, {
+              key: "reverse",
+              value: function reverse() {
+                this.actions.reverse();
+                return this;
+              }
+              /**
+               * Add a waypoint to the route. _Note:_ calling this method requires the
+               * [map load event](https://www.mapbox.com/mapbox-gl-js/api/#Map.load) to have run.
+               * @param {Number} index position waypoint should be placed in the waypoint array
+               * @param {Array<number>|Point} waypoint can be a GeoJSON Point Feature or [lng, lat] coordinates.
+               * @returns {MapLibreDirections} this;
+               */
+            }, {
+              key: "addWaypoint",
+              value: function addWaypoint(index, waypoint) {
+                if (!waypoint.type) waypoint = _utils2.default.createPoint(waypoint, { id: "waypoint" });
+                this.actions.addWaypoint(index, waypoint);
+                return this;
+              }
+              /**
+               * Change the waypoint at a given index in the route. _Note:_ calling this
+               * method requires the [map load event](https://www.mapbox.com/mapbox-gl-js/api/#Map.load)
+               * to have run.
+               * @param {Number} index indexed position of the waypoint to update
+               * @param {Array<number>|Point} waypoint can be a GeoJSON Point Feature or [lng, lat] coordinates.
+               * @returns {MapLibreDirections} this;
+               */
+            }, {
+              key: "setWaypoint",
+              value: function setWaypoint(index, waypoint) {
+                if (!waypoint.type) waypoint = _utils2.default.createPoint(waypoint, { id: "waypoint" });
+                this.actions.setWaypoint(index, waypoint);
+                return this;
+              }
+              /**
+               * Remove a waypoint from the route.
+               * @param {Number} index position in the waypoints array.
+               * @returns {MapLibreDirections} this;
+               */
+            }, {
+              key: "removeWaypoint",
+              value: function removeWaypoint(index) {
+                var _store$getState7 = store.getState(), waypoints = _store$getState7.waypoints;
+                this.actions.removeWaypoint(waypoints[index]);
+                return this;
+              }
+              /**
+               * Fetch all current waypoints in a route.
+               * @returns {Array} waypoints
+               */
+            }, {
+              key: "getWaypoints",
+              value: function getWaypoints() {
+                return store.getState().waypoints;
+              }
+              /**
+               * Removes all routes and waypoints from the map.
+               *
+               * @returns {MapLibreDirections} this;
+               */
+            }, {
+              key: "removeRoutes",
+              value: function removeRoutes() {
+                this.actions.clearOrigin();
+                this.actions.clearDestination();
+                return this;
+              }
+              /**
+               * Subscribe to events that happen within the plugin.
+               * @param {String} type name of event. Available events and the data passed into their respective event objects are:
+               *
+               * - __clear__ `{ type: } Type is one of 'origin' or 'destination'`
+               * - __loading__ `{ type: } Type is one of 'origin' or 'destination'`
+               * - __profile__ `{ profile } Profile is one of 'driving', 'walking', or 'cycling'`
+               * - __origin__ `{ feature } Fired when origin is set`
+               * - __destination__ `{ feature } Fired when destination is set`
+               * - __route__ `{ route } Fired when a route is updated`
+               * - __error__ `{ error } Error as string`
+               * @param {Function} fn function that's called when the event is emitted.
+               * @returns {MapLibreDirections} this;
+               */
+            }, {
+              key: "on",
+              value: function on2(type, fn2) {
+                this.actions.eventSubscribe(type, fn2);
+                return this;
+              }
+            }]);
+            return MapLibreDirections3;
+          }();
+          exports3.default = MapLibreDirections2;
+        }, { "./actions": 38, "./controls/inputs": 41, "./controls/instructions": 42, "./directions_style": 44, "./reducers": 46, "./utils": 47, "@mapbox/polyline": 1, "redux": 28, "redux-thunk": 22 }],
+        44: [function(require2, module3, exports3) {
+          "use strict";
+          Object.defineProperty(exports3, "__esModule", {
+            value: true
+          });
+          var style = [{
+            "id": "directions-route-line-alt",
+            "type": "line",
+            "source": "directions",
+            "layout": {
+              "line-cap": "round",
+              "line-join": "round"
             },
-            "line-width": 7
-          },
-          "filter": ["all", ["in", "$type", "LineString"], ["in", "route", "selected"]]
-        }, {
-          "id": "directions-hover-point-casing",
-          "type": "circle",
-          "source": "directions",
-          "paint": {
-            "circle-radius": 8,
-            "circle-color": "#fff"
-          },
-          "filter": ["all", ["in", "$type", "Point"], ["in", "id", "hover"]]
-        }, {
-          "id": "directions-hover-point",
-          "type": "circle",
-          "source": "directions",
-          "paint": {
-            "circle-radius": 6,
-            "circle-color": "#3bb2d0"
-          },
-          "filter": ["all", ["in", "$type", "Point"], ["in", "id", "hover"]]
-        }, {
-          "id": "directions-waypoint-point-casing",
-          "type": "circle",
-          "source": "directions",
-          "paint": {
-            "circle-radius": 8,
-            "circle-color": "#fff"
-          },
-          "filter": ["all", ["in", "$type", "Point"], ["in", "id", "waypoint"]]
-        }, {
-          "id": "directions-waypoint-point",
-          "type": "circle",
-          "source": "directions",
-          "paint": {
-            "circle-radius": 6,
-            "circle-color": "#8a8bc9"
-          },
-          "filter": ["all", ["in", "$type", "Point"], ["in", "id", "waypoint"]]
-        }, {
-          "id": "directions-origin-point",
-          "type": "circle",
-          "source": "directions",
-          "paint": {
-            "circle-radius": 18,
-            "circle-color": "#3bb2d0"
-          },
-          "filter": ["all", ["in", "$type", "Point"], ["in", "marker-symbol", "A"]]
-        }, {
-          "id": "directions-origin-label",
-          "type": "symbol",
-          "source": "directions",
-          "layout": {
-            "text-field": "A",
-            "text-size": 12
-          },
-          "paint": {
-            "text-color": "#fff"
-          },
-          "filter": ["all", ["in", "$type", "Point"], ["in", "marker-symbol", "A"]]
-        }, {
-          "id": "directions-destination-point",
-          "type": "circle",
-          "source": "directions",
-          "paint": {
-            "circle-radius": 18,
-            "circle-color": "#8a8bc9"
-          },
-          "filter": ["all", ["in", "$type", "Point"], ["in", "marker-symbol", "B"]]
-        }, {
-          "id": "directions-destination-label",
-          "type": "symbol",
-          "source": "directions",
-          "layout": {
-            "text-field": "B",
-            "text-size": 12
-          },
-          "paint": {
-            "text-color": "#fff"
-          },
-          "filter": ["all", ["in", "$type", "Point"], ["in", "marker-symbol", "B"]]
-        }];
-        exports3.default = style;
-      }, {}], 45: [function(require2, module3, exports3) {
-        "use strict";
-        var _directions = require2("./directions");
-        var _directions2 = _interopRequireDefault(_directions);
-        function _interopRequireDefault(obj) {
-          return obj && obj.__esModule ? obj : { default: obj };
-        }
-        module3.exports = _directions2.default;
-      }, { "./directions": 43 }], 46: [function(require2, module3, exports3) {
-        "use strict";
-        Object.defineProperty(exports3, "__esModule", {
-          value: true
-        });
-        var _action_types = require2("../constants/action_types.js");
-        var types = _interopRequireWildcard(_action_types);
-        var _deepAssign = require2("deep-assign");
-        var _deepAssign2 = _interopRequireDefault(_deepAssign);
-        function _interopRequireDefault(obj) {
-          return obj && obj.__esModule ? obj : { default: obj };
-        }
-        function _interopRequireWildcard(obj) {
-          if (obj && obj.__esModule) {
-            return obj;
-          } else {
-            var newObj = {};
-            if (obj != null) {
-              for (var key in obj) {
-                if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-              }
-            }
-            newObj.default = obj;
-            return newObj;
-          }
-        }
-        var initialState = {
-          // Options set on initialization
-          api: "http://router.project-osrm.org/route/v1/",
-          profile: "driving",
-          alternatives: false,
-          congestion: false,
-          unit: "imperial",
-          flyTo: true,
-          placeholderOrigin: "Choose a starting place",
-          placeholderDestination: "Choose destination",
-          zoom: 16,
-          compile: null,
-          proximity: false,
-          styles: [],
-          // UI controls
-          controls: {
-            profileSwitcher: true,
-            inputs: true,
-            instructions: true
-          },
-          // Optional setting to pass options available to mapbox-gl-geocoder
-          geocoder: {},
-          interactive: true,
-          // Container for client registered events
-          events: {},
-          // Marker feature drawn on the map at any point.
-          origin: {},
-          destination: {},
-          hoverMarker: {},
-          waypoints: [],
-          // User input strings or result returned from geocoder
-          originQuery: null,
-          destinationQuery: null,
-          originQueryCoordinates: null,
-          destinationQueryCoordinates: null,
-          // Directions data
-          directions: [],
-          routeIndex: 0,
-          routePadding: 80
-        };
-        function data() {
-          var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : initialState;
-          var action = arguments[1];
-          switch (action.type) {
-            case types.SET_OPTIONS:
-              return (0, _deepAssign2.default)({}, state, action.options);
-            case types.DIRECTIONS_PROFILE:
-              return Object.assign({}, state, {
-                profile: action.profile
-              });
-            case types.ORIGIN:
-              return Object.assign({}, state, {
-                origin: action.origin,
-                hoverMarker: {}
-              });
-            case types.DESTINATION:
-              return Object.assign({}, state, {
-                destination: action.destination,
-                hoverMarker: {}
-              });
-            case types.HOVER_MARKER:
-              return Object.assign({}, state, {
-                hoverMarker: action.hoverMarker
-              });
-            case types.WAYPOINTS:
-              return Object.assign({}, state, {
-                waypoints: action.waypoints
-              });
-            case types.ORIGIN_QUERY:
-              return Object.assign({}, state, {
-                originQuery: action.query
-              });
-            case types.DESTINATION_QUERY:
-              return Object.assign({}, state, {
-                destinationQuery: action.query
-              });
-            case types.ORIGIN_FROM_COORDINATES:
-              return Object.assign({}, state, {
-                originQueryCoordinates: action.coordinates
-              });
-            case types.DESTINATION_FROM_COORDINATES:
-              return Object.assign({}, state, {
-                destinationQueryCoordinates: action.coordinates
-              });
-            case types.ORIGIN_CLEAR:
-              return Object.assign({}, state, {
-                origin: {},
-                originQuery: "",
-                waypoints: [],
-                directions: []
-              });
-            case types.DESTINATION_CLEAR:
-              return Object.assign({}, state, {
-                destination: {},
-                destinationQuery: "",
-                waypoints: [],
-                directions: []
-              });
-            case types.DIRECTIONS:
-              return Object.assign({}, state, {
-                directions: action.directions
-              });
-            case types.ROUTE_INDEX:
-              return Object.assign({}, state, {
-                routeIndex: action.routeIndex
-              });
-            case types.ERROR:
-              return Object.assign({}, state, {
-                error: action.error
-              });
-            default:
-              return state;
-          }
-        }
-        exports3.default = data;
-      }, { "../constants/action_types.js": 39, "deep-assign": 2 }], 47: [function(require2, module3, exports3) {
-        "use strict";
-        Object.defineProperty(exports3, "__esModule", {
-          value: true
-        });
-        function validCoords(coords) {
-          return coords[0] >= -180 && coords[0] <= 180 && coords[1] >= -90 && coords[1] <= 90;
-        }
-        function coordinateMatch(a, b) {
-          a = a.geometry.coordinates;
-          b = b.geometry.coordinates;
-          return a.join() === b.join() || a[0].toFixed(3) === b[0].toFixed(3) && a[1].toFixed(3) === b[1].toFixed(3);
-        }
-        function wrap(n) {
-          var d = 180 - -180;
-          var w = ((n - -180) % d + d) % d + -180;
-          return w === -180 ? 180 : w;
-        }
-        function roundWithOriginalPrecision(input, original) {
-          var precision = 0;
-          if (Math.floor(original) !== original) {
-            precision = original.toString().split(".")[1].length;
-          }
-          return input.toFixed(Math.min(precision, 5));
-        }
-        function createPoint(coordinates, properties) {
-          return {
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates
+            "paint": {
+              "line-color": "#bbb",
+              "line-width": 4
             },
-            properties: properties ? properties : {}
+            "filter": ["all", ["in", "$type", "LineString"], ["in", "route", "alternate"]]
+          }, {
+            "id": "directions-route-line-casing",
+            "type": "line",
+            "source": "directions",
+            "layout": {
+              "line-cap": "round",
+              "line-join": "round"
+            },
+            "paint": {
+              "line-color": "#2d5f99",
+              "line-width": 12
+            },
+            "filter": ["all", ["in", "$type", "LineString"], ["in", "route", "selected"]]
+          }, {
+            "id": "directions-route-line",
+            "type": "line",
+            "source": "directions",
+            "layout": {
+              "line-cap": "butt",
+              "line-join": "round"
+            },
+            "paint": {
+              "line-color": {
+                "property": "congestion",
+                "type": "categorical",
+                "default": "#4882c5",
+                "stops": [["unknown", "#4882c5"], ["low", "#4882c5"], ["moderate", "#f09a46"], ["heavy", "#e34341"], ["severe", "#8b2342"]]
+              },
+              "line-width": 7
+            },
+            "filter": ["all", ["in", "$type", "LineString"], ["in", "route", "selected"]]
+          }, {
+            "id": "directions-hover-point-casing",
+            "type": "circle",
+            "source": "directions",
+            "paint": {
+              "circle-radius": 8,
+              "circle-color": "#fff"
+            },
+            "filter": ["all", ["in", "$type", "Point"], ["in", "id", "hover"]]
+          }, {
+            "id": "directions-hover-point",
+            "type": "circle",
+            "source": "directions",
+            "paint": {
+              "circle-radius": 6,
+              "circle-color": "#3bb2d0"
+            },
+            "filter": ["all", ["in", "$type", "Point"], ["in", "id", "hover"]]
+          }, {
+            "id": "directions-waypoint-point-casing",
+            "type": "circle",
+            "source": "directions",
+            "paint": {
+              "circle-radius": 8,
+              "circle-color": "#fff"
+            },
+            "filter": ["all", ["in", "$type", "Point"], ["in", "id", "waypoint"]]
+          }, {
+            "id": "directions-waypoint-point",
+            "type": "circle",
+            "source": "directions",
+            "paint": {
+              "circle-radius": 6,
+              "circle-color": "#8a8bc9"
+            },
+            "filter": ["all", ["in", "$type", "Point"], ["in", "id", "waypoint"]]
+          }, {
+            "id": "directions-origin-point",
+            "type": "circle",
+            "source": "directions",
+            "paint": {
+              "circle-radius": 18,
+              "circle-color": "#3bb2d0"
+            },
+            "filter": ["all", ["in", "$type", "Point"], ["in", "marker-symbol", "A"]]
+          }, {
+            "id": "directions-origin-label",
+            "type": "symbol",
+            "source": "directions",
+            "layout": {
+              "text-field": "A",
+              "text-size": 12
+            },
+            "paint": {
+              "text-color": "#fff"
+            },
+            "filter": ["all", ["in", "$type", "Point"], ["in", "marker-symbol", "A"]]
+          }, {
+            "id": "directions-destination-point",
+            "type": "circle",
+            "source": "directions",
+            "paint": {
+              "circle-radius": 18,
+              "circle-color": "#8a8bc9"
+            },
+            "filter": ["all", ["in", "$type", "Point"], ["in", "marker-symbol", "B"]]
+          }, {
+            "id": "directions-destination-label",
+            "type": "symbol",
+            "source": "directions",
+            "layout": {
+              "text-field": "B",
+              "text-size": 12
+            },
+            "paint": {
+              "text-color": "#fff"
+            },
+            "filter": ["all", ["in", "$type", "Point"], ["in", "marker-symbol", "B"]]
+          }];
+          exports3.default = style;
+        }, {}],
+        45: [function(require2, module3, exports3) {
+          "use strict";
+          var _directions = require2("./directions");
+          var _directions2 = _interopRequireDefault(_directions);
+          function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          module3.exports = _directions2.default;
+        }, { "./directions": 43 }],
+        46: [function(require2, module3, exports3) {
+          "use strict";
+          Object.defineProperty(exports3, "__esModule", {
+            value: true
+          });
+          var _action_types = require2("../constants/action_types.js");
+          var types = _interopRequireWildcard(_action_types);
+          var _deepAssign = require2("deep-assign");
+          var _deepAssign2 = _interopRequireDefault(_deepAssign);
+          function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _interopRequireWildcard(obj) {
+            if (obj && obj.__esModule) {
+              return obj;
+            } else {
+              var newObj = {};
+              if (obj != null) {
+                for (var key in obj) {
+                  if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+                }
+              }
+              newObj.default = obj;
+              return newObj;
+            }
+          }
+          var initialState = {
+            // Options set on initialization
+            api: "http://router.project-osrm.org/route/v1/",
+            api2: "http://traffic.tag-ip.com/route/v1/",
+            profile: "driving",
+            alternatives: false,
+            congestion: false,
+            unit: "imperial",
+            flyTo: true,
+            placeholderOrigin: "Choose a starting place",
+            placeholderDestination: "Choose destination",
+            zoom: 16,
+            compile: null,
+            proximity: false,
+            styles: [],
+            // UI controls
+            controls: {
+              profileSwitcher: true,
+              inputs: true,
+              instructions: true
+            },
+            // Optional setting to pass options available to mapbox-gl-geocoder
+            geocoder: {},
+            interactive: true,
+            // Container for client registered events
+            events: {},
+            // Marker feature drawn on the map at any point.
+            origin: {},
+            destination: {},
+            hoverMarker: {},
+            waypoints: [],
+            // User input strings or result returned from geocoder
+            originQuery: null,
+            destinationQuery: null,
+            originQueryCoordinates: null,
+            destinationQueryCoordinates: null,
+            // Directions data
+            directions: [],
+            routeIndex: 0,
+            routePadding: 80
           };
-        }
-        var format = {
-          duration: function duration(s) {
-            var m = Math.floor(s / 60), h = Math.floor(m / 60);
-            s %= 60;
-            m %= 60;
-            if (h === 0 && m === 0) return s + "s";
-            if (h === 0) return m + "min";
-            return h + "h " + m + "min";
-          },
-          imperial: function imperial(m) {
-            var mi2 = m / 1609.344;
-            if (mi2 >= 100) return mi2.toFixed(0) + "mi";
-            if (mi2 >= 10) return mi2.toFixed(1) + "mi";
-            if (mi2 >= 0.1) return mi2.toFixed(2) + "mi";
-            return (mi2 * 5280).toFixed(0) + "ft";
-          },
-          metric: function metric(m) {
-            if (m >= 1e5) return (m / 1e3).toFixed(0) + "km";
-            if (m >= 1e4) return (m / 1e3).toFixed(1) + "km";
-            if (m >= 100) return (m / 1e3).toFixed(2) + "km";
-            return m.toFixed(0) + "m";
+          function data() {
+            var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : initialState;
+            var action = arguments[1];
+            switch (action.type) {
+              case types.SET_OPTIONS:
+                return (0, _deepAssign2.default)({}, state, action.options);
+              case types.DIRECTIONS_PROFILE:
+                return Object.assign({}, state, {
+                  profile: action.profile
+                });
+              case types.ORIGIN:
+                return Object.assign({}, state, {
+                  origin: action.origin,
+                  hoverMarker: {}
+                });
+              case types.DESTINATION:
+                return Object.assign({}, state, {
+                  destination: action.destination,
+                  hoverMarker: {}
+                });
+              case types.HOVER_MARKER:
+                return Object.assign({}, state, {
+                  hoverMarker: action.hoverMarker
+                });
+              case types.WAYPOINTS:
+                return Object.assign({}, state, {
+                  waypoints: action.waypoints
+                });
+              case types.ORIGIN_QUERY:
+                return Object.assign({}, state, {
+                  originQuery: action.query
+                });
+              case types.DESTINATION_QUERY:
+                return Object.assign({}, state, {
+                  destinationQuery: action.query
+                });
+              case types.ORIGIN_FROM_COORDINATES:
+                return Object.assign({}, state, {
+                  originQueryCoordinates: action.coordinates
+                });
+              case types.DESTINATION_FROM_COORDINATES:
+                return Object.assign({}, state, {
+                  destinationQueryCoordinates: action.coordinates
+                });
+              case types.ORIGIN_CLEAR:
+                return Object.assign({}, state, {
+                  origin: {},
+                  originQuery: "",
+                  waypoints: [],
+                  directions: []
+                });
+              case types.DESTINATION_CLEAR:
+                return Object.assign({}, state, {
+                  destination: {},
+                  destinationQuery: "",
+                  waypoints: [],
+                  directions: []
+                });
+              case types.DIRECTIONS:
+                return Object.assign({}, state, {
+                  directions: action.directions
+                });
+              case types.ROUTE_INDEX:
+                return Object.assign({}, state, {
+                  routeIndex: action.routeIndex
+                });
+              case types.ERROR:
+                return Object.assign({}, state, {
+                  error: action.error
+                });
+              default:
+                return state;
+            }
           }
-        };
-        exports3.default = { format, coordinateMatch, createPoint, validCoords, wrap, roundWithOriginalPrecision };
-      }, {}] }, {}, [45])(45);
+          exports3.default = data;
+        }, { "../constants/action_types.js": 39, "deep-assign": 2 }],
+        47: [function(require2, module3, exports3) {
+          "use strict";
+          Object.defineProperty(exports3, "__esModule", {
+            value: true
+          });
+          function validCoords(coords) {
+            return coords[0] >= -180 && coords[0] <= 180 && coords[1] >= -90 && coords[1] <= 90;
+          }
+          function coordinateMatch(a, b) {
+            a = a.geometry.coordinates;
+            b = b.geometry.coordinates;
+            return a.join() === b.join() || a[0].toFixed(3) === b[0].toFixed(3) && a[1].toFixed(3) === b[1].toFixed(3);
+          }
+          function wrap(n) {
+            var d = 180 - -180;
+            var w = ((n - -180) % d + d) % d + -180;
+            return w === -180 ? 180 : w;
+          }
+          function roundWithOriginalPrecision(input, original) {
+            var precision = 0;
+            if (Math.floor(original) !== original) {
+              precision = original.toString().split(".")[1].length;
+            }
+            return input.toFixed(Math.min(precision, 5));
+          }
+          function createPoint(coordinates, properties) {
+            return {
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates
+              },
+              properties: properties ? properties : {}
+            };
+          }
+          var format = {
+            duration: function duration(s) {
+              var m = Math.floor(s / 60), h = Math.floor(m / 60);
+              s %= 60;
+              m %= 60;
+              if (h === 0 && m === 0) return s + "s";
+              if (h === 0) return m + "min";
+              return h + "h " + m + "min";
+            },
+            imperial: function imperial(m) {
+              var mi2 = m / 1609.344;
+              if (mi2 >= 100) return mi2.toFixed(0) + "mi";
+              if (mi2 >= 10) return mi2.toFixed(1) + "mi";
+              if (mi2 >= 0.1) return mi2.toFixed(2) + "mi";
+              return (mi2 * 5280).toFixed(0) + "ft";
+            },
+            metric: function metric(m) {
+              if (m >= 1e5) return (m / 1e3).toFixed(0) + "km";
+              if (m >= 1e4) return (m / 1e3).toFixed(1) + "km";
+              if (m >= 100) return (m / 1e3).toFixed(2) + "km";
+              return m.toFixed(0) + "m";
+            }
+          };
+          exports3.default = { format, coordinateMatch, createPoint, validCoords, wrap, roundWithOriginalPrecision };
+        }, {}]
+      }, {}, [45])(45);
     });
   }
 });
@@ -22278,7 +22365,7 @@ var MapState = class {
   }
 };
 
-// node_modules/@watergis/maplibre-gl-legend/dist/maplibre-gl-legend.es.js
+// node_modules/.pnpm/@watergis+maplibre-gl-legend@2.0.5/node_modules/@watergis/maplibre-gl-legend/dist/maplibre-gl-legend.es.js
 var wi = Object.defineProperty;
 var xi = (r, e, t) => e in r ? wi(r, e, { enumerable: true, configurable: true, writable: true, value: t }) : r[e] = t;
 var ae = (r, e, t) => (xi(r, typeof e != "symbol" ? e + "" : e, t), t);
