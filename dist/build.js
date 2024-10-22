@@ -48,9 +48,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
-// node_modules/maplibre-gl/dist/maplibre-gl.js
+// node_modules/.pnpm/maplibre-gl@4.7.1/node_modules/maplibre-gl/dist/maplibre-gl.js
 var require_maplibre_gl = __commonJS({
-  "node_modules/maplibre-gl/dist/maplibre-gl.js"(exports, module) {
+  "node_modules/.pnpm/maplibre-gl@4.7.1/node_modules/maplibre-gl/dist/maplibre-gl.js"(exports, module) {
     (function(global2, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global2 = typeof globalThis !== "undefined" ? globalThis : global2 || self, global2.maplibregl = factory());
     })(exports, function() {
@@ -17564,7 +17564,7 @@ var require_maplibre_gl_directions = __commonJS({
         return r;
       }())({ 1: [function(require2, module3, exports3) {
         "use strict";
-        var polyline = {};
+        var polyline2 = {};
         function py2_round(value) {
           return Math.floor(Math.abs(value) + 0.5) * (value >= 0 ? 1 : -1);
         }
@@ -17584,7 +17584,7 @@ var require_maplibre_gl_directions = __commonJS({
           output += String.fromCharCode(coordinate + 63);
           return output;
         }
-        polyline.decode = function(str, precision) {
+        polyline2.decode = function(str, precision) {
           var index = 0, lat = 0, lng = 0, coordinates = [], shift = 0, result = 0, byte = null, latitude_change, longitude_change, factor = Math.pow(10, Number.isInteger(precision) ? precision : 5);
           while (index < str.length) {
             byte = null;
@@ -17609,7 +17609,7 @@ var require_maplibre_gl_directions = __commonJS({
           }
           return coordinates;
         };
-        polyline.encode = function(coordinates, precision) {
+        polyline2.encode = function(coordinates, precision) {
           if (!coordinates.length) {
             return "";
           }
@@ -17629,24 +17629,24 @@ var require_maplibre_gl_directions = __commonJS({
           }
           return flipped2;
         }
-        polyline.fromGeoJSON = function(geojson, precision) {
+        polyline2.fromGeoJSON = function(geojson, precision) {
           if (geojson && geojson.type === "Feature") {
             geojson = geojson.geometry;
           }
           if (!geojson || geojson.type !== "LineString") {
             throw new Error("Input must be a GeoJSON LineString");
           }
-          return polyline.encode(flipped(geojson.coordinates), precision);
+          return polyline2.encode(flipped(geojson.coordinates), precision);
         };
-        polyline.toGeoJSON = function(str, precision) {
-          var coords = polyline.decode(str, precision);
+        polyline2.toGeoJSON = function(str, precision) {
+          var coords = polyline2.decode(str, precision);
           return {
             type: "LineString",
             coordinates: flipped(coords)
           };
         };
         if (typeof module3 === "object" && module3.exports) {
-          module3.exports = polyline;
+          module3.exports = polyline2;
         }
       }, {}], 2: [function(require2, module3, exports3) {
         "use strict";
@@ -22146,9 +22146,101 @@ var require_maplibre_gl_directions = __commonJS({
   }
 });
 
+// node_modules/.pnpm/@mapbox+polyline@1.2.1/node_modules/@mapbox/polyline/src/polyline.js
+var require_polyline = __commonJS({
+  "node_modules/.pnpm/@mapbox+polyline@1.2.1/node_modules/@mapbox/polyline/src/polyline.js"(exports, module) {
+    "use strict";
+    var polyline2 = {};
+    function py2_round(value) {
+      return Math.floor(Math.abs(value) + 0.5) * (value >= 0 ? 1 : -1);
+    }
+    function encode(current, previous, factor) {
+      current = py2_round(current * factor);
+      previous = py2_round(previous * factor);
+      var coordinate = (current - previous) * 2;
+      if (coordinate < 0) {
+        coordinate = -coordinate - 1;
+      }
+      var output = "";
+      while (coordinate >= 32) {
+        output += String.fromCharCode((32 | coordinate & 31) + 63);
+        coordinate /= 32;
+      }
+      output += String.fromCharCode((coordinate | 0) + 63);
+      return output;
+    }
+    polyline2.decode = function(str, precision) {
+      var index = 0, lat = 0, lng = 0, coordinates = [], shift = 0, result = 0, byte = null, latitude_change, longitude_change, factor = Math.pow(10, Number.isInteger(precision) ? precision : 5);
+      while (index < str.length) {
+        byte = null;
+        shift = 1;
+        result = 0;
+        do {
+          byte = str.charCodeAt(index++) - 63;
+          result += (byte & 31) * shift;
+          shift *= 32;
+        } while (byte >= 32);
+        latitude_change = result & 1 ? (-result - 1) / 2 : result / 2;
+        shift = 1;
+        result = 0;
+        do {
+          byte = str.charCodeAt(index++) - 63;
+          result += (byte & 31) * shift;
+          shift *= 32;
+        } while (byte >= 32);
+        longitude_change = result & 1 ? (-result - 1) / 2 : result / 2;
+        lat += latitude_change;
+        lng += longitude_change;
+        coordinates.push([lat / factor, lng / factor]);
+      }
+      return coordinates;
+    };
+    polyline2.encode = function(coordinates, precision) {
+      if (!coordinates.length) {
+        return "";
+      }
+      var factor = Math.pow(10, Number.isInteger(precision) ? precision : 5), output = encode(coordinates[0][0], 0, factor) + encode(coordinates[0][1], 0, factor);
+      for (var i = 1; i < coordinates.length; i++) {
+        var a = coordinates[i], b = coordinates[i - 1];
+        output += encode(a[0], b[0], factor);
+        output += encode(a[1], b[1], factor);
+      }
+      return output;
+    };
+    function flipped(coords) {
+      var flipped2 = [];
+      for (var i = 0; i < coords.length; i++) {
+        var coord = coords[i].slice();
+        flipped2.push([coord[1], coord[0]]);
+      }
+      return flipped2;
+    }
+    polyline2.fromGeoJSON = function(geojson, precision) {
+      if (geojson && geojson.type === "Feature") {
+        geojson = geojson.geometry;
+      }
+      if (!geojson || geojson.type !== "LineString") {
+        throw new Error("Input must be a GeoJSON LineString");
+      }
+      return polyline2.encode(flipped(geojson.coordinates), precision);
+    };
+    polyline2.toGeoJSON = function(str, precision) {
+      var coords = polyline2.decode(str, precision);
+      return {
+        type: "LineString",
+        coordinates: flipped(coords)
+      };
+    };
+    if (typeof module === "object" && module.exports) {
+      module.exports = polyline2;
+    }
+  }
+});
+
 // app.js
 var import_maplibre_gl = __toESM(require_maplibre_gl());
 var import_maplibre_gl_directions = __toESM(require_maplibre_gl_directions());
+var import_polyline = __toESM(require_polyline());
 
 // src/map.maplibre/map_defaults.js
 var map_defaults_default = {
@@ -22278,7 +22370,7 @@ var MapState = class {
   }
 };
 
-// node_modules/@watergis/maplibre-gl-legend/dist/maplibre-gl-legend.es.js
+// node_modules/.pnpm/@watergis+maplibre-gl-legend@2.0.5/node_modules/@watergis/maplibre-gl-legend/dist/maplibre-gl-legend.es.js
 var wi = Object.defineProperty;
 var xi = (r, e, t) => e in r ? wi(r, e, { enumerable: true, configurable: true, writable: true, value: t }) : r[e] = t;
 var ae = (r, e, t) => (xi(r, typeof e != "symbol" ? e + "" : e, t), t);
@@ -37300,7 +37392,10 @@ function myFunc() {
   map2.addControl(new import_maplibre_gl.default.AttributionControl(), "bottom-right");
   map2.addControl(new import_maplibre_gl.default.ScaleControl());
   map2.addControl(new import_maplibre_gl.default.FullscreenControl(), "top-right");
-  map2.addControl(new import_maplibre_gl.default.NavigationControl({ visualizePitch: true }), "top-right");
+  map2.addControl(
+    new import_maplibre_gl.default.NavigationControl({ visualizePitch: true }),
+    "top-right"
+  );
   map2.addControl(controlBasemap, "bottom-right");
   map2.fitBounds(initBounds2);
   const directions = new import_maplibre_gl_directions.default({
@@ -37322,13 +37417,19 @@ function myFunc() {
         sideMenu.classList.add("open");
         menuBtn.innerHTML = "&lt;";
       }
-      const summary = route.legs[0].summary;
+      const steps = route.legs[0].steps;
+      const validSteps = steps.filter((step) => step.name);
+      let summary = "";
+      if (validSteps.length > 0) {
+        const startName = validSteps[0].name;
+        const endName = validSteps[validSteps.length - 1].name;
+        summary = "".concat(startName, ' <i class="fa-solid fa-arrow-right"></i> ').concat(endName);
+      }
       const distance = (route.legs[0].distance / 1e3).toFixed(2);
       const duration = (route.legs[0].duration / 60).toFixed(2);
       summaryContainer.innerHTML = "<p>".concat(summary, "</p>");
       distanceContainer.innerHTML = "<p><strong>Distance:</strong> ".concat(distance, " km</p>");
       durationContainer.innerHTML = "<p><strong>Dur\xE9e:</strong> ".concat(duration, " min</p>");
-      const steps = route.legs[0].steps;
       getLocation(steps);
     }
   });
