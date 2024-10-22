@@ -45,7 +45,7 @@ body {
   padding: 10px 15px;
   font-size: 16px;
   font-weight: bolder;
-  background-color: #008cba;
+  background-color: #25487fbf;
   color: white;
   border: none;
   border-radius: 5px;
@@ -55,20 +55,23 @@ body {
 /* Le menu */
 .side-menu {
   position: fixed;
-  border-radius:10px;
+  display: flex; 
+  flex-direction: column; 
+  border-radius: 10px;
   top: 100px;
   bottom: 50px;
-  left: -350px; /* initialement caché */
-  width: 273px;
-  height: auto;
-  background-color: #f1f1f1;
-  color: #000;
-  transition: left 0.6s ease; /* animation de la position gauche */
-  padding: 15px;
+  left: -470px; 
+  width: 400px; /* Largeur de la side-menu */
+  height: 610px;
+  background-color: #ffffffd9;
+  color: #25487fcc;
+  transition: left 0.6s ease; 
   box-shadow: -2px 0 10px -5px rgba(0, 0, 0, 0.6);
   z-index: 2;
+  justify-content: flex-start; 
+  overflow-y: auto; 
+ font-size: 14px;
 }
-
 .side-menu.open {
   left: 5px; /* quand le menu est ouvert */
 }
@@ -93,26 +96,44 @@ body {
 }
 /*Slide show*/
 .side-menu h2 {
-  margin-top: 0;
+  margin-top: 20px;
   width: 100%;
   text-align: center;
-  color: #000;
+  color: #25487fcc; 
+  font-family: 'Open Sans', sans-serif; /* Correction de l'espace */
+  font-size: 24px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  letter-spacing: 1px; 
 }
+
+
 .side-menu hr{
-  color: #000;
+  color: #25487fcc;
 }
 /* Menu visible */
 .side-menu.show {
   right: 0;
 }
+.container {
+  position: fixed;
+  width: 400px;
+  height: 170px;
+  border-radius: 10px;
+  background-color: #fffffff9;
+  padding-bottom: 20px;
+  color: #25487fcc;
+}
 
 /*instructions on menu-container*/
 #summary {
-  color: #000;
+  color: #25487fcc;
   font-size: 16px;
   z-index: 99;
   display: flex;
   align-items: center;
+  font-size: 15px;
+  margin: 12.42px 15px 12.45px 0px;
 }
 .distance-duration {
   display: flex;
@@ -122,19 +143,18 @@ body {
 #distance, #duration {
   font-size: 16px;
 }
+#info-content{
+  padding-top: 235px;
+  max-height: auto;
+
+}
 /* Style pour le conteneur d'informations */
 #informations {
-  background-color: #f9f9f9;
-  border: 1px solid #ccc; 
-  border-radius: 8px; 
-  max-width: 600px; 
-  margin: 20px auto;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  overflow-y: auto; 
-  max-height: 400px;
-  display: block;
+  max-width: 100%; /* Limiter la largeur pour ne pas dépasser la largeur du menu */
+  padding: 10px;
+  margin-top: -50px; 
 }
+
 /* Style pour la liste des itinéraires */
 #route-list {
   list-style-type: none;
@@ -167,7 +187,6 @@ body {
   display: block;
   width: 100%;
   height: 30px;
- /* background-color: aqua;*/
   border: #000;
   margin-top: 5px;
 }
