@@ -4,15 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <title>Display driving directions</title>
-  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   
-  <script type="text/javascript" src="//unpkg.com/maplibre-gl@4.5.2/dist/maplibre-gl.js"></script>
-  <link href="//unpkg.com/maplibre-gl@4.5.2/dist/maplibre-gl.css" rel="stylesheet" />
-
-  <script src="maplibre_directions/maplibre-gl-directions.js"></script>
-  <link href="maplibre_directions/maplibre-gl-directions.css" type="text/css" rel="stylesheet" />
   <style>
     body {
       margin: 0;
@@ -34,49 +26,22 @@
   <div id="map"></div>
 
   <script>
-    const initBounds = [
-      [41.428523678184234, -25.855015532118756],
-      [52.75820791383018, -11.711066264154994]
-    ]
-    let map;
-    map = new maplibregl.Map({
-      container: "map",
-      style: "https://vector-tiles.tag-ip.xyz/styles/tag-ip/style.json",
-      center: [47.5303, -18.9006],
-      zoom: 10,
-      attributionControl: false
-    });
-
-    // fit map rhf loaded
-    map.fitBounds(initBounds);
-
-
-    // mametraka direction
-    let directions = new MapLibreDirections({
-      unit: "metric",
-      interactive: true,
-      controls: {
-        inputs: true,
-        instructions: true,
-        profileSwitcher: true,
-      },
-      profile: "driving",
-    });
-
-    map.on("load", () => {
-      showRoute();
-    });
-
-    function showRoute() {
-      //directions.setOrigin("47.499526, -18.937683");
-      //directions.setDestination("47.523405, -18.942981");
-    }
-
-    // mampiditra contrôles rhtr
-    map.addControl(directions, "top-left");
-    map.addControl(new maplibregl.ScaleControl())
-    map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }),)
-    map.addControl(new maplibregl.FullscreenControl())
+   function conversion(arg, argType){
+	if(argType == "distance" ){
+		return (arg/ 1000).toFixed(2);
+	}
+	if(argType == "hours" ){
+		const totalMinutes = (arg / 60); 
+			const hours = Math.floor(totalMinutes / 60);
+			const minutes = totalMinutes % 60; 
+			const seconds = Math.floor((totalMinutes * 60) % 60); 
+      if(hours>0){
+        console.log( `${hours} h ${minutes} min ${seconds} sec`);
+      }else{
+			console.log( `${minutes} min ${seconds} sec`);}
+	}
+}
+conversion(120, "hours");
   </script>
 </body>
 

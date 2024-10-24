@@ -84,6 +84,25 @@ export default function myFunc() {
 		},
 		profile: "driving",
 	});
+	/*
+function displayDirections(locationName, dist, x, y) {
+	const li = document.createElement("li");
+	const spanDistance = document.createElement("span");
+	const span = document.createElement("span");
+	//add class
+	li.setAttribute("class", "list-direction");
+	span.setAttribute("class", "decor");
+	spanDistance.setAttribute("class", "decor");
+	span.textContent = locationName;
+	spanDistance.textContent = conversion(dist, "distance");//`${dist} m`;
+	li.appendChild(span);
+	li.appendChild(spanDistance);
+
+	li.addEventListener("click", () => {
+		// Logic for centering map on (x, y)
+	});
+	informationDiv.appendChild(li);
+}*/
 
 	//new event itinerary
 	directions.on("route", (e) => {

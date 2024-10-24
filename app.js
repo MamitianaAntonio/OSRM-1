@@ -39,44 +39,115 @@ const DefaultOptions = {
 	},
 	fadeDuration: 0,
 };
+function conversion(arg, argType) {
+	if (argType == "distance") {
+		return `${(arg / 1000).toFixed(2)} km`;
+	}
+	if (argType == "hours") {
+		const totalMinutes = (arg / 60);
+		const hours = parseInt(Math.floor(totalMinutes / 60));
+		const minutes = parseInt(totalMinutes % 60);
+		const seconds = Math.floor((totalMinutes * 60) % 60);
+		if (hours > 0) {
+			return `${hours} h ${minutes} min ${seconds} sec`;
+		} else {
+			if (minutes > 0) {
+				return `${minutes} min ${seconds} sec`;
+			} else {
+				return `${seconds} sec`;
+			}
+		}
+	}
+}
 
-function displayDirections(locationName, dist, x, y) {
+function displayDirections(locationName, stepDuration, dist, x, y) {
 	const li = document.createElement("li");
 	const spanDistance = document.createElement("span");
-	const span = document.createElement("span");
-	//add class
-	li.setAttribute("class", "list-direction");
-	span.setAttribute("class", "decor");
-	spanDistance.setAttribute("class", "decor");
-	span.textContent = locationName;
-	spanDistance.textContent = `${dist} m`;
-	li.appendChild(span);
-	li.appendChild(spanDistance);
+	const spanLocation = document.createElement("span");
 
-	li.addEventListener("click", () => {
-		// Logic for centering map on (x, y)
-	});
+	li.setAttribute("class", "list-direction");
+	spanLocation.setAttribute("class", "decor");
+	spanDistance.setAttribute("class", "decor");
+
+	spanLocation.textContent = locationName;
+	spanDistance.textContent = conversion(dist, "distance") + " (" + conversion(stepDuration, "hours") + ")";
+
+	li.appendChild(spanLocation);
+	li.appendChild(spanDistance);
 	informationDiv.appendChild(li);
+
+	if (informationDiv.children.length === 1) {
+		const departureNote = document.createElement("div");
+		departureNote.innerHTML = `<i class="fa-solid fa-a summary-icon"></i> : Départ`;
+		departureNote.style.fontWeight = "bold";
+		departureNote.style.marginBottom = "15px";
+		informationDiv.insertBefore(departureNote, informationDiv.firstChild);
+	}
 }
 
 async function getLocation(steps) {
 	informationDiv.innerHTML = "";
+	let lastElement; // Pour garder une référence du dernier élément affiché
+	let pos = 0;
+	let toFrom = "";
+	let toEnd = "";
+	let locationName = "";
 	for (const step of steps) {
+		console.log(step);
 		const cord = step.maneuver.location;
 		const dist = step.distance;
 		const x = cord[0];
 		const y = cord[1];
 		const url = `${nominate}&lat=${y}&lon=${x}&zoom=18`;
-
+		const stepDuration = step.duration;
 		await fetch(url)
 			.then((response) => response.json())
 			.then((data) => {
-				const locationName = `${data.display_name.split(",")[0]} ${data.display_name.split(",")[1]}`;
-				displayDirections(locationName, dist, x, y);
+				locationName = `${data.display_name.split(",")[0]} ${data.display_name.split(",")[1]}`;
+				lastElement = displayDirections(locationName, stepDuration, dist, x, y); // Stocker la référence de l'élément créé
 			});
+		if (pos == 0) {
+			toFrom = locationName;
+		}
+		if (pos == steps.length - 1) {
+			toEnd = locationName;
+		}
+		pos++;
+
 	}
-	sideMenu.style.display = "block";
+	const toA = document.createElement("span");
+	toA.setAttribute("class", "summary-child");
+	const toB = document.createElement("span");
+	toB.setAttribute("class", "summary-child");
+	toA.innerHTML = toFrom;
+	toB.innerHTML = toEnd;
+	summaryContainer.appendChild(toA);
+	summaryContainer.appendChild(toB);
+
+	
+			/*	
+			
+				<i class="fa-solid fa-arrow-right arrow-icon"></i>
+				
+		*/
+
+	// Créer l'élément "Destination Atteinte" après la boucle
+	const destinationNote = document.createElement("div");
+	destinationNote.innerHTML = `<i class="fa-solid fa-b summary-icon-end"></i> : Destination Atteinte`;
+	destinationNote.style.fontWeight = "bold";
+	informationDiv.appendChild(destinationNote);
+
+	// Faire apparaître l'élément "Destination Atteinte" après avoir ajouté toutes les destinations
+	destinationNote.style.display = "block";
+
+	// Assurer que le note soit en bas du dernier élément
+	if (lastElement) {
+		lastElement.after(destinationNote);
+	}
+
+	sideMenu.style.display = "block"; // Afficher le menu latéral après avoir terminé
 }
+
 
 // Function to initialize the map
 export default function myFunc() {
@@ -127,20 +198,14 @@ export default function myFunc() {
 			// Display summary, distance, and duration
 			const steps = route.legs[0].steps;
 			const validSteps = steps.filter((step) => step.name);
-			let summary = "";
 
-			if (validSteps.length > 0) {
-				const startName = validSteps[0].name;
-				const endName = validSteps[validSteps.length - 1].name;
-				summary = `${startName} <i class="fa-solid fa-arrow-right"></i> ${endName}`;
-			}
+			const putDistance = conversion(route.legs[0].distance, "distance");
+			const putDuration = conversion(route.legs[0].duration, "hours");
 
-			const distance = (route.legs[0].distance / 1000).toFixed(2);
-			const duration = (route.legs[0].duration / 60).toFixed(2);
+			// Mise à jour du contenu HTML
 
-			summaryContainer.innerHTML = `<p>${summary}</p>`;
-			distanceContainer.innerHTML = `<p><strong>Distance:</strong> ${distance} km</p>`;
-			durationContainer.innerHTML = `<p><strong>Durée:</strong> ${duration} min</p>`;
+			distanceContainer.innerHTML = `<p><strong>Distance:</strong> ${putDistance} </p>`;
+			durationContainer.innerHTML = `<p><strong>Durée:</strong> ${putDuration} </p>`;
 
 			getLocation(steps);
 		}

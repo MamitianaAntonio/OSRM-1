@@ -2,8 +2,6 @@
 @import "maplibre-gl-directions.css";
 @import "maplibre-gl-basemaps/lib/basemaps";
 @import "../../node_modules/@watergis/maplibre-gl-legend/dist/maplibre-gl-legend.css";
-
-
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
 /*container*/
@@ -31,15 +29,15 @@ body {
   position: absolute;
   top: 0;
   bottom: 0;
-  left : 0;
-  right : 0;
+  left: 0;
+  right: 0;
   width: 100%;
   height: 100vh;
 }
 
 /* Bouton */
 #menu-btn {
-  position: fixed;
+  position: absolute;
   top: 112px;
   left: 10px;
   padding: 10px 15px;
@@ -54,31 +52,34 @@ body {
 }
 /* Le menu */
 .side-menu {
-  position: fixed;
-  display: flex; 
-  flex-direction: column; 
+  position: absolute;
+  display: flex;
+  flex-direction: column;
   border-radius: 10px;
   top: 100px;
   bottom: 50px;
-  left: -470px; 
-  width: 400px; /* Largeur de la side-menu */
+  left: -470px;
+  width: 400px; /* Largeur de départ */
+  max-width: 90vw;
+  min-width: 300px;
   height: 610px;
   background-color: #ffffffd9;
   color: #25487fcc;
-  transition: left 0.6s ease; 
+  transition: left 0.6s ease, width 0.6s ease; /* Transition lisse de la largeur */
   box-shadow: -2px 0 10px -5px rgba(0, 0, 0, 0.6);
   z-index: 2;
-  justify-content: flex-start; 
-  overflow-y: auto; 
- font-size: 14px;
+  justify-content: flex-start;
+  overflow-y: auto;
+  font-size: 14px;
 }
+
 .side-menu.open {
   left: 5px; /* quand le menu est ouvert */
 }
 
 /*button span*/
 .collapse-btn {
-  position: fixed;
+  position: absolute;
   top: 10px;
   right: 10px;
   background-color: rgba(37, 72, 127, 0.74902);
@@ -96,19 +97,18 @@ body {
 }
 /*Slide show*/
 .side-menu h2 {
-  margin-top: 20px;
+  margin-top: 15px;
   width: 100%;
   text-align: center;
-  color: #25487fcc; 
-  font-family: 'Open Sans', sans-serif; /* Correction de l'espace */
-  font-size: 24px; 
-  font-weight: bold; 
-  text-transform: uppercase; 
-  letter-spacing: 1px; 
+  color: #25487fcc;
+  font-family: "Open Sans", sans-serif; /* Correction de l'espace */
+  font-size: 30px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-
-.side-menu hr{
+.side-menu hr {
   color: #25487fcc;
 }
 /* Menu visible */
@@ -117,71 +117,86 @@ body {
 }
 .container {
   position: fixed;
-  width: 400px;
+  width: 400px; /* Largeur de départ */
+  max-width: 90vw;
+  min-width: 300px;
   height: 170px;
   border-radius: 10px;
   background-color: #fffffff9;
-  padding-bottom: 20px;
+  margin-bottom: 0px;
+  padding-bottom: 40px;
   color: #25487fcc;
 }
 
 /*instructions on menu-container*/
+.kontent {
+  padding: 10px;
+  line-height: 0.8;
+  padding: 5px 5px 0.9px 5px;
+}
+
 #summary {
   color: #25487fcc;
-  font-size: 16px;
   z-index: 99;
   display: flex;
   align-items: center;
+  justify-content: center;
   font-size: 15px;
-  margin: 12.42px 15px 12.45px 0px;
+  font-weight: bold;
 }
+
 .distance-duration {
   display: flex;
   justify-content: space-between;
   padding: 10px;
 }
-#distance, #duration {
+
+#distance,
+#duration {
   font-size: 16px;
+  z-index: 10;
+  position: relative;
 }
-#info-content{
+
+#info-content {
   padding-top: 235px;
   max-height: auto;
-
 }
 /* Style pour le conteneur d'informations */
 #informations {
-  max-width: 100%; /* Limiter la largeur pour ne pas dépasser la largeur du menu */
-  padding: 10px;
-  margin-top: -50px; 
+  max-width: 100%;
+  padding: 13px;
+  margin-top: -25px;
+  line-height: 1.5px;
 }
 
 /* Style pour la liste des itinéraires */
 #route-list {
   list-style-type: none;
-  padding: 0; 
+  padding: 0;
   color: #000;
 }
 /* Style pour chaque élément de la liste */
 #route-list li {
-  background-color: #ffffff; 
-  border: 1px solid #ddd; 
+  background-color: #ffffff;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  margin: 10px 0; 
-  padding: 10px; 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  transition: background-color 0.3s; 
+  margin: 10px 0;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s;
 }
 #route-list li:hover {
-  background-color: #f0f0f0; 
+  background-color: #f0f0f0;
 }
 .icon {
-  width: 24px; 
+  width: 24px;
   height: 24px;
-  margin-right: 10px; 
+  margin-right: 10px;
 }
-.list-direction{
+.list-direction {
   list-style: none;
   font-size: 14px;
   display: block;
@@ -190,9 +205,125 @@ body {
   border: #000;
   margin-top: 5px;
 }
-.list-direction .decor:first-child{
+.list-direction .decor:first-child {
   float: left;
 }
-.list-direction .decor:last-child{
+.list-direction .decor:last-child {
   float: right;
+}
+
+/* Pour aligner les enfants de summary en flex */
+/* Conteneur flex pour les enfants de summary */
+.summary-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%; /* S'étend sur toute la largeur du conteneur parent */
+  margin: 10px 0; /* Espacement entre les items */
+  padding: 10px 15px; /* Ajout d'espace interne */
+  border-radius: 8px; /* Coins arrondis */
+  background-color: #f9f9f9; /* Couleur de fond douce */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre douce */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transition pour l'animation */
+}
+
+/* Effet hover pour le conteneur */
+.summary-child:hover {
+  background-color: #e0f7fa; 
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
+}
+
+/* Icônes avant le premier élément et après le dernier */
+.summary-child:first-child::before {
+  content: "A";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  margin-right: 10px;
+  color: green;
+  font-size: 1.5em;
+}
+
+.summary-child:last-child::after {
+  content: "B";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  margin-left: 10px;
+  color: red;
+  font-size: 1.5em;
+}
+
+/* Style général pour le texte à l'intérieur */
+.summary-child span,
+.summary-child p {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Effet hover sur le texte */
+.summary-child:hover span,
+.summary-child:hover p {
+  transform: scale(1.05);
+}
+
+/* Optionnel: icônes avec design spécifique si nécessaire */
+.summary-icon {
+  color: green;
+  font-size: 1.2em;
+  margin-right: 10px;
+}
+
+.summary-icon-end {
+  color: red;
+  font-size: 1.2em;
+  margin-left: 10px;
+}
+
+/* Conteneur Flex pour aligner les éléments */
+.summary-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Hover effect pour le texte et les icônes */
+.summary-title:hover,
+.summary-container span:hover,
+.summary-child:hover {
+  overflow: visible;
+  white-space: normal;
+  z-index: 1;
+  transform: scale(1.05);
+}
+
+/* Couleur des icônes */
+.summary-icon {
+  color: green;
+}
+
+.summary-icon-end {
+  color: red;
+}
+/* Style pour les spans dans le conteneur */
+.summary-container span {
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  position: relative;
+  transition: transform 0.3s ease-in-out;
+}
+
+.summary-container span:hover {
+  overflow: visible;
+  white-space: normal;
+  z-index: 1;
+  transform: scale(1.05);
 }
