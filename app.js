@@ -1,7 +1,6 @@
 // Import the necessary libraries
 import maplibregl from "maplibre-gl";
 import MapLibreDirections from "./src/js/maplibre-gl-directions.js";
-import polyline from "@mapbox/polyline";
 import MapDefaults from "./src/map.maplibre/map_defaults.js";
 import Bounds from "./src/map.maplibre/bounds_helper";
 import MapState from "./src/map.maplibre/map_state.js";
@@ -125,12 +124,6 @@ async function getLocation(steps) {
 	summaryContainer.appendChild(toB);
 
 	
-			/*	
-			
-				<i class="fa-solid fa-arrow-right arrow-icon"></i>
-				
-		*/
-
 	// Créer l'élément "Destination Atteinte" après la boucle
 	const destinationNote = document.createElement("div");
 	destinationNote.innerHTML = `<i class="fa-solid fa-b summary-icon-end"></i> : Destination Atteinte`;
