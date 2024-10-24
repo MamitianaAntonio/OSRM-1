@@ -2,8 +2,6 @@
 @import "maplibre-gl-directions.css";
 @import "maplibre-gl-basemaps/lib/basemaps";
 @import "../../node_modules/@watergis/maplibre-gl-legend/dist/maplibre-gl-legend.css";
-
-
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
 /*container*/
@@ -190,9 +188,19 @@ body {
   border: #000;
   margin-top: 5px;
 }
+.list-direction i:first-child {
+  float: left;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+}
 .list-direction .decor:first-child{
   float: left;
 }
+.list-direction .decor:first-child i{
+  width: 30px;
+  font-size: 14px;
+}
+
 .list-direction .decor:last-child{
   float: right;
 }
