@@ -1,11 +1,13 @@
 // Import the necessary libraries
 import maplibregl from "maplibre-gl";
 import MapLibreDirections from "./src/js/maplibre-gl-directions.js";
-import polyline from "@mapbox/polyline";
 import MapDefaults from "./src/map.maplibre/map_defaults.js";
 import Bounds from "./src/map.maplibre/bounds_helper";
 import MapState from "./src/map.maplibre/map_state.js";
 import BasemapControl from "./src/map.maplibre/basemap_control.js";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
+
 
 const mapCenter = Bounds.Center;
 const mapStyle = MapDefaults.style;
@@ -20,6 +22,30 @@ const initBounds = [
 	[41.428523678184234, -25.855015532118756],
 	[52.75820791383018, -11.711066264154994],
 ];
+
+/*const iDirections = {
+	north: 'fa-turn-up',
+	northeast: 'fa-square-up-right',
+	east: 'fa-arrow-right',
+	southeast: 'fa-arrow-down-right',
+	south: 'fa-turn-down',
+	southwest: 'fa-arrow-down-left',
+	west: 'fa-arrow-left',
+	northwest: 'fa-arrow-up-left',
+};*/
+//si angle <45 ==> "fa-".concat(iDirections[0]) == "fa-lef"
+
+const iDirections = {
+  north: 'fa-turn-up',
+  northeast: 'fa-rotate-right',
+  east: 'fa-right-long',
+  southeast: 'fa-circle-dot',
+  south: 'fa-turn-down',
+  southwest: 'fa-circle-dot',
+  west: 'fa-left-long',
+  northwest: 'fa-rotate-left',
+};
+
 const styleMap = "https://vector-tiles.tag-ip.xyz/styles/tag-ip-mu/style.json";
 const informationDiv = document.getElementById("informations");
 const summaryContainer = document.getElementById("summary");
@@ -40,27 +66,59 @@ const DefaultOptions = {
 	fadeDuration: 0,
 };
 
-function displayDirections(locationName, dist, x, y) {
+
+function getArrow(bearings) {
+	const [bearing_before, bearing_after] = bearings;
+	const bearingDiff = (bearing_after - bearing_before + 360) % 360;
+
+	if (bearingDiff >= 337.5 || bearingDiff < 22.5) {
+		return iDirections.north;
+	} else if (bearingDiff >= 22.5 && bearingDiff < 67.5) {
+		return iDirections.northeast;
+	} else if (bearingDiff >= 67.5 && bearingDiff < 112.5) {
+		return iDirections.east;
+	} else if (bearingDiff >= 112.5 && bearingDiff < 157.5) {
+		return iDirections.southeast;
+	} else if (bearingDiff >= 157.5 && bearingDiff < 202.5) {
+		return iDirections.south;
+	} else if (bearingDiff >= 202.5 && bearingDiff < 247.5) {
+		return iDirections.southwest;
+	} else if (bearingDiff >= 247.5 && bearingDiff < 292.5) {
+		return iDirections.west;
+	} else if (bearingDiff >= 292.5 && bearingDiff < 337.5) {
+		return iDirections.northwest;
+	} else {
+		return iDirections.north;
+	}
+}
+
+
+function displayDirections(bearingArrow, locationName, dist, x, y) {
 	const li = document.createElement("li");
 	const spanDistance = document.createElement("span");
 	const span = document.createElement("span");
-	//add class
+
+	// Add class for list item
 	li.setAttribute("class", "list-direction");
+
 	span.setAttribute("class", "decor");
 	spanDistance.setAttribute("class", "decor");
-	span.textContent = locationName;
-	spanDistance.textContent = `${dist} m`;
+
+	// Create dynamic arrow with FontAwesome class
+	const faArrow = `<i class="fa-solid ${bearingArrow}" aria-hidden="true"></i>`;
+	span.innerHTML = faArrow + '  ' + locationName;
+	spanDistance.innerHTML = `${dist} m`;
+
+	// Append elements to list item
 	li.appendChild(span);
 	li.appendChild(spanDistance);
 
-	li.addEventListener("click", () => {
-		// Logic for centering map on (x, y)
-	});
 	informationDiv.appendChild(li);
 }
 
 async function getLocation(steps) {
-	informationDiv.innerHTML = "";
+	informationDiv.innerHTML = ""; // Clear previous directions
+
 	for (const step of steps) {
 		const cord = step.maneuver.location;
 		const dist = step.distance;
@@ -68,14 +126,21 @@ async function getLocation(steps) {
 		const y = cord[1];
 		const url = `${nominate}&lat=${y}&lon=${x}&zoom=18`;
 
+		// Extract bearings from step
+		const bearings = [step.maneuver.bearing_before, step.maneuver.bearing_after];
+
+		// Get the arrow direction based on bearings
+		const bearingArrow = getArrow(bearings);
+
+		// Fetch location details and display the direction
 		await fetch(url)
 			.then((response) => response.json())
 			.then((data) => {
 				const locationName = `${data.display_name.split(",")[0]} ${data.display_name.split(",")[1]}`;
-				displayDirections(locationName, dist, x, y);
+				displayDirections(bearingArrow, locationName, dist, x, y);
 			});
 	}
-	sideMenu.style.display = "block";
+	sideMenu.style.display = "block"; // Display side menu with directions
 }
 
 // Function to initialize the map
@@ -116,7 +181,7 @@ export default function myFunc() {
 
 	// Event listener for route generation
 	directions.on("route", (e) => {
-		console.log(e.route);
+		//console.log(e.route);
 		const route = e.route[0];
 		if (route) {
 			// Open the side menu when points A and B are connected

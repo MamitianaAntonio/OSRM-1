@@ -17565,7 +17565,7 @@ var require_maplibre_gl_directions = __commonJS({
       }())({
         1: [function(require2, module3, exports3) {
           "use strict";
-          var polyline2 = {};
+          var polyline = {};
           function py2_round(value) {
             return Math.floor(Math.abs(value) + 0.5) * (value >= 0 ? 1 : -1);
           }
@@ -17585,7 +17585,7 @@ var require_maplibre_gl_directions = __commonJS({
             output += String.fromCharCode(coordinate + 63);
             return output;
           }
-          polyline2.decode = function(str, precision) {
+          polyline.decode = function(str, precision) {
             var index = 0, lat = 0, lng = 0, coordinates = [], shift = 0, result = 0, byte = null, latitude_change, longitude_change, factor = Math.pow(10, Number.isInteger(precision) ? precision : 5);
             while (index < str.length) {
               byte = null;
@@ -17610,7 +17610,7 @@ var require_maplibre_gl_directions = __commonJS({
             }
             return coordinates;
           };
-          polyline2.encode = function(coordinates, precision) {
+          polyline.encode = function(coordinates, precision) {
             if (!coordinates.length) {
               return "";
             }
@@ -17630,24 +17630,24 @@ var require_maplibre_gl_directions = __commonJS({
             }
             return flipped2;
           }
-          polyline2.fromGeoJSON = function(geojson, precision) {
+          polyline.fromGeoJSON = function(geojson, precision) {
             if (geojson && geojson.type === "Feature") {
               geojson = geojson.geometry;
             }
             if (!geojson || geojson.type !== "LineString") {
               throw new Error("Input must be a GeoJSON LineString");
             }
-            return polyline2.encode(flipped(geojson.coordinates), precision);
+            return polyline.encode(flipped(geojson.coordinates), precision);
           };
-          polyline2.toGeoJSON = function(str, precision) {
-            var coords = polyline2.decode(str, precision);
+          polyline.toGeoJSON = function(str, precision) {
+            var coords = polyline.decode(str, precision);
             return {
               type: "LineString",
               coordinates: flipped(coords)
             };
           };
           if (typeof module3 === "object" && module3.exports) {
-            module3.exports = polyline2;
+            module3.exports = polyline;
           }
         }, {}],
         2: [function(require2, module3, exports3) {
@@ -22233,101 +22233,9 @@ var require_maplibre_gl_directions = __commonJS({
   }
 });
 
-// node_modules/.pnpm/@mapbox+polyline@1.2.1/node_modules/@mapbox/polyline/src/polyline.js
-var require_polyline = __commonJS({
-  "node_modules/.pnpm/@mapbox+polyline@1.2.1/node_modules/@mapbox/polyline/src/polyline.js"(exports, module) {
-    "use strict";
-    var polyline2 = {};
-    function py2_round(value) {
-      return Math.floor(Math.abs(value) + 0.5) * (value >= 0 ? 1 : -1);
-    }
-    function encode(current, previous, factor) {
-      current = py2_round(current * factor);
-      previous = py2_round(previous * factor);
-      var coordinate = (current - previous) * 2;
-      if (coordinate < 0) {
-        coordinate = -coordinate - 1;
-      }
-      var output = "";
-      while (coordinate >= 32) {
-        output += String.fromCharCode((32 | coordinate & 31) + 63);
-        coordinate /= 32;
-      }
-      output += String.fromCharCode((coordinate | 0) + 63);
-      return output;
-    }
-    polyline2.decode = function(str, precision) {
-      var index = 0, lat = 0, lng = 0, coordinates = [], shift = 0, result = 0, byte = null, latitude_change, longitude_change, factor = Math.pow(10, Number.isInteger(precision) ? precision : 5);
-      while (index < str.length) {
-        byte = null;
-        shift = 1;
-        result = 0;
-        do {
-          byte = str.charCodeAt(index++) - 63;
-          result += (byte & 31) * shift;
-          shift *= 32;
-        } while (byte >= 32);
-        latitude_change = result & 1 ? (-result - 1) / 2 : result / 2;
-        shift = 1;
-        result = 0;
-        do {
-          byte = str.charCodeAt(index++) - 63;
-          result += (byte & 31) * shift;
-          shift *= 32;
-        } while (byte >= 32);
-        longitude_change = result & 1 ? (-result - 1) / 2 : result / 2;
-        lat += latitude_change;
-        lng += longitude_change;
-        coordinates.push([lat / factor, lng / factor]);
-      }
-      return coordinates;
-    };
-    polyline2.encode = function(coordinates, precision) {
-      if (!coordinates.length) {
-        return "";
-      }
-      var factor = Math.pow(10, Number.isInteger(precision) ? precision : 5), output = encode(coordinates[0][0], 0, factor) + encode(coordinates[0][1], 0, factor);
-      for (var i = 1; i < coordinates.length; i++) {
-        var a = coordinates[i], b = coordinates[i - 1];
-        output += encode(a[0], b[0], factor);
-        output += encode(a[1], b[1], factor);
-      }
-      return output;
-    };
-    function flipped(coords) {
-      var flipped2 = [];
-      for (var i = 0; i < coords.length; i++) {
-        var coord = coords[i].slice();
-        flipped2.push([coord[1], coord[0]]);
-      }
-      return flipped2;
-    }
-    polyline2.fromGeoJSON = function(geojson, precision) {
-      if (geojson && geojson.type === "Feature") {
-        geojson = geojson.geometry;
-      }
-      if (!geojson || geojson.type !== "LineString") {
-        throw new Error("Input must be a GeoJSON LineString");
-      }
-      return polyline2.encode(flipped(geojson.coordinates), precision);
-    };
-    polyline2.toGeoJSON = function(str, precision) {
-      var coords = polyline2.decode(str, precision);
-      return {
-        type: "LineString",
-        coordinates: flipped(coords)
-      };
-    };
-    if (typeof module === "object" && module.exports) {
-      module.exports = polyline2;
-    }
-  }
-});
-
 // app.js
 var import_maplibre_gl = __toESM(require_maplibre_gl());
 var import_maplibre_gl_directions = __toESM(require_maplibre_gl_directions());
-var import_polyline = __toESM(require_polyline());
 
 // src/map.maplibre/map_defaults.js
 var map_defaults_default = {
@@ -37431,6 +37339,16 @@ var initBounds2 = [
   [41.428523678184234, -25.855015532118756],
   [52.75820791383018, -11.711066264154994]
 ];
+var iDirections = {
+  north: "fa-turn-up",
+  northeast: "fa-rotate-right",
+  east: "fa-right-long",
+  southeast: "fa-circle-dot",
+  south: "fa-turn-down",
+  southwest: "fa-circle-dot",
+  west: "fa-left-long",
+  northwest: "fa-rotate-left"
+};
 var styleMap = "https://vector-tiles.tag-ip.xyz/styles/tag-ip-mu/style.json";
 var informationDiv = document.getElementById("informations");
 var summaryContainer = document.getElementById("summary");
@@ -37438,19 +37356,41 @@ var distanceContainer = document.getElementById("distance");
 var durationContainer = document.getElementById("duration");
 var menuBtn = document.getElementById("menu-btn");
 var sideMenu = document.getElementById("side-menu");
-function displayDirections(locationName, dist, x, y2) {
+function getArrow(bearings) {
+  const [bearing_before, bearing_after] = bearings;
+  const bearingDiff = (bearing_after - bearing_before + 360) % 360;
+  if (bearingDiff >= 337.5 || bearingDiff < 22.5) {
+    return iDirections.north;
+  } else if (bearingDiff >= 22.5 && bearingDiff < 67.5) {
+    return iDirections.northeast;
+  } else if (bearingDiff >= 67.5 && bearingDiff < 112.5) {
+    return iDirections.east;
+  } else if (bearingDiff >= 112.5 && bearingDiff < 157.5) {
+    return iDirections.southeast;
+  } else if (bearingDiff >= 157.5 && bearingDiff < 202.5) {
+    return iDirections.south;
+  } else if (bearingDiff >= 202.5 && bearingDiff < 247.5) {
+    return iDirections.southwest;
+  } else if (bearingDiff >= 247.5 && bearingDiff < 292.5) {
+    return iDirections.west;
+  } else if (bearingDiff >= 292.5 && bearingDiff < 337.5) {
+    return iDirections.northwest;
+  } else {
+    return iDirections.north;
+  }
+}
+function displayDirections(bearingArrow, locationName, dist, x, y2) {
   const li2 = document.createElement("li");
   const spanDistance = document.createElement("span");
   const span = document.createElement("span");
   li2.setAttribute("class", "list-direction");
   span.setAttribute("class", "decor");
   spanDistance.setAttribute("class", "decor");
-  span.textContent = locationName;
-  spanDistance.textContent = "".concat(dist, " m");
+  const faArrow = '<i class="fa-solid '.concat(bearingArrow, '" aria-hidden="true"></i>');
+  span.innerHTML = faArrow + "  " + locationName;
+  spanDistance.innerHTML = "".concat(dist, " m");
   li2.appendChild(span);
   li2.appendChild(spanDistance);
-  li2.addEventListener("click", () => {
-  });
   informationDiv.appendChild(li2);
 }
 async function getLocation(steps) {
@@ -37461,9 +37401,11 @@ async function getLocation(steps) {
     const x = cord[0];
     const y2 = cord[1];
     const url = "".concat(nominate, "&lat=").concat(y2, "&lon=").concat(x, "&zoom=18");
+    const bearings = [step.maneuver.bearing_before, step.maneuver.bearing_after];
+    const bearingArrow = getArrow(bearings);
     await fetch(url).then((response) => response.json()).then((data) => {
       const locationName = "".concat(data.display_name.split(",")[0], " ").concat(data.display_name.split(",")[1]);
-      displayDirections(locationName, dist, x, y2);
+      displayDirections(bearingArrow, locationName, dist, x, y2);
     });
   }
   sideMenu.style.display = "block";
@@ -37497,7 +37439,6 @@ function myFunc() {
     profile: "driving"
   });
   directions.on("route", (e) => {
-    console.log(e.route);
     const route = e.route[0];
     if (route) {
       if (!sideMenu.classList.contains("open")) {
